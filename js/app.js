@@ -225,72 +225,75 @@ try {
 /*      Contact Js       */
 /*************************/
 
-function validateForm() {
-    var name = document.forms["myForm"]["name"].value.trim();
-    var email = document.forms["myForm"]["email"].value.trim();
-    var subject = document.forms["myForm"]["subject"].value.trim();
-    var comments = document.forms["myForm"]["comments"].value.trim();
+try {
+    function validateForm() {
+        var name = document.forms["myForm"]["name"].value;
+        var email = document.forms["myForm"]["email"].value;
+        var subject = document.forms["myForm"]["subject"].value;
+        var comments = document.forms["myForm"]["comments"].value;
+        document.getElementById("error-msg").style.opacity = 0;
+        document.getElementById('error-msg').innerHTML = "";
+        document.getElementById('simple-msg').innerHTML = "";
 
-    var errorMsgElem = document.getElementById('error-msg');
-    var simpleMsgElem = document.getElementById('simple-msg');
-    errorMsgElem.style.opacity = 0;
-    errorMsgElem.innerHTML = "";
-    simpleMsgElem.innerHTML = "";
+        if (name == "" || name == null) {
+            document.getElementById('error-msg').innerHTML = "<div class='alert alert-warning error_message'>*Please enter a Name*</div>";
+            fadeIn();
+            return false;
+        }
+        if (email == "" || email == null) {
+            document.getElementById('error-msg').innerHTML = "<div class='alert alert-warning error_message'>*Please enter an Email*</div>";
+            fadeIn();
+            return false;
+        }
+        if (subject == "" || subject == null) {
+            document.getElementById('error-msg').innerHTML = "<div class='alert alert-warning error_message'>*Please enter a Subject*</div>";
+            fadeIn();
+            return false;
+        }
+        if (comments == "" || comments == null) {
+            document.getElementById('error-msg').innerHTML = "<div class='alert alert-warning error_message'>*Please enter Comments*</div>";
+            fadeIn();
+            return false;
+        }
 
-    if (name === "") {
-        errorMsgElem.innerHTML = "<div class='alert alert-warning error_message'>*Please enter a Name*</div>";
-        fadeIn();
-        return false;
-    }
-    if (email === "") {
-        errorMsgElem.innerHTML = "<div class='alert alert-warning error_message'>*Please enter an Email*</div>";
-        fadeIn();
-        return false;
-    }
-    if (subject === "") {
-        errorMsgElem.innerHTML = "<div class='alert alert-warning error_message'>*Please enter a Subject*</div>";
-        fadeIn();
-        return false;
-    }
-    if (comments === "") {
-        errorMsgElem.innerHTML = "<div class='alert alert-warning error_message'>*Please enter Comments*</div>";
-        fadeIn();
-        return false;
-    }
-
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4) {
-            if (this.status === 200) {
-                simpleMsgElem.innerHTML = this.responseText;
-                document.forms["myForm"].reset();
-            } else {
-                errorMsgElem.innerHTML = "<div class='alert alert-danger error_message'>*An error occurred. Please try again later.*</div>";
-                fadeIn();
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                try {
+                    var response = JSON.parse(this.responseText);
+                    if (this.status === 200 && response.success) {
+                        document.getElementById("simple-msg").innerHTML = "<div class='alert alert-success'>" + response.message + "</div>";
+                        document.forms["myForm"].reset();
+                        document.getElementById('error-msg').innerHTML = "";
+                    } else {
+                        document.getElementById("error-msg").innerHTML = "<div class='alert alert-danger error_message'>" + (response.message || "An error occurred.") + "</div>";
+                        fadeIn();
+                    }
+                } catch (e) {
+                    document.getElementById("error-msg").innerHTML = "<div class='alert alert-danger error_message'>Unexpected server response.</div>";
+                    fadeIn();
+                }
             }
-        }
-    };
-    xhttp.open("POST", "php/contact.php", true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(
-        "name=" + encodeURIComponent(name) +
-        "&email=" + encodeURIComponent(email) +
-        "&subject=" + encodeURIComponent(subject) +
-        "&comments=" + encodeURIComponent(comments)
-    );
+        };
+        xhttp.open("POST", "php/contact.php", true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send("name=" + encodeURIComponent(name) + "&email=" + encodeURIComponent(email) + "&subject=" + encodeURIComponent(subject) + "&comments=" + encodeURIComponent(comments));
 
-    return false; // Prevent default form submission
-}
+        return false;
+    }
 
-function fadeIn() {
-    var fade = document.getElementById("error-msg");
-    var opacity = 0;
-    var intervalID = setInterval(function () {
-        if (opacity < 1) {
-            opacity += 0.5;
-            fade.style.opacity = opacity;
-        } else {
-            clearInterval(intervalID);
-        }
-    }, 200);
+    function fadeIn() {
+        var fade = document.getElementById("error-msg");
+        var opacity = 0;
+        var intervalID = setInterval(function () {
+            if (opacity < 1) {
+                opacity += 0.5;
+                fade.style.opacity = opacity;
+            } else {
+                clearInterval(intervalID);
+            }
+        }, 200);
+    }
+} catch (error) {
+    console.error(error);
 }
