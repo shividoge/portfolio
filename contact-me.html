@@ -118,7 +118,7 @@
                     <div class="col-md-6">
                         <div class="p-4 rounded shadow ms-lg-5">
                             <h4>Get in touch !</h4>
-                            <form class="mt-4" method="post" name="myForm" action="contact.php" onsubmit="return validateForm()">
+                            <form class="mt-4" method="POST" name="myForm" action="contact.php" onsubmit="return validateForm()" id="contact-form">
                                 <p class="mb-0" id="error-msg"></p>
                                 <div id="simple-msg"></div>
                                 <div class="row">
@@ -155,6 +155,7 @@
                                         <div class="d-grid">
                                             <button type="submit" id="submit" name="send" class="btn btn-primary">Send Message</button>
                                         </div>
+					    <p id="form-message" style="margin-top: 1em;"></p>
                                     </div><!--end col-->
                                 </div><!--end row-->
                             </form>
@@ -272,5 +273,33 @@
 	    <!-- Custom -->
 	    <script src="js/plugins.init.js"></script>
 	    <script src="js/app.js"></script>
+		<script>
+		document.getElementById("contact-form").addEventListener("submit", function (e) {
+		    e.preventDefault();
+		
+		    const form = e.target;
+		    const formData = new FormData(form);
+		
+		    fetch("contact.php", {
+		        method: "POST",
+		        body: formData
+		    })
+		    .then(response => response.json())
+		    .then(result => {
+		        const msg = document.getElementById("form-message");
+		        if (result.success) {
+		            msg.textContent = result.message;
+		            msg.style.color = "green";
+		            form.reset(); // ✅ Clear the form
+		        } else {
+		            msg.textContent = result.message;
+		            msg.style.color = "red";
+		        }
+		    })
+		    .catch(error => {
+		        console.error("Error:", error);
+		    });
+		});
+		</script>
     </body>
 </html>
