@@ -75,18 +75,14 @@
         </header>
         <!-- Navbar End -->
 
-        <section class="bg-half-260 pb-lg-0 pb-md-4 bg-primary d-table w-100" style="background: url('images/photo_2025-06-21_01-29-36.jpg') center center;" id="home">
+        <section class="bg-half-260 pb-lg-0 pb-md-4 bg-primary d-table w-100" style="background: url('images/photo_2025-06-21_01-29-36.jpg') center center / cover no-repeat fixed;" id="home">
             <div class="bg-overlay bg-black" style="opacity: 0.8;"></div>
             <div class="container">
                 <div class="row g-4 position-relative z-1">
                     <div class="col-lg-7 col-md-6 col-12 mt-lg-5">
                         <div class="title-heading">
                             <h1 class="heading text-white title-dark mb-4">Hello, I'm Shivin Anand</h1>
-                            <p class="para-desc text-white-50">I am a rising 12th grade student based out of Florida. <br>I am an aspiring electrical engineer; I also have a passion for UI/UX design.</p>
-                            
-                            <div class="mt-2">
-                                <span class="text-white-50"><span class="text-white">Areas of expertise:</span> Robotics, Engineering, UI/UX Design, Web Development</span>
-                            </div>
+                            <p id="typed-paragraph" class="para-desc text-white-50"></p>
                         </div>
                     </div><!--end col-->
 
@@ -455,5 +451,24 @@
 	    <!-- Custom -->
 	    <script src="js/plugins.init.js"></script>
 	    <script src="js/app.js"></script>
+	    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+	    <script>
+	        document.addEventListener('DOMContentLoaded', function () {
+	            new Typed("#typed-paragraph", {
+	            strings: [
+	                `I am a rising 12th grade student based out of Tampa, Florida.<br>
+	                I am an aspiring electrical engineer; I also have a passion for UI/UX design.<br><br>
+	                <span class="text-white">Areas of expertise:</span> <span class="text-white-50">Robotics, Engineering, UI/UX Design, Web Development.</span>`
+	            ],
+	            typeSpeed: 20,             // Slightly faster typing
+	            startDelay: 300,
+	            showCursor: false,
+	            loop: false,
+	            backSpeed: 0,
+	            backDelay: 0,
+	            contentType: 'html'        // Required to allow HTML tags like <br> and span styles
+	            });
+	        });
+	    </script>
     </body>
 </html>
