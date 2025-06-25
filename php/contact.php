@@ -4,6 +4,9 @@ $to = "shivin.anand@gmail.com"; // ✅ Your email
 
 // Only run if form submitted via POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Send JSON header for response
+    header('Content-Type: application/json; charset=utf-8');
+
     // Get values from POST & sanitize
     $name = trim($_POST["name"] ?? "");
     $email = trim($_POST["email"] ?? "");
