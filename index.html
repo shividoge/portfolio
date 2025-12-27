@@ -1,473 +1,373 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <title>Shivin Anand's Portfolio</title>
-	    <meta name="description" content="Shivin Anand's Profile" />
-	    <meta name="keywords" content="Webpage, Shivin Anand, modern, clean, Profile" />
-	    <meta name="author" content="Shivin Anand" />
-	    <meta name="email" content="shivin.r.anand@gmail.com" />
-	    <!-- favicon -->
-        <link href="images/s_4453.ico" rel="shortcut icon">
-		<!-- Bootstrap core CSS -->
-	    <link href="css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-        <link href="css/tobii.min.css" rel="stylesheet" type="text/css" />
-        <link href="css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
-	    <!-- Custom  Css -->
-	    <link href="css/style.css" rel="stylesheet" type="text/css" id="theme-opt" />
-	</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Shivin Anand — Robotics leader, builder, and researcher. Portfolio of projects, leadership, and work in embedded systems & automation." />
+    <title>Shivin Anand</title>
 
-	<body>
-        <!-- Navbar Start -->
-        <header id="topnav" class="defaultscroll sticky">
-            <div class="container">
-		    
-		<a class="logo" href="index.html">
-                    <span class="logo-light-mode">
-                        <img src="images/image_2025-06-24_014513875-removebg-preview.png" class="l-dark" alt="">
-                        <img src="images/image-removebg-preview (19).png" class="l-light" alt="">
-                    </span>
-                    <img src="images/image-removebg-preview (19).png" class="logo-dark-mode" alt="">
-                </a>
-		    
-                        <div class="menu-extras">
-	                    <div class="menu-item">
-	                        <a class="navbar-toggle" id="isToggle" onclick="toggleMenu()">
-	                            <div class="lines">
-	                                <span></span>
-	                                <span></span>
-	                                <span></span>
-	                            </div>
-	                        </a>
-	                    </div>
-	                </div>
-		    
-                <div id="navigation">
-                    <!-- Navigation Menu-->   
-                    <ul class="navigation-menu nav-right nav-light">
-                        <li class="has-submenu parent-menu-item">
-                            <a href="index.html" class="sub-menu-item">Home</a>
-                        </li>
+    <!-- Social preview -->
+    <meta property="og:title" content="Shivin Anand" />
+    <meta property="og:description" content="Robotics • Research • Projects — Lab Bench & Launchpad." />
+    <meta property="og:type" content="website" />
 
-                        <li class="has-submenu parent-parent-menu-item"><a href="javascript:void(0)"> About Me</a><span class="menu-arrow"></span>
-                            <ul class="submenu">
-                                <li> <a href="about-me.html"  class="sub-menu-item">About Me</a></li>
-                                <li><a href="skills.html" class="sub-menu-item">Skills</a></li>                     
-                            </ul>  
-                        </li>
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/system.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <link rel="stylesheet" href="css/system.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
 
-                        <li> <a href="past-work.html"> Past Work </a> </li>
 
-                        <li class="has-submenu parent-parent-menu-item">
-                            <a href="javascript:void(0)">Utility</a><span class="menu-arrow"></span>
-                            <ul class="submenu">
-                                <li><a href="terms.html" class="sub-menu-item">Terms of Services</a></li>
-                                <li><a href="privacy.html" class="sub-menu-item">Privacy Policy</a></li>
-                            </ul>
-                        </li>
+    <!-- Favicons (optional) -->
+    <!-- <link rel="icon" href="./assets/icons/favicon.png" /> -->
+  </head>
 
-                        <li><a href="contact-me.html">Contact Me</a></li>
+  <body>
+    <!-- Skip link for accessibility -->
+    <a class="skip-link" href="#main">Skip to content</a>
 
-                    </ul><!--end navigation menu-->
-                </div><!--end navigation-->
+    <!-- NAV -->
+    <header class="site-header" data-reveal>
+      <div class="container nav-wrap">
+        <a class="brand" href="./index.html" aria-label="Home">
+          <span class="brand-mark" aria-hidden="true">SA</span>
+          <span class="brand-name">Shivin Anand</span>
+        </a>
+
+        <nav class="nav" aria-label="Primary">
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navMenu">
+            <span class="nav-toggle-label">Menu</span>
+            <span class="nav-toggle-icon" aria-hidden="true"></span>
+          </button>
+
+          <div id="navMenu" class="nav-menu">
+            <a class="nav-link" href="./work.html">Work</a>
+            <a class="nav-link" href="./about.html">About</a>
+            <a class="nav-link" href="./contact.html">Contact</a>
+            <a class="nav-link nav-link-pill" href="#launchpad">Launchpad</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- HERO -->
+      <section class="section hero">
+        <div class="container hero-grid">
+          <div class="hero-copy" data-reveal>
+            <p class="eyebrow">Lab Bench / Launchpad</p>
+            <h1>
+              I build systems that
+              <span class="accent">move ideas into reality.</span>
+            </h1>
+            <p class="hero-subtitle">
+              Robotics leader, researcher, and builder focused on embedded systems, automation, and
+              real-world engineering.
+            </p>
+
+            <div class="hero-cta">
+              <a class="btn btn-primary" href="./work.html">
+                View Work
+                <span aria-hidden="true">→</span>
+              </a>
+              <a class="btn btn-secondary" href="./contact.html">Contact</a>
             </div>
-        </header>
-        <!-- Navbar End -->
 
-        <section class="bg-half-260 pb-lg-0 pb-md-4 bg-primary d-table w-100" style="background: url('images/photo_3_2025-06-21_00-22-32.jpg') center center / cover no-repeat fixed;" id="home">
-            <div class="bg-overlay bg-black" style="opacity: 0.8;"></div>
-            <div class="container">
-                <div class="row g-4 position-relative z-1">
-                    <div class="col-lg-7 col-md-6 col-12 mt-lg-5">
-                        <div class="title-heading">
-                            <h1 class="heading text-white title-dark mb-4">Hello, I'm Shivin Anand</h1>
-                            <p id="typed-paragraph" class="para-desc text-white-50"></p>
-                        </div>
-                    </div><!--end col-->
-
-                    <div class="col-lg-5 col-md-6 col-12">
-                        <div class="bg-white rounded shadow p-2 position-relative">
-                            <img src="images/picofme12.jpeg" class="img-fluid rounded" alt="">
-
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-        </section><!--end section-->
-        <div class="position-relative">
-            <div class="shape overflow-hidden text-white">
-                <svg viewBox="0 0 2880 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M720 125L2160 0H2880V250H0V125H720Z" fill="currentColor"></path>
-                </svg>
+            <div class="hero-stats grid cols-3" aria-label="Quick stats">
+              <div class="stat card" data-reveal>
+                <div class="stat-number" data-count="1010">0</div>
+                <p class="stat-label">Lines of code</p>
+              </div>
+              <div class="stat card" data-reveal>
+                <div class="stat-number" data-count="12">0</div>
+                <p class="stat-label">Projects shipped</p>
+              </div>
+              <div class="stat card" data-reveal>
+                <div class="stat-number" data-count="9">0</div>
+                <p class="stat-label">Teams supported</p>
+              </div>
             </div>
+
+            <div class="hero-note" data-reveal>
+              <p class="micro">
+                <span class="micro-strong">Human note:</span> I care about clarity—systems should be
+                powerful <em>and</em> understandable.
+              </p>
+            </div>
+          </div>
+
+          <aside class="hero-panel card" data-reveal>
+            <h2 class="panel-title">Right now</h2>
+            <p class="panel-sub">What I’m actively building / iterating.</p>
+              <div class="hero-photo-wrap">
+                <img
+                  src="./assets/img/shivin.jpg"
+                  alt="Shivin Anand working on engineering projects"
+                  class="hero-photo"
+                  loading="eager"
+                />
+              </div>
+
+            <div class="panel-feature">
+              <div class="chip-row">
+                <span class="chip">Embedded</span>
+                <span class="chip">Automation</span>
+                <span class="chip">Computer Vision</span>
+              </div>
+
+              <h3 class="panel-h3">Autonomous Growth System</h3>
+              <p class="panel-p">
+                Sensors + control loops + vision to monitor and optimize plant growth (built for
+                long-term reliability).
+              </p>
+
+              <div class="panel-actions">
+                <a class="btn btn-tertiary" href="./work.html">See case studies</a>
+                <button class="btn btn-tertiary" type="button" data-open-modal="featured">
+                  Quick view
+                </button>
+              </div>
+            </div>
+
+            <div class="panel-divider" role="separator" aria-hidden="true"></div>
+
+            <div class="panel-mini grid">
+              <div class="mini" data-reveal>
+                <p class="mini-kicker">I like to build with</p>
+                <p class="mini-text">Teensy / Arduino • CAD • PCB design • Python • JS</p>
+              </div>
+              <div class="mini" data-reveal>
+                <p class="mini-kicker">I optimize for</p>
+                <p class="mini-text">fast iteration • clean interfaces • measurable impact</p>
+              </div>
+            </div>
+          </aside>
         </div>
-        <!-- Hero End -->
 
-        <!-- Start -->
-        <section class="section">
-            <div class="container">
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="counter-box text-center">
-                            <h1 class="fw-bold"><span class="counter-value" data-target="1548">1010</span>K+</h1>
-                            <h6 class="counter-head text-muted text-uppercase">Lines of code</h6>
-                        </div><!--end counter box-->
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <div class="counter-box text-center">
-                            <h1 class="fw-bold"><span class="counter-value" data-target="25">12</span>+</h1>
-                            <h6 class="counter-head text-muted text-uppercase">Active Sites</h6>
-                        </div><!--end counter box-->
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <div class="counter-box text-center">
-                            <h1 class="fw-bold"><span class="counter-value" data-target="4">0</span></h1>
-                            <h6 class="counter-head text-muted text-uppercase">Years Experience</h6>
-                        </div><!--end counter box-->
-                    </div>
-                </div>
-            </div><!--end container-->
+        <div class="container hero-scroll" data-reveal>
+          <a class="scroll-hint" href="#lab-bench" aria-label="Scroll to Lab Bench">
+            <span class="scroll-dot" aria-hidden="true"></span>
+            <span class="scroll-text">Scroll</span>
+          </a>
+        </div>
+      </section>
 
-            <div class="container mt-100 mt-60">
-                <div class="row justify-content-center mb-4 pb-2">
-                    <div class="col-12">
-                        <div class="section-title text-center">
-                            <h4 class="title mb-3">Experiences</h4>
-                            <p class="text-muted para-desc mx-auto mb-0">Quick look at some of my experiences, both in and out of UI/UX design!</p>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
+      <!-- LAB BENCH -->
+      <section id="lab-bench" class="section">
+        <div class="container section-head" data-reveal>
+          <h2>Lab Bench</h2>
+          <p>
+            Where I sharpen fundamentals: robotics leadership, certifications, and skills gained from
+            coursework—then apply them under real constraints.
+          </p>
+        </div>
 
-                <div class="container mt-60">
-		    <div class="row g-4">
-		        <div class="col-lg-4 col-md-6 col-12">
-		            <div class="job-post job-type-three rounded shadow bg-white p-4">
-		                <div class="d-flex justify-content-between">
-		                    <div>
-		                        <img src="images/mhs_robotics 2.jpg" class="avatar avatar-small rounded shadow p-3 bg-white" alt="">
-		                        <a class="h5 company text-dark d-block mt-2" target="blank">Middleton Robotics</a>
-		                    </div>
-		                </div>
-		
-		                <div class="mt-2">
-		                    <a class="text-dark title h5">President</a>
-		                    <p class="text-muted mt-2">Robotics | Engineering | Web Design</p>
-		
-		                    <ul class="list-unstyled mb-0">
-		                        <li class="d-inline-block me-1"><a class="badge bg-primary">Full Time</a></li>
-		                        <li class="d-inline-block me-1"><a href="https://www.middletonrobotics.com/" target="blank" class="badge bg-primary">View</a></li>
-		                    </ul>
-		                </div>
-		            </div>
-		        </div><!--end col-->
-		
-		                    
-		        <div class="col-lg-4 col-md-6 col-12">
-		            <div class="job-post job-type-three rounded shadow bg-white p-4">
-		                <div class="d-flex justify-content-between">
-		                    <div>
-		                        <img src="images/flsamlogo1.jpg" class="avatar avatar-small rounded shadow p-3 bg-white" alt="">
-		                            <a class="h5 company text-dark d-block mt-2" target="blank">FLSAM</a>
-		                    </div>
-		                </div>
-		
-		                <div class="mt-2">
-		                    <a class="text-dark title h5">Webmaster</a>
-		                        <p class="text-muted mt-2">Web Design | UI/UX development</p>
-		
-		                        <ul class="list-unstyled mb-0">
-		                            <li class="d-inline-block me-1"><a class="badge bg-primary">Full Time</a></li>
-		                            <li class="d-inline-block me-1"><a href="https://www.flsam.org/" target="blank" class="badge bg-primary">View</a></li>
-		                        </ul>
-		                </div>
-		            </div>
-		        </div><!--end col-->
-		
-		                    
-		        <div class="col-lg-4 col-md-6 col-12">
-		            <div class="job-post job-type-three rounded shadow bg-white p-4">
-		                <div class="d-flex justify-content-between">
-		                    <div>
-		                        <img src="images/robohorizonsphoto.jpg" class="avatar avatar-small rounded shadow p-3 bg-white" alt="">
-		                        <a class="h5 company text-dark d-block mt-2" target="blank">RoboHorizons</a>
-		                    </div>
-		                </div>
-		
-		                <div class="mt-2">
-		                    <a class="text-dark title h5">UI/UX Designer</a>
-		                    <p class="text-muted mt-2">Web Design | UI/UX development</p>
-		
-		                    <ul class="list-unstyled mb-0">
-		                        <li class="d-inline-block me-1"><a class="badge bg-primary">Competition</a></li>
-		                        <li class="d-inline-block me-1"><a href="https://shividoge.github.io/index.html" target="blank" class="badge bg-primary">View</a></li>
-		                    </ul>
-		                </div>
-		            </div>
-		        </div><!--end col-->
-		    </div>
-		</div><!--end container-->
-            </div><!--end container-->
-
-            <div class="container mt-100 mt-60">
-                <div class="row g-4 align-items-center">
-                    <div class="col-lg-6 col-md-6 mb-5">
-                        <div class="about-left">
-                            <div class="position-relative shadow rounded img-one">
-                                <img src="images/photo_2025-06-21_00-34-34.jpg" class="img-fluid rounded" alt="work-image">
-                            </div>
-
-                            <div class="img-two shadow rounded p-2 bg-white">
-                                <img src="images/picofme2.jpg" class="img-fluid rounded" alt="work-image">
-                            </div>
-                        </div>
-                    </div><!--end col-->
-
-                    <div class="col-lg-6 col-md-6">
-                        <div class="section-title ms-lg-5">
-                            <h4 class="title mb-3">Billions of people. <br> Why choose me?</h4>
-                            <p class="text-muted para-desc mb-0">I blend technical precision with human-centered creativity to build solutions that truly work and feel right. I don’t just design for users—I engineer with them in mind.</p>
-                        
-                            <ul class="list-unstyled text-muted mb-0 mt-3">
-                                <li class="mb-1"><span class="text-primary h5 me-2"><i class="mdi mdi-check-circle-outline align-middle"></i></span>Design Solutions for Tomorrow</li>
-                                <li class="mb-1"><span class="text-primary h5 me-2"><i class="mdi mdi-check-circle-outline align-middle"></i></span>President of <b>4</b> VEX, <b>4</b> FTC, and <b>1</b> FRC team</li>
-                                <li class="mb-1"><span class="text-primary h5 me-2"><i class="mdi mdi-check-circle-outline align-middle"></i></span>Expierence in HTML 5 CSS 3 and JS</li>
-                            </ul>
-
-                            <div class="mt-4">
-                                <a href="about-me.html" class="btn btn-primary">About Me <i class="mdi mdi-arrow-right align-middle"></i></a>
-                            </div>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-
-            <div class="container mt-100 mt-60">
-                <div class="row justify-content-center mb-4 pb-2">
-                    <div class="col-12">
-                        <div class="section-title text-center">
-                            <h4 class="title mb-3">Browse my Skills</h4>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            
-                <div class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 mt-0">
-                    <div class="col">
-                        <div class="job-category job-category-two rounded shadow bg-light p-3">
-                            <h5 class="mb-1">Problem-Solving</h5>
-                            <p class="text-muted para mb-2"> The ability to identify issues and develop effective solutions is crucial in both design and engineering.</p>
-                        </div>
-                    </div><!--end col-->
-                    
-                    <div class="col">
-                        <div class="job-category job-category-two rounded shadow bg-light p-3">
-                            <h5 class="mb-1">Collaboration</h5>
-                            <p class="text-muted para mb-2">Working seamlessly with cross-functional teams ensures smooth project execution and integration.</p>
-                        </div>
-                    </div><!--end col-->
-                    
-                    <div class="col">
-                        <div class="job-category job-category-two rounded shadow bg-light p-3">
-                            <h5 class="mb-1">Attention to Detail</h5>
-                            <p class="text-muted para mb-2">Precision matters in wiring circuits or refining user interfaces, where small errors can lead to big problems.</p>
-                        </div>
-                    </div><!--end col-->
-                    
-                    <div class="col">
-                        <div class="job-category job-category-two rounded shadow bg-light p-3">
-                            <h5 class="mb-1">Technical Proficiency</h5>
-                            <p class="text-muted para mb-2"> Mastery of relevant tools & circuit design is essential to execute effective solutions.</p>
-                        </div>
-                    </div><!--end col-->
-                    
-                    <div class="col">
-                        <div class="job-category job-category-two rounded shadow bg-light p-3">
-                            <h5 class="mb-1">User-Centered</h5>
-                            <p class="text-muted para mb-2">Whether optimizing an interface or a device, understanding user needs leads to better results.</p>
-                        </div>
-                    </div><!--end col-->
-                    
-                    </div><!--end col-->
-                    <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="text-center">
-                            <a href="skills.html" class="btn btn-link primary text-muted">See More Skills <i class="mdi mdi-arrow-right"></i></a>
-                        </div>
-                    </div><!--end col-->
-                
-            </div><!--end container-->
-
-
-
-            <div class="container mt-100 mt-60">
-                <div class="row justify-content-center">
-                    <div class="col">
-                        <div class="section-title text-center mb-4 pb-2">
-                            <h4 class="title mb-3">Latest News</h4>
-                            <p class="text-muted para-desc mb-0 mx-auto">Here are some of my most recent projects and events that I have attended.</p>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-
-                <div class="row g-4 mt-0">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card blog blog-primary shadow rounded overflow-hidden border-0">
-                            <div class="card-img blog-image position-relative overflow-hidden rounded-0">
-                                <div class="position-relative overflow-hidden">
-                                    <img src="images/photo_3_2025-06-21_00-22-32.jpg" class="img-fluid" alt="">
-                                    <div class="card-overlay"></div>
-                                </div>
-                            </div>
-
-                            <div class="card-body blog-content position-relative p-0">
-                                <div class="blog-tag px-4">
-                                    <a href="" class="badge bg-primary rounded-pill">Robotics</a>
-                                </div>
-                                <div class="p-4">
-                                    <ul class="list-unstyled text-muted small mb-2">
-                                        <li class="d-inline-flex align-items-center me-2"><i data-feather="calendar" class="fea icon-ex-sm me-1 text-dark"></i>March 27th, 2025</li>
-                                    </ul>
-
-                                    <a class="title fw-semibold fs-5 text-dark">Rising All-Star award <br>at Miami-Vally Regional</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!--end col-->
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card blog blog-primary shadow rounded overflow-hidden border-0">
-                            <div class="card-img blog-image position-relative overflow-hidden rounded-0">
-                                <div class="position-relative overflow-hidden">
-                                    <img src="images/photo_2025-06-21_00-24-45.jpg" class="img-fluid" alt="">
-                                    <div class="card-overlay"></div>
-                                </div>
-                            </div>
-
-                            <div class="card-body blog-content position-relative p-0">
-                                <div class="blog-tag px-4">
-                                    <a href="" class="badge bg-primary rounded-pill">Web design</a>
-                                </div>
-                                <div class="p-4">
-                                    <ul class="list-unstyled text-muted small mb-2">
-                                        <li class="d-inline-flex align-items-center me-2"><i data-feather="calendar" class="fea icon-ex-sm me-1 text-dark"></i>March 17th, 2024</li>
-                                    </ul>
-
-                                    <a class="title fw-semibold fs-5 text-dark">1st Place in Florida for RoboHorizons Website</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!--end col-->
-                    
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card blog blog-primary shadow rounded overflow-hidden border-0">
-                            <div class="card-img blog-image position-relative overflow-hidden rounded-0">
-                                <div class="position-relative overflow-hidden">
-                                    <img src="images/photo_1_2025-06-21_00-22-32.jpg" class="img-fluid" alt="">
-                                    <div class="card-overlay"></div>
-                                </div>
-                            </div>
-
-                            <div class="card-body blog-content position-relative p-0">
-                                <div class="blog-tag px-4">
-                                    <a class="badge bg-primary rounded-pill">Robotics</a>
-                                </div>
-                                <div class="p-4">
-                                    <ul class="list-unstyled text-muted small mb-2">
-                                        <li class="d-inline-flex align-items-center me-2"><i data-feather="calendar" class="fea icon-ex-sm me-1 text-dark"></i>April 19th, 2025</li>
-                                    </ul>
-
-                                    <a class="title fw-semibold fs-5 text-dark">Rising All-Star award <br> at FIRST World Championship</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-        </section><!--end section-->
-        <!-- End -->
-
-         <!-- Footer Start -->
-        <footer class="bg-footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="py-5">
-                            <div class="row align-items-center">
-                                <div class="col-sm-3">
-                                    <div class="text-center text-sm-start">
-                                        <a href="index.html"><img src="images/image-removebg-preview (19).png" alt=""></a>
-                                    </div>
-                                </div>
-        
-                                <div class="col-sm-9 mt-4 mt-sm-0">
-                                    <ul class="list-unstyled footer-list terms-service text-center text-sm-end mb-0">
-                                        <li class="list-inline-item my-2"><a href="index.html" class="text-foot fs-6 fw-medium me-2"><i class="mdi mdi-circle-small"></i> Home</a></li>
-                                        <li class="list-inline-item my-2"><a href="job-categories.html" class="text-foot fs-6 fw-medium me-2"><i class="mdi mdi-circle-small"></i> Skills</a></li>
-                                        <li class="list-inline-item my-2"><a href="job-list-one.html" class="text-foot fs-6 fw-medium me-2"><i class="mdi mdi-circle-small"></i>Expierence</a></li>
-                                        <li class="list-inline-item my-2"><a href="employers.html" class="text-foot fs-6 fw-medium me-2"><i class="mdi mdi-circle-small"></i>Past Work</a></li>
-                                        <li class="list-inline-item my-2"><a href="candidate-profile.html" class="text-foot fs-6 fw-medium"><i class="mdi mdi-circle-small"></i>About Me</a></li>
-                                        <li class="list-inline-item my-2"><a href="contactus.html" class="text-foot fs-6 fw-medium"><i class="mdi mdi-circle-small"></i>Contact Me</a></li>
-                                    </ul>
-                                </div><!--end col-->
-                            </div><!--end row-->
-                        </div>
-                    </div><!--end col-->
-                </div><!--end row-->
-            </div><!--end container-->
-
-            <div class="py-4 footer-bar">
-                <div class="container text-center">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <div class="text-sm-start">
-                                <p class="mb-0 fw-medium">© <script>document.write(new Date().getFullYear())</script> Shivin Anand</p>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
-                            <ul class="list-unstyled social-icon foot-social-icon text-sm-end mb-0">
-                                <li class="list-inline-item"><a href="https://www.linkedin.com/in/shivinranand" target="_blank" class="rounded"><i data-feather="linkedin" class="fea icon-sm align-middle" title="Linkedin"></i></a></li>
-                                <li class="list-inline-item"><a href="https://www.instagram.com/shivin_anand/" target="_blank" class="rounded"><i data-feather="instagram" class="fea icon-sm align-middle" title="instagram"></i></a></li>
-                            </ul><!--end icon-->
-                        </div><!--end col-->
-                    </div><!--end row-->
-                </div><!--end container-->
+        <div class="container grid cols-3">
+          <!-- Robotics -->
+          <article class="card feature-card" data-reveal>
+            <div class="feature-top">
+              <h3>Robotics</h3>
+              <p class="muted">
+                Team leadership, build systems, strategy, and mentoring across multiple subteams.
+              </p>
             </div>
-        </footer><!--end footer-->
-        <!-- Footer End -->
+            <ul class="bullets">
+              <li>Engineering process + deadlines</li>
+              <li>Manufacturing + integration</li>
+              <li>Mentoring & team structure</li>
+            </ul>
+            <button class="btn btn-tertiary" type="button" data-open-modal="robotics">
+              Open details
+            </button>
+          </article>
 
-        <!-- Back to top -->
-        <a href="#" onclick="topFunction()" id="back-to-top" class="back-to-top rounded fs-5"><i data-feather="arrow-up" class="fea icon-sm align-middle"></i></a>
-        <!-- Back to top -->
+          <!-- Certifications -->
+          <article class="card feature-card" data-reveal>
+            <div class="feature-top">
+              <h3>Certifications</h3>
+              <p class="muted">Credentials that back up what I can do—and what I’m learning next.</p>
+            </div>
+            <ul class="bullets">
+              <li>Coming soon: list yours here</li>
+              <li>Include issuer + year</li>
+              <li>Link the verification</li>
+            </ul>
+            <button class="btn btn-tertiary" type="button" data-open-modal="certs">
+              Open details
+            </button>
+          </article>
 
-        <!-- JAVASCRIPTS -->
-	    <script src="js/bootstrap.bundle.min.js"></script>
-        <script src="js/tobii.min.js"></script>
-        <script src="js/feather.min.js"></script>
-	    <!-- Custom -->
-	    <script src="js/plugins.init.js"></script>
-	    <script src="js/app.js"></script>
-	    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-	    <script>
-	        document.addEventListener('DOMContentLoaded', function () {
-	            new Typed("#typed-paragraph", {
-	            strings: [
-	                `I am a rising 12th grade student based out of Florida.<br>
-	                I am an aspiring electrical engineer; I also have a passion <br>
-		 	for UI/UX design.<br><br>
-	                <span class="text-white">Areas of expertise:</span> <span class="text-white-50">Robotics, Engineering, UI/UX Design, Web Development.</span>`
-	            ],
-	            typeSpeed: 20,             // Slightly faster typing
-	            startDelay: 300,
-	            showCursor: false,
-	            loop: false,
-	            backSpeed: 0,
-	            backDelay: 0,
-	            contentType: 'html'        // Required to allow HTML tags like <br> and span styles
-	            });
-	        });
-	    </script>
-    </body>
+          <!-- Classes → Skills -->
+          <article class="card feature-card" data-reveal>
+            <div class="feature-top">
+              <h3>Class-built skills</h3>
+              <p class="muted">The skills I picked up in class that now show up in my builds.</p>
+            </div>
+            <ul class="bullets">
+              <li>Systems thinking</li>
+              <li>Data + analysis</li>
+              <li>Communication</li>
+            </ul>
+            <button class="btn btn-tertiary" type="button" data-open-modal="classes">
+              Open details
+            </button>
+          </article>
+        </div>
+
+        <div class="container section-foot" data-reveal>
+          <a class="btn btn-secondary" href="./about.html">More about my path</a>
+        </div>
+      </section>
+
+      <!-- LAUNCHPAD -->
+      <section id="launchpad" class="section">
+        <div class="container section-head" data-reveal>
+          <h2>Launchpad</h2>
+          <p>
+            Where I push beyond the syllabus: research, personal engineering projects, and the things
+            I’m curious enough to build anyway.
+          </p>
+        </div>
+
+        <div class="container grid cols-3">
+          <!-- Research -->
+          <article class="card feature-card" data-reveal>
+            <div class="feature-top">
+              <h3>Research</h3>
+              <p class="muted">Work that demands rigor: experiments, iteration, and proof.</p>
+            </div>
+            <ul class="bullets">
+              <li>Lab collaboration</li>
+              <li>Instrumentation + automation</li>
+              <li>Documentation</li>
+            </ul>
+            <button class="btn btn-tertiary" type="button" data-open-modal="research">
+              Open details
+            </button>
+          </article>
+
+          <!-- Projects -->
+          <article class="card feature-card" data-reveal>
+            <div class="feature-top">
+              <h3>Projects</h3>
+              <p class="muted">End-to-end builds—hardware, software, and product thinking.</p>
+            </div>
+            <ul class="bullets">
+              <li>Embedded + firmware</li>
+              <li>Web + UI</li>
+              <li>Prototyping loops</li>
+            </ul>
+            <a class="btn btn-tertiary" href="./work.html">Browse projects</a>
+          </article>
+
+          <!-- About me -->
+          <article class="card feature-card" data-reveal>
+            <div class="feature-top">
+              <h3>About me</h3>
+              <p class="muted">A little more human: what I value, how I work, what I’m exploring.</p>
+            </div>
+            <ul class="bullets">
+              <li>Bias toward building</li>
+              <li>Teaching through clarity</li>
+              <li>Iterate fast, document well</li>
+            </ul>
+            <a class="btn btn-tertiary" href="./about.html">Read more</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- BUILD LOG -->
+      <section class="section">
+        <div class="container section-head" data-reveal>
+          <h2>Build Log</h2>
+          <p>Short notes from the process—small lessons, big compounding.</p>
+        </div>
+
+        <div class="container grid cols-3">
+          <article class="card log-card" data-reveal>
+            <p class="log-date">Entry 01</p>
+            <h3>Design for assembly</h3>
+            <p>
+              I stopped optimizing parts first and started optimizing the *hand-off* between parts.
+              Integration got smoother overnight.
+            </p>
+          </article>
+
+          <article class="card log-card" data-reveal>
+            <p class="log-date">Entry 02</p>
+            <h3>Make signals visible</h3>
+            <p>
+              Debugging improved when I added lightweight telemetry—simple dashboards beat guessing
+              every time.
+            </p>
+          </article>
+
+          <article class="card log-card" data-reveal>
+            <p class="log-date">Entry 03</p>
+            <h3>Document like a teammate</h3>
+            <p>
+              If future-me can’t reproduce it in 10 minutes, it’s not done. Notes aren’t extra—they’re
+              leverage.
+            </p>
+          </article>
+        </div>
+
+        <div class="container section-foot" data-reveal>
+          <a class="btn btn-primary" href="./contact.html">Let’s build something</a>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer" data-reveal>
+      <div class="container footer-grid">
+        <div>
+          <p class="footer-brand">Shivin Anand</p>
+          <p class="footer-muted">Lab Bench / Launchpad</p>
+        </div>
+
+        <div class="footer-links">
+          <a href="./work.html">Work</a>
+          <a href="./about.html">About</a>
+          <a href="./contact.html">Contact</a>
+        </div>
+
+        <div class="footer-links">
+          <a href="https://github.com/shividoge" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/in/shivinranand/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="/assets/Shivin_Anand_Resume.pdf" target="_blank" rel="noopener">Resume</a>
+        </div>
+
+
+      </div>
+
+      <div class="container footer-bottom">
+        <p class="footer-muted">© <span id="year"></span> Shivin Anand. Built with intention.</p>
+      </div>
+    </footer>
+
+    <!-- MODAL (reusable) -->
+    <div class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Details modal">
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-panel" role="document">
+        <button class="modal-close" type="button" aria-label="Close" data-close-modal>✕</button>
+        <div class="modal-content" id="modalContent">
+          <!-- Filled by JS -->
+          <h3>Loading…</h3>
+          <p></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/data.js"></script>
+    <script src="./js/main.js"></script>
+    <script>
+      // tiny footer year fallback (ok even before main.js exists)
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
 </html>
