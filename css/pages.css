@@ -1,0 +1,58 @@
+/* =========================================================
+   PAGES.CSS — Page-level refinements (Home)
+   Keep this file SMALL.
+   Accent: Lilac (#c58fff)
+   ========================================================= */
+
+/* ---------- Hero refinements ---------- */
+.hero-copy {
+  max-width: 560px;
+}
+
+.hero-panel {
+  align-self: start;
+}
+
+.hero-panel .panel-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Balance hero text on wide screens */
+@media (min-width: 1100px) {
+  .hero-grid {
+    align-items: center;
+  }
+}
+
+/* ---------- Section rhythm ---------- */
+#lab-bench .feature-card,
+#launchpad .feature-card {
+  min-height: 100%;
+}
+
+#lab-bench {
+  border-top: 1px solid var(--border);
+}
+
+#launchpad {
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Build log tweaks ---------- */
+.log-card h3 {
+  margin-bottom: 4px;
+}
+
+/* ---------- Footer breathing room ---------- */
+.site-footer {
+  margin-top: 80px;
+}
+
+/* ---------- Optional visual accents ---------- */
+.panel-feature h3 {
+  margin-top: 6px;
+}
+
+/* (Hover styling is in components.css to keep pages.css small) */
