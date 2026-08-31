@@ -1,0 +1,13 @@
+{
+  "name": "shivin-anand-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Static personal site. No app bundler — Tailwind is the only build step, compiled once to a static stylesheet.",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/tailwind.css -o ./tailwind.min.css --minify",
+    "watch:css": "tailwindcss -i ./src/tailwind.css -o ./tailwind.min.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.19"
+  }
+}

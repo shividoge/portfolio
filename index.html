@@ -1,0 +1,1738 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shivin Anand — Real-Time Embedded Systems</title>
+<meta name="description" content="Shivin Anand — Computer Engineering at the University of Florida. Real-time embedded hardware: circuits and firmware that stay stable and responsive under load.">
+<meta name="theme-color" content="#F7F5F1">
+<meta property="og:title" content="Shivin Anand — Real-Time Embedded Systems">
+<meta property="og:description" content="Computer Engineering at the University of Florida. I design the path from sensor to decision.">
+<meta property="og:type" content="website">
+
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tailwind.min.css">
+<script>document.documentElement.classList.add('js');</script>
+
+<style>
+  :root{
+    --bg:#F7F5F1; --bg2:#EFEBE4; --ink:#14130F; --ink2:#55524A; --ink3:#66635B;
+    --line:#DDD8CF; --accent:#D5ACFF; --accentd:#6B3FA0;
+    --dk:#0D0D0F; --dk2:#16161A; --dkline:#2A2A31; --dkink:#EDEBE6; --dkink2:#9A968C;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+
+  html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:Archivo,ui-sans-serif,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  }
+
+  ::selection{ background:var(--accent); color:var(--ink); }
+
+  /* --- scrollbar ---
+     Track stays transparent so it reads correctly over both the cream page
+     and the dark chip section; the thumb reuses --dkink2, already tuned as a
+     mid-tone that holds up against near-black as well as near-white. */
+  html{ scrollbar-width:thin; scrollbar-color:var(--dkink2) transparent; }
+  ::-webkit-scrollbar{ width:10px; height:10px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+  ::-webkit-scrollbar-thumb{
+    background-color:var(--dkink2); border-radius:999px;
+    border:2px solid transparent; background-clip:padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover{ background-color:var(--ink3); }
+
+  /* --- focus --- */
+  a,button,[tabindex]{ outline:none; }
+
+  /* --- type --- */
+  .display{ font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; font-weight:600; letter-spacing:-.03em; line-height:.96; }
+  .lbl{ font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem; letter-spacing:.14em; text-transform:uppercase; }
+  .num{ font-family:"JetBrains Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; }
+  .prose-measure{ max-width:62ch; }
+
+  /* --- reveal (JS-gated so no-JS still shows everything) ---
+     Only "up" is an opacity-driven reveal, so only it starts hidden that way
+     (and only it is ever animated back to opacity:1, by ScrollTrigger.batch
+     below). "line" and "mask" already read as hidden purely through geometry
+     — zero-width scaleX, and the mask span pushed below its overflow:hidden
+     clip box — so layering opacity:0 on top of those left them with no code
+     path that ever set it back once they scrolled past the one-shot safety
+     net's initial-viewport check. */
+  .js [data-rv="up"]{ opacity:0; transform:translate3d(0,14px,0); }
+  .js [data-rv="line"]{ transform:scaleX(0); transform-origin:left; }
+
+  /* --- rules --- */
+  /* deep links / nav jumps must clear the fixed header */
+  section[id]{ scroll-margin-top:84px; }
+
+  .hr{ height:1px; background:var(--line); border:0; }
+  .hr-dk{ height:1px; background:var(--dkline); border:0; }
+
+  /* --- accent underline link --- */
+  .ulink{ position:relative; display:inline-block; }
+  .ulink::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
+    background:var(--accent); transform:scaleX(0); transform-origin:right;
+    transition:transform .32s var(--ease);
+  }
+  .ulink:hover::after,.ulink:focus-visible::after{ transform:scaleX(1); transform-origin:left; }
+
+  /* --- buttons --- */
+  .btn{
+    display:inline-flex; align-items:center; gap:.6rem; min-height:48px;
+    padding:0 1.35rem; border-radius:999px; cursor:pointer;
+    font-size:.9375rem; font-weight:500; letter-spacing:-.01em;
+    transition:background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
+  }
+  .btn:active{ transform:translateY(1px); }
+  .btn-solid{ background:var(--ink); color:var(--bg); border:1px solid var(--ink); }
+  .btn-solid:hover{ background:var(--accent); color:var(--ink); border-color:var(--accent); }
+  .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .btn-ghost:hover{ border-color:var(--ink); background:#fff; }
+  .btn-dk{ background:var(--accent); color:var(--dk); border:1px solid var(--accent); }
+  .btn-dk:hover{ background:transparent; color:var(--accent); }
+
+  /* --- nav --- */
+  #nav{ transition:background .35s var(--ease), border-color .35s var(--ease), backdrop-filter .35s var(--ease); }
+  #nav.stuck{ background:rgba(247,245,241,.82); backdrop-filter:blur(14px) saturate(1.4); border-bottom-color:var(--line); }
+  #nav.over-dark{ background:rgba(13,13,15,.72); border-bottom-color:var(--dkline); }
+  #nav.over-dark .nav-ink{ color:var(--dkink); }
+  #nav.over-dark .nav-mut{ color:var(--dkink2); }
+  #nav.over-dark .btn-solid{ background:var(--accent); color:var(--dk); border-color:var(--accent); }
+  .navlink{ position:relative; padding:.45rem .1rem; }
+  .navlink::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:1.5px; background:var(--accent);
+    transform:scaleX(0); transform-origin:right; transition:transform .3s var(--ease);
+  }
+  .navlink:hover::after,.navlink[aria-current="true"]::after{ transform:scaleX(1); transform-origin:left; }
+  .navlink[aria-current="true"]{ color:var(--ink); }
+
+  /* --- hairline grid backdrop --- */
+  .gridbg{
+    background-image:linear-gradient(to right, rgba(20,19,15,.055) 1px, transparent 1px);
+    background-size:calc(100% / 6) 100%;
+  }
+
+  /* --- work rows --- */
+  .work-row{ transition:background .4s var(--ease); }
+  .work-row:hover{ background:#fff; }
+  .work-idx{ transition:color .4s var(--ease); }
+  .work-row:hover .work-idx{ color:var(--accentd); }
+
+  /* --- tag --- */
+  .tag{
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem; letter-spacing:.06em;
+    padding:.3rem .6rem; border:1px solid var(--line); border-radius:4px; color:var(--ink2); white-space:nowrap;
+  }
+  .tag-dk{ border-color:var(--dkline); color:var(--dkink2); }
+
+  /* --- chip --- */
+  .chip-wrap{ background:var(--dk); border-radius:20px; position:relative; overflow:hidden; }
+  .chip-wrap::before{
+    content:""; position:absolute; inset:0; pointer-events:none; border-radius:20px;
+    border:1px solid var(--dkline);
+  }
+  #chipSvg{ display:block; width:100%; height:auto; }
+  #chipSvg .die-edge{ fill:none; stroke:var(--dkline); stroke-width:1.25; }
+  #chipSvg .substrate{ fill:none; stroke:#1E1E24; stroke-width:1; stroke-dasharray:3 5; }
+  #chipSvg .pad{ fill:#1C1C22; }
+  #chipSvg .sram-cell{ fill:#141419; stroke:#232329; stroke-width:.6; }
+  #chipSvg .trace{ fill:none; stroke:#2E2E36; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
+  #chipSvg .pulse{ fill:none; stroke:var(--accent); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; filter:url(#glow); }
+  #chipSvg .blk-body{ fill:#131318; stroke:#2C2C34; stroke-width:1.15; transition:fill .3s var(--ease), stroke .3s var(--ease); }
+  #chipSvg .blk-num{ fill:var(--dkink2); font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.08em; transition:fill .3s var(--ease); }
+  #chipSvg .blk-name{ fill:var(--dkink); font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:14px; letter-spacing:-.01em; transition:fill .3s var(--ease); }
+  #chipSvg .blk-sub{ fill:#85838F; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.06em; }
+  #chipSvg .static-name{ fill:#85838F; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.1em; }
+  #chipSvg .blk{ cursor:pointer; }
+  #chipSvg .blk:hover .blk-body,#chipSvg .blk.active .blk-body{ fill:#1D1826; stroke:var(--accent); }
+  #chipSvg .blk:hover .blk-name,#chipSvg .blk.active .blk-name{ fill:var(--accent); }
+  #chipSvg .blk.active .blk-num{ fill:var(--accent); }
+  #chipSvg .blk-glow{ fill:var(--accent); opacity:0; transition:opacity .3s var(--ease); }
+  #chipSvg .blk.active .blk-glow{ opacity:.07; }
+  #chipSvg .flash{ fill:var(--accent); opacity:0; }
+
+  .rail-val{ font-family:"Space Grotesk",sans-serif; font-weight:600; letter-spacing:-.02em; }
+
+  /* --- mobile chip selector --- */
+  .chipsel{
+    flex:0 0 auto; min-height:44px; padding:.55rem .85rem; border-radius:8px;
+    border:1px solid var(--dkline); background:transparent; color:var(--dkink2);
+    font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.08em; cursor:pointer;
+    transition:border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease);
+  }
+  .chipsel:hover{ border-color:#4A4A55; color:var(--dkink); }
+  .chipsel[aria-pressed="true"]{ border-color:var(--accent); color:var(--accent); background:rgba(213,172,255,.07); }
+
+  /* fade at the right edge while the wide diagram can still be scrolled */
+  .scroller{ position:relative; }
+  .scroller-shell{ position:relative; }
+  .scroller-shell::after{
+    content:""; position:absolute; top:0; bottom:0; right:0; width:56px; pointer-events:none;
+    background:linear-gradient(to right, rgba(13,13,15,0), var(--dk));
+    opacity:0; transition:opacity .3s var(--ease);
+  }
+  .scroller-shell[data-more="1"]::after{ opacity:1; }
+  @media (min-width:1280px){ .scroller-shell::after{ display:none; } }
+
+  .noscroll{ scrollbar-width:none; }
+  .noscroll::-webkit-scrollbar{ display:none; }
+
+
+  /* ===================== SCROLL-TELLING INTRO ===================== */
+  :root{ --seq-bg:#F8F8F8; }
+
+  #intro{ position:relative; background:var(--seq-bg); }
+  #introPin{
+    position:sticky; top:0; height:100svh; overflow:hidden;
+    background:var(--seq-bg); display:block;
+  }
+  #seqCanvas{
+    display:block; width:100%;
+    background:var(--seq-bg);
+  }
+  /* A 16:9 sequence inside a portrait viewport would be cropped to a narrow
+     slice by cover. On phones the canvas gets its own band and the copy sits
+     under it; the frame's near-white ground matches the page, so the product
+     still reads as floating with no visible edge. */
+  #seqCanvas{
+    height:62svh; margin-top:4svh;
+    -webkit-mask-image:linear-gradient(to bottom, #000 78%, transparent 100%);
+            mask-image:linear-gradient(to bottom, #000 78%, transparent 100%);
+  }
+  @media (max-width:767px){ #seqCanvas{ height:56svh; margin-top:5svh; } }
+
+  /* No scrim. The copy sits under the image on clean ground instead of over it,
+     so the render is never veiled. Measured behind the old copy box, the macro
+     beats ran mean luminance 0.09-0.17 but spiked to 0.82 on the gold pins and
+     keycaps — neither dark nor light text clears AA over that, which is the only
+     reason an overlay existed. */
+  .seq-copy{
+    position:absolute; left:0; right:0; bottom:0;
+    height:34svh; display:flex; align-items:center;
+    padding:0 1.25rem 1.5rem;
+  }
+  @media (min-width:640px){ .seq-copy{ padding:0 2rem 2rem; } }
+  @media (min-width:1024px){ .seq-copy{ height:28svh; padding:0 3rem 2.25rem; } }
+
+  .beat{
+    position:absolute; left:1.25rem; right:1.25rem; top:50%;
+    opacity:0; transform:translate3d(0,calc(-50% + 14px),0); will-change:opacity,transform;
+  }
+  @media (min-width:640px){ .beat{ left:2rem; right:2rem; } }
+  @media (min-width:1024px){
+    .beat{
+      /* stop short of the skip control in the bottom-right corner */
+      left:3rem; right:11rem;
+      display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+      column-gap:3.5rem; align-items:end;
+    }
+    .beat-label{ grid-column:1; grid-row:1; }
+    .beat-head { grid-column:1; grid-row:2; margin-bottom:0; }
+    .beat-sub  { grid-column:2; grid-row:1 / span 2; align-self:end; padding-bottom:.35rem; }
+  }
+
+  .beat-label{
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--accentd);
+    display:flex; align-items:center; gap:.6rem; margin-bottom:.7rem;
+  }
+  .beat-label::after{ content:""; flex:1; max-width:70px; height:1px; background:var(--accent); }
+  .beat-head{
+    font-family:"Space Grotesk",ui-sans-serif,sans-serif; font-weight:600;
+    letter-spacing:-.03em; line-height:1.04; color:var(--ink);
+    font-size:clamp(1.5rem,3.4vw,2.6rem); margin-bottom:.7rem;
+  }
+  .beat-sub{
+    font-size:clamp(.875rem,1.15vw,1rem); line-height:1.6; color:var(--ink2);
+    max-width:54ch;
+  }
+
+  /* progress rail */
+  .seq-rail{
+    position:absolute; right:1.25rem; top:50%; transform:translateY(-50%);
+    width:2px; height:110px; background:rgba(20,19,15,.12); border-radius:2px; overflow:hidden;
+  }
+  @media (min-width:1024px){ .seq-rail{ right:2rem; height:150px; } }
+  .seq-rail span{
+    position:absolute; inset:0 0 auto 0; height:100%; background:var(--accentd);
+    border-radius:2px; transform-origin:top; transform:scaleY(0);
+  }
+
+  /* loader */
+  #seqLoader{
+    position:absolute; inset:0; display:grid; place-content:center; gap:1rem;
+    justify-items:center; background:var(--seq-bg); z-index:5;
+    transition:opacity .6s var(--ease), visibility .6s var(--ease);
+  }
+  #seqLoader[hidden]{ opacity:0; visibility:hidden; display:grid; }
+  .loader-bar{ width:132px; height:2px; background:rgba(20,19,15,.12); border-radius:2px; overflow:hidden; }
+  .loader-bar span{ display:block; height:100%; width:100%; transform:scaleX(0); transform-origin:left; background:var(--ink); transition:transform .25s linear; }
+
+  /* scroll cue + skip */
+  .seq-cue{
+    position:absolute; left:50%; bottom:calc(34svh + .5rem); transform:translateX(-50%);
+    display:flex; align-items:center; gap:.55rem; color:var(--ink3);
+    transition:opacity .4s var(--ease);
+  }
+  .seq-skip{
+    position:absolute; right:1.25rem; top:calc(68px + .25rem); z-index:6;
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--ink3);
+    min-height:44px; display:inline-flex; align-items:center; gap:.5rem; padding:0 .25rem;
+    transition:color .25s var(--ease);
+  }
+  .seq-skip:hover{ color:var(--ink); }
+  @media (min-width:768px){ .seq-skip{ top:auto; bottom:1.5rem; } }
+  @media (min-width:1024px){
+    .seq-skip{ right:2rem; }
+    .seq-copy{ height:30svh; }
+    .seq-cue{ bottom:calc(30svh + .5rem); }
+  }
+
+  /* reduced motion: no pin, no sequence — one still frame and the copy as normal text */
+  @media (prefers-reduced-motion: reduce){
+    #intro{ height:auto !important; }
+    #introPin{ position:relative; height:auto; }
+    #seqCanvas{ height:auto; aspect-ratio:16/9; }
+    .seq-rail,.seq-cue{ display:none; }
+    .seq-copy{ position:static; padding:2.5rem 1.25rem 3rem; }
+    .beat{
+      position:static; opacity:1 !important; transform:none !important;
+      display:block; max-width:60ch; margin:0 0 2.5rem; left:auto; right:auto; top:auto;
+    }
+    .seq-copy{ height:auto; display:block; }
+  }
+
+
+  /* ===================== HANDCRAFTED DETAIL ===================== */
+
+  /* --- A. masked line reveal ---
+     Headings rise out of a clip box line by line rather than fading as a block.
+     The padding/negative-margin pair gives descenders room to live inside the
+     overflow box without changing where the line actually sits. */
+  [data-rv="mask"] .ln{
+    display:block; overflow:hidden;
+    padding-bottom:.14em; margin-bottom:-.14em;
+  }
+  .js [data-rv="mask"] .ln > span{
+    display:block; transform:translate3d(0,130%,0);
+    transition:transform .95s cubic-bezier(.16,1,.3,1);
+  }
+  .js [data-rv="mask"] .ln:nth-child(2) > span{ transition-delay:.075s; }
+  /* 130%, not 100%: the clip box is taller than the line (descender padding
+     above), so a smaller offset leaves a sliver of letter-tops showing.
+     Revealed via this CSS transition, not a GSAP yPercent tween: GSAP caches
+     a CSS-authored percentage transform as a fixed px offset the first time
+     it reads the element, so a later yPercent tween animates its own
+     separately-tracked (defaulted-to-0) yPercent component and never
+     touches that cached offset — the line silently never moves. Toggling
+     .is-revealed and letting the browser interpolate the actual computed
+     value sidesteps that entirely. */
+  [data-rv="mask"].is-revealed .ln > span{ transform:translate3d(0,0,0); }
+
+  /* --- B. cursor-tracked work rows --- */
+  .work-row{ position:relative; transition:background .45s var(--ease); }
+  .work-row:hover{ background:rgba(255,255,255,.55); }
+  .work-mark{
+    position:absolute; left:0; top:0; width:2px; height:44px; border-radius:2px;
+    background:var(--accent); opacity:0; pointer-events:none;
+    transition:opacity .32s var(--ease), transform .5s var(--ease);
+  }
+  .work-idx{ display:inline-block; transition:color .4s var(--ease), transform .45s var(--ease); }
+  .work-row:hover .work-idx{ color:var(--accentd); transform:translateX(5px); }
+  .work-title{
+    position:relative; display:inline;
+    background-image:linear-gradient(var(--accent),var(--accent));
+    background-repeat:no-repeat; background-position:0 100%; background-size:0% 2px;
+    /* clone so a wrapped title draws a correctly-sized rule under each line
+       rather than one rule stretched across the whole box */
+    -webkit-box-decoration-break:clone; box-decoration-break:clone;
+    transition:background-size .55s var(--ease);
+  }
+  .work-row:hover .work-title{ background-size:100% 2px; }
+  @media (hover:none){
+    .work-row:hover{ background:transparent; }
+    .work-mark{ display:none; }
+  }
+
+  /* --- D. timeline that draws itself --- */
+  .tl-line{
+    position:absolute; left:0; top:6px; bottom:0; width:1px;
+    background:var(--line); transform-origin:top center;
+  }
+  .js .tl-line{ transform:scaleY(0); }
+  .tl-dot{
+    position:absolute; left:-5px; top:6px; width:10px; height:10px; border-radius:999px;
+    box-shadow:0 0 0 4px var(--bg);
+  }
+  .js .tl-dot{ transform:scale(0); }
+
+  /* --- H. focus that matches the hover language ---
+     A drawn lavender ring with a background-coloured gap, so the indicator keeps
+     its own contrast against whatever sits behind it. #6B3FA0 on #F7F5F1 is
+     6.6:1, comfortably past the 3:1 non-text minimum. */
+  a:focus-visible,button:focus-visible,[tabindex]:focus-visible,g.blk:focus-visible{
+    /* transparent rather than none: Windows High Contrast / forced-colors strips
+       box-shadow, and outline:none would leave no indicator at all. Forced
+       colors repaints this outline in a system colour instead. */
+    outline:2px solid transparent; outline-offset:2px;
+    box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--accentd);
+    border-radius:4px;
+  }
+  @media (forced-colors: active){
+    a:focus-visible,button:focus-visible,[tabindex]:focus-visible,g.blk:focus-visible{
+      outline-color:Highlight;
+    }
+  }
+  .btn:focus-visible{ border-radius:999px; }
+  .on-dark a:focus-visible,.on-dark button:focus-visible,.on-dark [tabindex]:focus-visible{
+    box-shadow:0 0 0 2px var(--dk), 0 0 0 4px var(--accent);
+  }
+  g.blk:focus-visible .blk-body{ stroke:var(--accent); stroke-width:2; }
+  .ulink:focus-visible::after{ transform:scaleX(1); transform-origin:left; }
+  .work-row:focus-within{ background:rgba(255,255,255,.55); }
+
+
+  /* ===================== 03 · CAPABILITY ORBIT ===================== */
+  .orbit-wrap{
+    position:relative; width:100%; max-width:620px; margin-inline:auto;
+    aspect-ratio:1/1;
+  }
+  .orbit-stage{ position:absolute; inset:0; }
+
+  /* rings read as board traces rather than planetary orbits */
+  .orbit-ring{
+    position:absolute; left:50%; top:50%; translate:-50% -50%;
+    border-radius:999px; border:1px dashed var(--line);
+  }
+  .orbit-ring.r-out{ width:100%; height:100%; }
+  .orbit-ring.r-mid{ width:64%; height:64%; border-style:solid; opacity:.55; }
+  .orbit-ring.r-in { width:30%; height:30%; opacity:.35; }
+
+  .orbit-core{
+    position:absolute; left:50%; top:50%; translate:-50% -50%;
+    width:56px; height:56px; border-radius:12px;
+    background:var(--ink); display:grid; place-items:center;
+    box-shadow:0 0 0 8px var(--bg2), 0 0 0 9px var(--line);
+  }
+  .orbit-core span{
+    position:absolute; inset:-14px; border-radius:18px;
+    border:1px solid var(--accent); opacity:0;
+  }
+  .js .orbit-core span{ animation:coreHalo 3.4s var(--ease) infinite; }
+  @keyframes coreHalo{
+    0%   { opacity:.55; transform:scale(.86); }
+    70%  { opacity:0;   transform:scale(1.25); }
+    100% { opacity:0;   transform:scale(1.25); }
+  }
+
+  /* connection traces drawn between a pinned node and what it feeds */
+  .orbit-links{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
+  .orbit-links line{
+    /* the deep accent, not the light one: #D5ACFF over this warm ground is only
+       1.59:1, too faint for a mark that carries meaning. #6B3FA0 gives 6.6:1. */
+    stroke:var(--accentd); stroke-width:1.25; stroke-linecap:round;
+    stroke-dasharray:4 5; opacity:0; transition:opacity .35s var(--ease);
+  }
+  .orbit-links line.on{ opacity:.9; }
+
+  .orbit-node{
+    position:absolute; left:50%; top:50%; width:0; height:0;
+    display:block; background:none; border:0; padding:0; cursor:pointer;
+  }
+  .orbit-pad{
+    position:absolute; left:50%; top:50%; translate:-50% -50%;
+    width:44px; height:44px; border-radius:11px;
+    background:#fff; border:1px solid var(--line);
+    display:grid; place-items:center; color:var(--ink2);
+    transition:background .3s var(--ease), border-color .3s var(--ease),
+               color .3s var(--ease), scale .35s var(--ease), box-shadow .3s var(--ease);
+  }
+  .orbit-node[data-status="building"] .orbit-pad{ border-style:dashed; border-color:var(--accentd); color:var(--accentd); }
+  .orbit-node:hover .orbit-pad{ border-color:var(--ink); color:var(--ink); scale:1.09; }
+  .orbit-node.is-linked .orbit-pad{ border-color:var(--accentd); color:var(--accentd); background:#FBF7FF; }
+  .orbit-node.is-pinned .orbit-pad{
+    background:var(--ink); border-color:var(--ink); color:var(--bg);
+    scale:1.18; box-shadow:0 0 0 5px rgba(213,172,255,.34);
+  }
+  .orbit-pad svg{ width:19px; height:19px; }
+
+  .orbit-label{
+    position:absolute; left:50%; top:34px; translate:-50% 0; white-space:nowrap;
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.625rem;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--ink3);
+    transition:color .3s var(--ease), opacity .3s var(--ease);
+  }
+  .orbit-node.is-pinned .orbit-label{ color:var(--ink); }
+  .orbit-node[data-status="building"] .orbit-label{ color:var(--accentd); }
+  @media (max-width:900px){
+    .orbit-label{ opacity:0; }
+    .orbit-node.is-pinned .orbit-label,.orbit-node:hover .orbit-label{ opacity:1; }
+  }
+
+  /* readout panel — deliberately the same shape as the chip section's rail */
+  .cap-panel{ border-top:1px solid var(--line); padding-top:1.5rem; }
+  .cap-meter{ height:2px; background:var(--line); border-radius:2px; overflow:hidden; }
+  .cap-meter i{
+    display:block; height:100%; width:100%; background:var(--accentd);
+    transform:scaleX(0); transform-origin:left;
+    transition:transform .55s var(--ease);
+  }
+  .cap-chip{
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.625rem; letter-spacing:.08em;
+    text-transform:uppercase; padding:.34rem .55rem; border:1px solid var(--line);
+    border-radius:4px; color:var(--ink2); background:transparent; cursor:pointer; min-height:44px;
+    transition:border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease);
+  }
+  .cap-chip:hover{ border-color:var(--accentd); color:var(--accentd); background:#FBF7FF; }
+  .cap-status{
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.625rem; letter-spacing:.13em;
+    text-transform:uppercase; padding:.28rem .5rem; border-radius:4px;
+  }
+  .cap-status[data-s="shipped"]{ background:var(--ink); color:var(--bg); }
+  .cap-status[data-s="building"]{ background:transparent; color:var(--accentd); border:1px solid var(--accentd); }
+
+  .orbit-hint{
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.625rem;
+    letter-spacing:.13em; text-transform:uppercase; color:var(--ink3);
+    display:inline-flex; align-items:center; gap:.5rem; min-height:44px;
+    background:none; border:0; cursor:pointer; padding:0;
+    transition:color .25s var(--ease);
+  }
+  .orbit-hint:hover{ color:var(--ink); }
+
+  @media (prefers-reduced-motion: reduce){
+    .js .orbit-core span{ animation:none; opacity:.4; }
+  }
+
+  /* --- skip link --- */
+  .skip{ position:absolute; left:-9999px; top:0; z-index:200; }
+  .skip:focus{ left:1rem; top:1rem; padding:.75rem 1.1rem; background:var(--ink); color:var(--bg); border-radius:6px; }
+</style>
+</head>
+
+<body class="antialiased">
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- ======================= NAV ======================= -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 border-b border-transparent">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+    <div class="flex items-center justify-between h-[68px]">
+
+      <a href="#top" class="nav-ink flex items-baseline gap-2.5 py-3 -my-3 group" aria-label="Shivin Anand, back to start">
+        <span class="display text-[17px] tracking-[-.02em]">Shivin&nbsp;Anand</span>
+        <span class="lbl nav-mut text-ink3 hidden sm:inline">CE&nbsp;·&nbsp;UF</span>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
+        <a href="#architecture" class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Architecture</a>
+        <a href="#work"         class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Work</a>
+        <a href="#capabilities" class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Capabilities</a>
+        <a href="#record"       class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Record</a>
+        <a href="#contact"      class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-2.5">
+        <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn btn-solid !min-h-[42px] !px-4 text-[13px]">
+          Résumé
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </a>
+        <button id="menuBtn" class="lg:hidden nav-ink grid place-items-center w-11 h-11 -mr-1.5 rounded-lg border border-line" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="lg:hidden hidden border-t border-line bg-bg/95 backdrop-blur-lg">
+    <nav class="mx-auto max-w-[1400px] px-5 sm:px-8 py-3 flex flex-col" aria-label="Mobile">
+      <a href="#architecture" class="lbl text-ink2 py-3.5 border-b border-line/70">01 &nbsp;Architecture</a>
+      <a href="#work"         class="lbl text-ink2 py-3.5 border-b border-line/70">02 &nbsp;Work</a>
+      <a href="#capabilities" class="lbl text-ink2 py-3.5 border-b border-line/70">03 &nbsp;Capabilities</a>
+      <a href="#record"       class="lbl text-ink2 py-3.5 border-b border-line/70">04 &nbsp;Record</a>
+      <a href="#contact"      class="lbl text-ink2 py-3.5">05 &nbsp;Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ======================= SCROLL-TELLING INTRO ======================= -->
+<section id="intro" aria-label="Introduction: the board">
+  <div id="introPin">
+    <canvas id="seqCanvas" role="img"
+      aria-label="A 144-pin QFP chip rendered as a handheld console, rotating and zooming to reveal a camera lens, a screen, a D-pad and a row of keycaps — each standing for one of Shivin Anand's projects."></canvas>
+
+    <div class="seq-rail" aria-hidden="true"><span id="seqRailFill"></span></div>
+
+    <div class="seq-copy">
+      <div class="beat" data-beat="0" data-in=".015" data-out=".145">
+        <p class="beat-label">00 &nbsp;/&nbsp; The board</p>
+        <h2 class="beat-head">Everything I've built, on one package.</h2>
+        <p class="beat-sub">A 144-pin QFP that doesn't exist. I modelled and rendered it as a map of the last four years — every feature on it is something I actually shipped.</p>
+      </div>
+
+      <div class="beat" data-beat="1" data-in=".150" data-out=".335">
+        <p class="beat-label">01 &nbsp;/&nbsp; The lens</p>
+        <h2 class="beat-head">The lens is the grow chamber.</h2>
+        <p class="beat-sub">An autonomous hydroponic system built to test spaceflight viability. OpenCV running against a Teensy and BME680 rig — HSV and Excess Green Index segmentation tracking plant health, regressed against live sensor data. It won a NASA Kennedy Space Center award.</p>
+      </div>
+
+      <div class="beat" data-beat="2" data-in=".350" data-out=".500">
+        <p class="beat-label">02 &nbsp;/&nbsp; The display</p>
+        <h2 class="beat-head">The screen is a storefront.</h2>
+        <p class="beat-sub">Roughly a thousand products, each with a QR tag that resolves to its record. An admin surface and a public storefront over a MongoDB schema I designed myself — in production, running a real business.</p>
+      </div>
+
+      <div class="beat" data-beat="3" data-in=".550" data-out=".675">
+        <p class="beat-label">03 &nbsp;/&nbsp; The D-pad</p>
+        <h2 class="beat-head">The D-pad resembles a robot.</h2>
+        <p class="beat-sub">Four years of FRC, FTC, & VEX controllers. Java on the RoboRIO, C++ on VEX — and the harder half, getting a hundred-person team onto real version control and wireless deploys that could be rolled back between matches.</p>
+      </div>
+
+      <div class="beat" data-beat="4" data-in=".725" data-out=".845">
+        <p class="beat-label">04 &nbsp;/&nbsp; The keys</p>
+        <h2 class="beat-head">The keys are what I build with.</h2>
+        <p class="beat-sub">JavaScript, Python, C++, KiCad, Linux — seven caps for the tools I've shipped something in, rather than the ones I've only read about.</p>
+      </div>
+
+      <div class="beat" data-beat="5" data-in=".890" data-out="1.02">
+        <p class="beat-label">05 &nbsp;/&nbsp; The engineer</p>
+        <h2 class="beat-head">Shivin Anand</h2>
+        <p class="beat-sub">Computer Engineering at the University of Florida. That board was the practice run — keep scrolling for the one I'm actually trying to build.</p>
+      </div>
+    </div>
+
+    <div class="seq-cue lbl" id="seqCue" aria-hidden="true">
+      <span>Scroll</span>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+    </div>
+
+    <a href="#top" class="seq-skip" id="seqSkip">
+      Skip intro
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+    </a>
+
+    <div id="seqLoader">
+      <p class="lbl text-ink3">Loading board</p>
+      <div class="loader-bar"><span id="seqLoadBar"></span></div>
+      <p class="lbl text-ink3 num" id="seqLoadPct">0%</p>
+    </div>
+  </div>
+</section>
+
+<script>
+/* Independent of sequence.js: if that file 404s, throws, or the frames never
+   finish loading, this still fires and frees the page instead of leaving a
+   visitor staring at a stuck "Loading board" screen forever. */
+(function () {
+  setTimeout(function () {
+    var loader = document.getElementById('seqLoader');
+    if (loader && !loader.hidden) {
+      loader.hidden = true;
+      var intro = document.getElementById('intro');
+      if (intro) intro.style.height = '100svh';
+    }
+  }, 8000);
+})();
+</script>
+
+<!-- ======================= HERO ======================= -->
+<section id="top" class="relative min-h-[100svh] flex flex-col justify-center pt-28 pb-12">
+  <div class="absolute inset-0 gridbg pointer-events-none hidden md:block" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-[1400px] w-full px-5 sm:px-8 lg:px-12">
+
+    <div class="flex items-start gap-3 mb-8 sm:mb-12" data-rv="up">
+      <span class="w-1.5 h-1.5 mt-[.5em] shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
+      <p class="lbl text-ink3">Computer Engineering &nbsp;/&nbsp; University of Florida &nbsp;/&nbsp; B.S. 2030</p>
+    </div>
+
+    <h1 class="display text-ink text-[clamp(2.2rem,6.2vw,5.5rem)] mb-8 sm:mb-10">
+      <span class="block" data-rv="up">I design the path</span>
+      <span class="block" data-rv="up">from sensor
+        <span class="relative inline-block">
+          <span class="relative z-10">to&nbsp;decision.</span>
+          <span id="heroSwipe" class="absolute left-0 right-0 bottom-[.04em] h-[.11em] bg-accent origin-left z-0" aria-hidden="true"></span>
+        </span>
+      </span>
+    </h1>
+
+    <div class="grid lg:grid-cols-12 gap-x-10 gap-y-9 items-end">
+
+      <div class="lg:col-span-6 xl:col-span-5">
+        <p class="prose-measure text-[1.0625rem] sm:text-[1.1875rem] leading-[1.62] text-ink2" data-rv="up">
+          Real-time embedded hardware — circuits and firmware that stay stable and responsive
+          under load, whether that's a car at 200&nbsp;mph or a grow chamber with failing sensors.
+          Control systems engineering at the hardware level, where <span class="text-ink font-medium">reliability
+          under pressure</span> matters as much as raw speed.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-2.5 mt-8" data-rv="up">
+          <a href="mailto:shivin.r.anand@gmail.com" class="btn btn-solid">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Get in touch
+          </a>
+          <a href="https://github.com/shividoge" target="_blank" rel="noopener" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.26 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+            GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener" class="btn btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-6 xl:col-start-8 xl:col-span-5">
+        <div class="hr mb-5" data-rv="line"></div>
+        <dl class="grid grid-cols-2 gap-x-6 gap-y-5">
+          <div data-rv="up">
+            <dt class="lbl text-ink3 mb-1.5">Focus</dt>
+            <dd class="text-[.9375rem] leading-snug text-ink font-medium">Real-time embedded systems</dd>
+          </div>
+          <div data-rv="up">
+            <dt class="lbl text-ink3 mb-1.5">Based</dt>
+            <dd class="text-[.9375rem] leading-snug text-ink font-medium">Gainesville, FL<span class="text-ink3 font-normal"> — from Tampa</span></dd>
+          </div>
+          <div data-rv="up">
+            <dt class="lbl text-ink3 mb-1.5">Graduating</dt>
+            <dd class="text-[.9375rem] leading-snug text-ink font-medium num">May 2030</dd>
+          </div>
+          <div data-rv="up">
+            <dt class="lbl text-ink3 mb-1.5">Seeking</dt>
+            <dd class="text-[.9375rem] leading-snug text-ink font-medium">Summer 2027 internship &amp; research</dd>
+          </div>
+        </dl>
+        <div class="hr mt-5" data-rv="line"></div>
+      </div>
+    </div>
+
+    <div class="mt-12 sm:mt-16 flex items-center gap-3 text-ink3" data-rv="up">
+      <span class="lbl">Scroll</span>
+      <span id="scrollTick" class="block w-10 h-px bg-line relative overflow-hidden" aria-hidden="true">
+        <span class="absolute inset-y-0 left-0 w-3 bg-accentd"></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ARCHITECTURE / CHIP ======================= -->
+<section id="architecture" class="relative px-3 sm:px-5 lg:px-8 pb-20 sm:pb-28 pt-4">
+  <div class="mx-auto max-w-[1600px]">
+    <div class="chip-wrap on-dark px-5 sm:px-8 lg:px-12 py-12 sm:py-16" data-dark-zone>
+
+      <!-- header -->
+      <div class="flex flex-wrap items-start justify-between gap-6 mb-10 sm:mb-14">
+        <div>
+          <div class="flex items-center gap-3 mb-4" data-rv="up">
+            <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+            <p class="lbl text-dkink2">01 &nbsp;/&nbsp; Target architecture</p>
+          </div>
+          <h2 class="display text-dkink text-[clamp(2rem,5.6vw,4.25rem)] max-w-[16ch]" data-rv="mask"><span class="ln"><span>The chip I'm</span></span><span class="ln"><span>building toward.</span></span></h2>
+        </div>
+        <p class="text-dkink2 text-[.9375rem] leading-[1.66] max-w-[38ch] sm:pt-2" data-rv="up">
+          A real-time control SoC — the sensor-to-decision pipeline on one die.
+          Not a fabricated part. It's the reference I use to decide what to learn next,
+          and every block maps to a gap I'm closing.
+        </p>
+      </div>
+
+      <div class="hr-dk mb-8 sm:mb-12" data-rv="line"></div>
+
+      <div class="grid xl:grid-cols-12 gap-x-10 gap-y-10">
+
+        <!-- ---------- DIE ---------- -->
+        <div class="xl:col-span-8 2xl:col-span-9 min-w-0">
+          <div class="scroller-shell" id="chipShell">
+          <div class="scroller overflow-x-auto noscroll -mx-2 px-2" id="chipScroller">
+            <svg id="chipSvg" viewBox="0 0 1040 660" role="img"
+                 aria-labelledby="chipTitle chipDesc" class="min-w-[840px] xl:min-w-0">
+              <title id="chipTitle">Block diagram of a real-time control system-on-chip</title>
+              <desc id="chipDesc">Six functional blocks connected in a signal pipeline: sensor front-end, ADC array, real-time core, control-loop DSP, safety island, and CAN-FD / I²C physical layer. Supporting SRAM, PLL clock tree, and power management blocks sit alongside. Each block is selectable for details.</desc>
+
+              <defs>
+                <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+                  <feGaussianBlur stdDeviation="3.4" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <pattern id="dieTex" width="14" height="14" patternUnits="userSpaceOnUse">
+                  <circle cx="1" cy="1" r=".55" fill="#1E1E25"/>
+                </pattern>
+              </defs>
+
+              <!-- package substrate -->
+              <rect class="substrate" x="16" y="16" width="1008" height="628" rx="16"/>
+              <g id="pads" aria-hidden="true"></g>
+
+              <!-- die -->
+              <rect x="90" y="90" width="860" height="480" rx="5" fill="url(#dieTex)"/>
+              <rect class="die-edge" id="dieEdge" x="90" y="90" width="860" height="480" rx="5" pathLength="1"/>
+              <rect class="die-edge" x="102" y="102" width="836" height="456" rx="3" opacity=".45" pathLength="1"/>
+
+              <!-- corner registration marks -->
+              <g stroke="#3A3A44" stroke-width="1.2" fill="none" aria-hidden="true">
+                <path d="M64 90h-16M90 64v-16"/><path d="M976 90h16M950 64v-16"/>
+                <path d="M64 570h-16M90 596v16"/><path d="M976 570h16M950 596v16"/>
+              </g>
+
+              <!-- secondary routing -->
+              <g id="traces" aria-hidden="true">
+                <path class="trace" d="M460 310 V 336 H 254 V 360"     pathLength="1"/>
+                <path class="trace" d="M874 360 V 344 H 600 V 310"     pathLength="1"/>
+                <path class="trace" d="M822 285 H 638"                  pathLength="1"/>
+                <path class="trace" d="M700 360 V 328 H 470 V 310"      pathLength="1" stroke-dasharray="3 4"/>
+                <path class="trace" d="M170 140 V 118 H 620 V 140"      pathLength="1" opacity=".6"/>
+                <path class="trace" d="M950 490 H 900 V 542 H 200"      pathLength="1" opacity=".6"/>
+              </g>
+              <g fill="#3A3A44" aria-hidden="true">
+                <circle cx="460" cy="336" r="2"/><circle cx="254" cy="336" r="2"/>
+                <circle cx="874" cy="344" r="2"/><circle cx="600" cy="344" r="2"/>
+                <circle cx="900" cy="542" r="2"/><circle cx="620" cy="118" r="2"/>
+              </g>
+
+              <!-- primary signal bus (static) -->
+              <path id="busStatic" class="trace" stroke="#3E3E4A" stroke-width="1.6"
+                    d="M 90 250 H 528 V 452 H 730 V 250 H 950" pathLength="1"/>
+
+              <!-- static support blocks -->
+              <g aria-hidden="true">
+                <rect x="822" y="140" width="104" height="170" rx="4" fill="#111116" stroke="#242430" stroke-width="1" pathLength="1" class="supp"/>
+                <text class="static-name" x="836" y="164">SRAM</text>
+                <g id="sramCells"></g>
+
+                <rect x="822" y="360" width="104" height="130" rx="4" fill="#111116" stroke="#242430" stroke-width="1" pathLength="1" class="supp"/>
+                <text class="static-name" x="836" y="384">PLL</text>
+                <text class="static-name" x="836" y="400">CLK TREE</text>
+                <g stroke="#242430" stroke-width="1" fill="none">
+                  <path d="M836 424h76M836 440h76M836 456h76M836 472h76"/>
+                </g>
+
+                <rect x="114" y="360" width="280" height="130" rx="4" fill="#111116" stroke="#242430" stroke-width="1" pathLength="1" class="supp"/>
+                <text class="static-name" x="128" y="384">POWER MANAGEMENT</text>
+                <text class="static-name" x="128" y="400">LDO / BUCK ×4</text>
+                <g stroke="#242430" stroke-width="1" fill="none">
+                  <path d="M128 424h60v46h-60zM204 424h60v46h-60zM280 424h60v46h-60zM356 424h24v46h-24z"/>
+                </g>
+              </g>
+
+              <!-- ============ INTERACTIVE BLOCKS ============ -->
+              <g id="blocks">
+
+                <g class="blk" data-blk="1" role="button" tabindex="0" aria-pressed="false" aria-label="Block 01, Sensor front-end. Show details.">
+                  <rect class="blk-glow" x="114" y="140" width="136" height="170" rx="4"/>
+                  <rect class="blk-body" x="114" y="140" width="136" height="170" rx="4" pathLength="1"/>
+                  <rect class="flash"    x="114" y="140" width="136" height="170" rx="4"/>
+                  <text class="blk-num"  x="128" y="166">01</text>
+                  <text class="blk-sub"  x="236" y="166" text-anchor="end">ANALOG</text>
+                  <text class="blk-name" x="128" y="196">SENSOR</text>
+                  <text class="blk-name" x="128" y="215">FRONT-END</text>
+                </g>
+
+                <g class="blk" data-blk="2" role="button" tabindex="0" aria-pressed="false" aria-label="Block 02, ADC array. Show details.">
+                  <rect class="blk-glow" x="274" y="140" width="120" height="170" rx="4"/>
+                  <rect class="blk-body" x="274" y="140" width="120" height="170" rx="4" pathLength="1"/>
+                  <rect class="flash"    x="274" y="140" width="120" height="170" rx="4"/>
+                  <text class="blk-num"  x="288" y="166">02</text>
+                  <text class="blk-sub"  x="380" y="166" text-anchor="end">16-BIT</text>
+                  <text class="blk-name" x="288" y="196">ADC</text>
+                  <text class="blk-name" x="288" y="215">ARRAY</text>
+                </g>
+
+                <g class="blk" data-blk="3" role="button" tabindex="0" aria-pressed="false" aria-label="Block 03, Real-time core. Show details.">
+                  <rect class="blk-glow" x="418" y="140" width="220" height="170" rx="4"/>
+                  <rect class="blk-body" x="418" y="140" width="220" height="170" rx="4" pathLength="1"/>
+                  <rect class="flash"    x="418" y="140" width="220" height="170" rx="4"/>
+                  <text class="blk-num"  x="432" y="166">03</text>
+                  <text class="blk-sub"  x="624" y="166" text-anchor="end">2× LOCKSTEP</text>
+                  <text class="blk-name" x="432" y="200" style="font-size:19px">REAL-TIME</text>
+                  <text class="blk-name" x="432" y="223" style="font-size:19px">CORE</text>
+                  <g stroke="#2C2C34" stroke-width="1" fill="none">
+                    <path d="M432 262h88v34h-88zM540 262h84v34h-84z"/>
+                  </g>
+                </g>
+
+                <g class="blk" data-blk="4" role="button" tabindex="0" aria-pressed="false" aria-label="Block 04, Control-loop DSP. Show details.">
+                  <rect class="blk-glow" x="418" y="360" width="220" height="130" rx="4"/>
+                  <rect class="blk-body" x="418" y="360" width="220" height="130" rx="4" pathLength="1"/>
+                  <rect class="flash"    x="418" y="360" width="220" height="130" rx="4"/>
+                  <text class="blk-num"  x="432" y="386">04</text>
+                  <text class="blk-sub"  x="624" y="386" text-anchor="end">FIXED POINT</text>
+                  <text class="blk-name" x="432" y="416">CONTROL-LOOP</text>
+                  <text class="blk-name" x="432" y="435">DSP</text>
+                </g>
+
+                <g class="blk" data-blk="5" role="button" tabindex="0" aria-pressed="false" aria-label="Block 05, Safety island. Show details.">
+                  <rect class="blk-glow" x="662" y="360" width="136" height="130" rx="4"/>
+                  <rect class="blk-body" x="662" y="360" width="136" height="130" rx="4" pathLength="1"/>
+                  <rect class="flash"    x="662" y="360" width="136" height="130" rx="4"/>
+                  <text class="blk-num"  x="676" y="386">05</text>
+                  <text class="blk-sub"  x="784" y="386" text-anchor="end">ISOLATED</text>
+                  <text class="blk-name" x="676" y="416">SAFETY</text>
+                  <text class="blk-name" x="676" y="435">ISLAND</text>
+                </g>
+
+                <g class="blk" data-blk="6" role="button" tabindex="0" aria-pressed="false" aria-label="Block 06, CAN-FD and I²C physical layer. Show details.">
+                  <rect class="blk-glow" x="662" y="140" width="136" height="170" rx="4"/>
+                  <rect class="blk-body" x="662" y="140" width="136" height="170" rx="4" pathLength="1"/>
+                  <rect class="flash"    x="662" y="140" width="136" height="170" rx="4"/>
+                  <text class="blk-num"  x="676" y="166">06</text>
+                  <text class="blk-sub"  x="784" y="166" text-anchor="end">BUS OUT</text>
+                  <text class="blk-name" x="676" y="196">CAN-FD</text>
+                  <text class="blk-name" x="676" y="215">I²C PHY</text>
+                </g>
+              </g>
+
+              <!-- travelling signal -->
+              <path id="pulseTrail" class="pulse" opacity=".26" stroke-width="5"
+                    d="M 90 250 H 528 V 452 H 730 V 250 H 950" pathLength="1000"/>
+              <path id="pulseHead" class="pulse"
+                    d="M 90 250 H 528 V 452 H 730 V 250 H 950" pathLength="1000"/>
+
+              <text class="static-name" x="90" y="238">SENSOR BUS IN</text>
+              <text class="static-name" x="950" y="238" text-anchor="end">ACTUATOR OUT</text>
+            </svg>
+          </div>
+          </div>
+
+          <!-- mobile hint + selectors -->
+          <p class="lbl text-dkink2 mt-4 xl:hidden">Drag the diagram sideways — or pick a block:</p>
+          <div class="flex gap-2 overflow-x-auto noscroll mt-3 pb-1" id="chipSelectors" role="group" aria-label="Select an architecture block"></div>
+        </div>
+
+        <!-- ---------- READOUT RAIL ---------- -->
+        <aside class="xl:col-span-4 2xl:col-span-3 min-w-0 flex flex-col gap-8" aria-label="Architecture specifications">
+
+          <div>
+            <p class="lbl text-dkink2 mb-4">Loop budget</p>
+            <dl class="grid grid-cols-2 gap-x-5 gap-y-5">
+              <div><dt class="lbl text-dkink2/70 mb-1">Loop rate</dt><dd class="rail-val text-accent text-[1.75rem] num">10<span class="text-[.95rem] text-dkink2 ml-1">kHz</span></dd></div>
+              <div><dt class="lbl text-dkink2/70 mb-1">Latency</dt><dd class="rail-val text-accent text-[1.75rem] num">&lt;100<span class="text-[.95rem] text-dkink2 ml-1">µs</span></dd></div>
+              <div><dt class="lbl text-dkink2/70 mb-1">Process</dt><dd class="rail-val text-dkink text-[1.75rem] num">22<span class="text-[.95rem] text-dkink2 ml-1">nm</span></dd></div>
+              <div><dt class="lbl text-dkink2/70 mb-1">Cores</dt><dd class="rail-val text-dkink text-[1.75rem] num">2<span class="text-[.95rem] text-dkink2 ml-1">+1</span></dd></div>
+            </dl>
+          </div>
+
+          <button id="pulseToggle" type="button" aria-pressed="false"
+                  class="chipsel !w-full !flex !items-center !justify-center !gap-2 !text-center">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            <span id="pulseToggleLabel">Pause signal</span>
+          </button>
+
+          <div class="hr-dk"></div>
+
+          <!-- live block readout -->
+          <div id="chipReadout" aria-live="polite" class="min-h-[248px]">
+            <p class="lbl text-accent mb-3"><span id="roNum">01</span> &nbsp;/&nbsp; <span id="roStage">Stage 1 of 6</span></p>
+            <h3 id="roName" class="display text-dkink text-[1.65rem] mb-3 leading-[1.1]">Sensor front-end</h3>
+            <p id="roDesc" class="text-dkink2 text-[.9375rem] leading-[1.66] mb-6">Analog conditioning and protection for the raw sensor bus. Everything downstream inherits its noise floor.</p>
+            <dl id="roSpecs" class="flex flex-col gap-0 border-t border-dkline"></dl>
+          </div>
+
+          <div class="hr-dk"></div>
+
+          <p class="text-[.8125rem] leading-[1.7] text-dkink2/80">
+            <span class="text-dkink">Why this matters to me.</span> The hydroponics chamber failed the same way
+            twice — a sensor kept reporting, but stopped telling the truth. Block&nbsp;05 is the answer
+            I didn't have then.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= WORK ======================= -->
+<section id="work" class="relative pt-8 sm:pt-16 pb-20 sm:pb-28">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-10 sm:mb-14">
+      <div>
+        <div class="flex items-center gap-3 mb-4" data-rv="up">
+          <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
+          <p class="lbl text-ink3">02 &nbsp;/&nbsp; Selected work</p>
+        </div>
+        <h2 class="display text-ink text-[clamp(2rem,5.6vw,4.25rem)] max-w-[14ch]" data-rv="mask"><span class="ln"><span>Things I've</span></span><span class="ln"><span>actually shipped.</span></span></h2>
+      </div>
+      <p class="lbl text-ink3 num pb-2" data-rv="up">04 projects &nbsp;·&nbsp; 2022 — present</p>
+    </div>
+
+    <div class="hr" data-rv="line"></div>
+
+    <!-- ---- 01 ---- -->
+    <article class="work-row group border-b border-line" data-work>
+      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
+        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">01</span></div>
+        <div class="lg:col-span-4">
+          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">Autonomous Hydroponic Growth&nbsp;Chamber</span></h3>
+          <p class="lbl text-accentd mb-1">NASA Kennedy Space Center Award · SSEF</p>
+          <p class="lbl text-ink3">Independent research</p>
+        </div>
+        <div class="lg:col-span-6 lg:col-start-6">
+          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
+            A closed-loop plant growth system built to test whether a crop cycle could survive
+            conditions relevant to spaceflight.
+          </p>
+          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
+            I designed a custom I²C PCB around a Teensy microcontroller and a BME680 environmental
+            sensor, then paired the telemetry with an OpenCV vision pipeline. Combining HSV and
+            Excess&nbsp;Green&nbsp;Index segmentation gave a continuous read on plant health, and a
+            regression model correlated the sensor and visual streams against real growth outcomes
+            across repeated trials.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag">Embedded C</span><span class="tag">Custom PCB</span><span class="tag">I²C</span>
+            <span class="tag">Teensy</span><span class="tag">BME680</span><span class="tag">Python</span><span class="tag">OpenCV</span>
+          </div>
+        </div>
+        <div class="lg:col-span-1 lg:text-right">
+          <span class="lbl text-ink3">Writeup<br>pending</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---- 02 ---- -->
+    <article class="work-row group border-b border-line" data-work>
+      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
+        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">02</span></div>
+        <div class="lg:col-span-4">
+          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">Middleton Robotics — FRC &amp;&nbsp;VEX</span></h3>
+          <p class="lbl text-accentd mb-1">President · 100+ students mentored</p>
+          <p class="lbl text-ink3">2022 — 2026</p>
+        </div>
+        <div class="lg:col-span-6 lg:col-start-6">
+          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
+            Revived a dormant competitive robotics program and ran both its FRC and VEX teams.
+          </p>
+          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
+            Robot control code in Java on the RoboRIO and C++ on VEX controllers. The harder problem
+            was never the robot — it was getting a hundred-person team onto real version control and a
+            wireless over-the-air deployment workflow, so a change could be pushed and rolled back
+            between matches without bricking a machine on the field.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag">Java</span><span class="tag">RoboRIO</span><span class="tag">C++</span>
+            <span class="tag">VEX</span><span class="tag">Git</span><span class="tag">OTA deployment</span>
+          </div>
+        </div>
+        <div class="lg:col-span-1 lg:text-right">
+          <span class="lbl text-ink3">Leadership</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---- 03 ---- -->
+    <article class="work-row group border-b border-line" data-work>
+      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
+        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">03</span></div>
+        <div class="lg:col-span-4">
+          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">FLSAM Region 4a Infrastructure</span></h3>
+          <p class="lbl text-accentd mb-1">Regional Coordinator &amp; Webmaster</p>
+          <p class="lbl text-ink3">Florida STEM competition region</p>
+        </div>
+        <div class="lg:col-span-6 lg:col-start-6">
+          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
+            Kept a regional STEM organization's site and repositories running through a full handoff.
+          </p>
+          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
+            Administered Linux hosting and GitHub repository access for the region, then executed a
+            complete webmaster and repo-access transition — credentials, permissions, and deployment
+            moved without downtime for the schools and teams depending on it. Unglamorous work, and
+            the closest thing I've had to an on-call rotation.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag">Linux admin</span><span class="tag">GitHub</span><span class="tag">Access control</span><span class="tag">Deployment</span>
+          </div>
+        </div>
+        <div class="lg:col-span-1 lg:text-right">
+          <a href="https://flsam.org" target="_blank" rel="noopener" class="ulink lbl text-ink3 hover:text-ink transition-colors">Live</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ---- 04 ---- -->
+    <article class="work-row group border-b border-line" data-work>
+      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
+        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">04</span></div>
+        <div class="lg:col-span-4">
+          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">Inventory &amp; Storefront Platform</span></h3>
+          <p class="lbl text-accentd mb-1">Built solo · In production</p>
+          <p class="lbl text-ink3">Family business</p>
+        </div>
+        <div class="lg:col-span-6 lg:col-start-6">
+          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
+            A full-stack inventory system and public storefront that a real business runs on.
+          </p>
+          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
+            Roughly 1,000 products, each with a QR-code tag that resolves straight to its record.
+            Two separately authenticated surfaces — an admin view for stock and pricing, and the
+            public storefront — over a MongoDB schema I designed and stood up myself.
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="tag">JavaScript</span><span class="tag">HTML/CSS</span><span class="tag">MongoDB</span>
+            <span class="tag">QR routing</span><span class="tag">Auth</span>
+          </div>
+        </div>
+        <div class="lg:col-span-1 lg:text-right">
+          <span class="lbl text-ink3">Private<br>deployment</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ======================= CAPABILITIES ======================= -->
+<section id="capabilities" class="relative bg-bg2 py-20 sm:py-28">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+
+    <div class="grid lg:grid-cols-12 gap-x-10 gap-y-14 items-start">
+
+      <!-- ---------- readout rail ---------- -->
+      <div class="lg:col-span-4">
+        <div class="flex items-center gap-3 mb-4" data-rv="up">
+          <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
+          <p class="lbl text-ink3">03 &nbsp;/&nbsp; Capabilities</p>
+        </div>
+        <h2 class="display text-ink text-[clamp(2rem,5.2vw,3.75rem)] max-w-[12ch] mb-6" data-rv="mask"><span class="ln"><span>What I can</span></span><span class="ln"><span>do today.</span></span></h2>
+        <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure mb-8" data-rv="up">
+          Ten capabilities, wired to the projects that earned them. Solid pads are things
+          I've shipped with; dashed pads are what year one goes to. Pick one.
+        </p>
+
+        <div class="cap-panel" data-rv="up">
+          <div class="flex items-center justify-between gap-4 mb-4">
+            <p class="lbl text-ink3"><span id="capIndex">01</span> &nbsp;/&nbsp; <span id="capCat">Firmware</span></p>
+            <span class="cap-status" id="capStatus" data-s="shipped">Shipped</span>
+          </div>
+
+          <h3 class="display text-ink text-[1.6rem] leading-[1.1] mb-3" id="capName">Embedded C</h3>
+          <p class="text-[.9375rem] leading-[1.66] text-ink2 mb-6" id="capDesc">
+            Firmware for the hydroponic chamber and the control loop it ran.
+          </p>
+
+          <div class="flex items-baseline justify-between mb-2">
+            <p class="lbl text-ink3">Depth</p>
+            <p class="lbl text-ink num" id="capDepthVal">85</p>
+          </div>
+          <div class="cap-meter mb-6"><i id="capDepth"></i></div>
+
+          <div id="capLinkedWrap">
+            <p class="lbl text-ink3 mb-3">Wired to</p>
+            <div class="flex flex-wrap gap-1.5" id="capLinked"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- orbit ---------- -->
+      <div class="lg:col-span-7 lg:col-start-6" data-rv="up">
+        <div class="orbit-wrap" id="orbitWrap">
+          <div class="orbit-stage" id="orbitStage">
+            <div class="orbit-ring r-out" aria-hidden="true"></div>
+            <div class="orbit-ring r-mid" aria-hidden="true"></div>
+            <div class="orbit-ring r-in"  aria-hidden="true"></div>
+            <svg class="orbit-links" id="orbitLinks" aria-hidden="true"></svg>
+            <div class="orbit-core" aria-hidden="true">
+              <span></span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F7F5F1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 3v4M15 3v4M9 17v4M15 17v4M3 9h4M3 15h4M17 9h4M17 15h4"/></svg>
+            </div>
+            <div id="orbitNodes" role="group" aria-label="Capabilities, arranged in an orbit"></div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-center gap-6 mt-4">
+          <button type="button" class="orbit-hint" id="orbitToggle" aria-pressed="false">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            <span id="orbitToggleLabel">Pause orbit</span>
+          </button>
+          <p class="lbl text-ink3" id="orbitCount">7 shipped &nbsp;·&nbsp; 3 building</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= RECORD ======================= -->
+<section id="record" class="relative py-20 sm:py-28">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+
+    <div class="flex items-center gap-3 mb-4" data-rv="up">
+      <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
+      <p class="lbl text-ink3">04 &nbsp;/&nbsp; Record</p>
+    </div>
+    <h2 class="display text-ink text-[clamp(2rem,5.6vw,4.25rem)] max-w-[16ch] mb-12 sm:mb-16" data-rv="mask"><span class="ln"><span>Where I've been,</span></span><span class="ln"><span>and where I am.</span></span></h2>
+
+    <div class="grid lg:grid-cols-12 gap-x-10 gap-y-14">
+
+      <!-- timeline -->
+      <div class="lg:col-span-7">
+        <ol class="relative"><span class="tl-line" aria-hidden="true"></span>
+          <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
+            <span class="tl-dot bg-accent" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">Fall 2026 — present</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5">B.S. Computer Engineering — University of Florida</h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Herbert Wertheim College of Engineering. Expected May 2030.</p>
+          </li>
+
+          <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
+            <span class="tl-dot bg-ink" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">2026 · Science &amp; Engineering Fair</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5">NASA Kennedy Space Center Award</h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Awarded for the hydroponic growth chamber's spaceflight viability work.</p>
+          </li>
+
+          <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
+            <span class="tl-dot bg-ink" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">University of South Florida</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5">Head Researcher — USF Bio-Organic Electronics Lab</h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Under Dr.&nbsp;Arash Takshi, University of South Florida.</p>
+          </li>
+
+          <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
+            <span class="tl-dot bg-ink" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">2022 — 2026</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5">President — Middleton Robotics</h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Rebuilt the FRC and VEX programs; mentored 100+&nbsp;students.</p>
+          </li>
+
+          <li class="relative pl-8 sm:pl-12" data-rv="up">
+            <span class="tl-dot bg-ink" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">2023-2026</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5">Region 4a Coordinator &amp; Webmaster — FLSAM</h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Regional web and repository infrastructure.</p>
+          </li>
+        </ol>
+      </div>
+
+      <!-- now / coursework -->
+      <div class="lg:col-span-4 lg:col-start-9 flex flex-col gap-10">
+        <div data-rv="up">
+          <div class="flex items-center gap-2.5 mb-4">
+            <span class="relative flex w-2 h-2" aria-hidden="true">
+              <span class="animate-ping absolute inline-flex w-full h-full rounded-full bg-accent opacity-70"></span>
+              <span class="relative inline-flex w-2 h-2 rounded-full bg-accentd"></span>
+            </span>
+            <p class="lbl text-ink3">Right now</p>
+          </div>
+          <div class="hr mb-5"></div>
+          <ul class="flex flex-col gap-4">
+            <li>
+              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">First semester at UF</p>
+              <p class="text-[.875rem] leading-[1.65] text-ink2">Week one of a four-year plan.</p>
+            </li>
+            <li>
+              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">IEEE hardware team</p>
+              <p class="text-[.875rem] leading-[1.65] text-ink2">In discussion to join the main hardware team.</p>
+            </li>
+            <li>
+              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">Looking for a lab</p>
+              <p class="text-[.875rem] leading-[1.65] text-ink2">Undergraduate research in embedded or control systems — happy to start by cleaning up someone's test rig.</p>
+            </li>
+          </ul>
+        </div>
+
+        <div data-rv="up">
+          <p class="lbl text-ink3 mb-4">Coursework</p>
+          <div class="hr mb-5"></div>
+          <ul class="flex flex-col gap-2.5 num text-[.8125rem] text-ink2">
+            <li class="flex justify-between gap-4"><span>Programming Fundamentals 1</span><span class="text-ink3">COP 3502C</span></li>
+            <li class="flex justify-between gap-4"><span>Analytic Geometry &amp; Calculus 1</span><span class="text-ink3">MAC 2311</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CONTACT ======================= -->
+<section id="contact" class="relative bg-bg2 pt-20 sm:pt-28 pb-16 sm:pb-20">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+
+    <div class="flex items-center gap-3 mb-6" data-rv="up">
+      <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
+      <p class="lbl text-ink3">05 &nbsp;/&nbsp; Contact</p>
+    </div>
+
+    <h2 class="display text-ink text-[clamp(2.2rem,8vw,6.5rem)] mb-8" data-rv="mask"><span class="ln"><span>Got a rig that</span></span><span class="ln"><span>keeps failing?</span></span></h2>
+
+    <div class="grid lg:grid-cols-12 gap-x-10 gap-y-8 items-end">
+      <div class="lg:col-span-5">
+        <p class="text-[1.0625rem] leading-[1.62] text-ink2 prose-measure" data-rv="up">
+          I'm a freshman, which means I'm cheap, available, and will happily take the
+          job nobody wants. Internships, undergraduate research, or a project that
+          needs someone to sit with an oscilloscope until it makes sense.
+        </p>
+      </div>
+
+      <div class="lg:col-span-6 lg:col-start-7" data-rv="up">
+        <div class="hr mb-6"></div>
+        <a href="mailto:shivin.r.anand@gmail.com"
+           class="ulink display text-ink text-[clamp(1.25rem,3.4vw,2.25rem)] tracking-[-.02em] break-all">
+          shivin.r.anand@gmail.com
+        </a>
+        <div class="flex flex-wrap items-center gap-2.5 mt-8">
+          <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn btn-solid">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download résumé
+          </a>
+          <a href="https://github.com/shividoge" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
+          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FOOTER ======================= -->
+<footer class="bg-bg2 border-t border-line">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 py-8 flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
+    <p class="lbl text-ink3">Shivin Anand &nbsp;·&nbsp; Gainesville, FL</p>
+    <p class="lbl text-ink3 num">Designed &amp; built by hand &nbsp;·&nbsp; <span id="year">2026</span></p>
+  </div>
+</footer>
+
+</main>
+
+<script src="sequence.js" defer></script>
+<script src="orbital.js" defer></script>
+
+<!-- ======================= SCRIPTS ======================= -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+
+  var $  = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  $('#year').textContent = new Date().getFullYear();
+
+  /* ---------------- chip data ---------------- */
+  var BLOCKS = [
+    { n:'01', name:'Sensor front-end', short:'SENSOR',
+      desc:'Analog conditioning and protection for the raw sensor bus. Everything downstream inherits its noise floor, so this is the block you cannot fix in software.',
+      specs:[['Channels','16 differential'],['Input range','±10 V'],['Input noise','< 2 µVrms']] },
+    { n:'02', name:'ADC array', short:'ADC',
+      desc:'Simultaneous-sampling conversion across every channel. If sampling is not deterministic, the control loop downstream is just guessing at what happened when.',
+      specs:[['Resolution','16-bit'],['Sample rate','1 MSPS / ch'],['Aperture jitter','< 50 ps']] },
+    { n:'03', name:'Real-time core', short:'CORE',
+      desc:'Two cores in lockstep running the deterministic loop. Tightly-coupled memory instead of cache, and bounded interrupt latency — predictable beats fast.',
+      specs:[['Cores','2 × lockstep'],['Clock','600 MHz'],['Execution time','Bounded WCET']] },
+    { n:'04', name:'Control-loop DSP', short:'DSP',
+      desc:'Fixed-point PID and state estimation in hardware, so the loop closes in the same number of cycles every single time it runs.',
+      specs:[['MAC / cycle','4'],['Loop rate','10 kHz'],['Precision','Q15 / Q31']] },
+    { n:'05', name:'Safety island', short:'SAFETY',
+      desc:'Independent watchdog and plausibility checks on its own clock and power domain. Its whole job is deciding what happens when a sensor lies.',
+      specs:[['Watchdog','Windowed'],['Redundancy','2-out-of-3 vote'],['Fault reaction','< 50 µs']] },
+    { n:'06', name:'CAN-FD / I²C PHY', short:'BUS',
+      desc:'Gets the decision off the die and onto the bus with a deadline attached. A correct answer that arrives late is still a failure.',
+      specs:[['CAN-FD','8 Mbit/s'],['I²C','1 MHz Fm+'],['TX latency','< 12 µs']] }
+  ];
+
+  /* ---------------- generate die detail ---------------- */
+  var svg = $('#chipSvg');
+  if (svg) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var pads = $('#pads');
+    function pad(x, y, w, h) {
+      var r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', y);
+      r.setAttribute('width', w); r.setAttribute('height', h);
+      r.setAttribute('rx', 1.5); r.setAttribute('class', 'pad');
+      pads.appendChild(r);
+    }
+    for (var px = 120; px <= 920; px += 26) { pad(px, 62, 14, 8); pad(px, 590, 14, 8); }
+    for (var py = 120; py <= 540; py += 26) { pad(62, py, 8, 14); pad(970, py, 8, 14); }
+
+    var cells = $('#sramCells');
+    for (var ci = 0; ci < 4; ci++) {
+      for (var cj = 0; cj < 6; cj++) {
+        var c = document.createElementNS(NS, 'rect');
+        c.setAttribute('x', 832 + ci * 22); c.setAttribute('y', 172 + cj * 22);
+        c.setAttribute('width', 18); c.setAttribute('height', 18);
+        c.setAttribute('class', 'sram-cell');
+        cells.appendChild(c);
+      }
+    }
+  }
+
+  /* ---------------- chip selection ---------------- */
+  var blkEls   = $$('#blocks .blk');
+  var selWrap  = $('#chipSelectors');
+  var roNum    = $('#roNum'), roStage = $('#roStage'), roName = $('#roName'),
+      roDesc   = $('#roDesc'), roSpecs = $('#roSpecs');
+  var active   = 0;
+
+  if (selWrap) {
+    BLOCKS.forEach(function (b, i) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chipsel';
+      btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+      btn.textContent = b.n + '  ' + b.short;
+      btn.addEventListener('click', function () { select(i); });
+      selWrap.appendChild(btn);
+    });
+  }
+
+  function select(i) {
+    active = i;
+    var b = BLOCKS[i];
+
+    blkEls.forEach(function (el, k) {
+      el.classList.toggle('active', k === i);
+      el.setAttribute('aria-pressed', k === i ? 'true' : 'false');
+    });
+    $$('.chipsel', selWrap).forEach(function (el, k) {
+      el.setAttribute('aria-pressed', k === i ? 'true' : 'false');
+    });
+
+    roNum.textContent   = b.n;
+    roStage.textContent = 'Stage ' + (i + 1) + ' of 6';
+    roName.textContent  = b.name;
+    roDesc.textContent  = b.desc;
+
+    roSpecs.innerHTML = '';
+    b.specs.forEach(function (s) {
+      var row = document.createElement('div');
+      row.className = 'flex justify-between items-baseline gap-4 py-2.5 border-b border-dkline';
+      row.innerHTML = '<dt class="lbl text-dkink2/70">' + s[0] + '</dt>' +
+                      '<dd class="num text-[.8125rem] text-dkink text-right">' + s[1] + '</dd>';
+      roSpecs.appendChild(row);
+    });
+
+    var el = blkEls[i];
+    if (el && scroller && scroller.scrollWidth > scroller.clientWidth) {
+      var br = el.getBoundingClientRect(), sr = scroller.getBoundingClientRect();
+      if (br.left < sr.left || br.right > sr.right) {
+        scroller.scrollTo({
+          left: scroller.scrollLeft + (br.left - sr.left) - (sr.width - br.width) / 2,
+          behavior: reduce ? 'auto' : 'smooth'
+        });
+      }
+    }
+
+    if (!reduce && window.gsap) {
+      gsap.fromTo([roName, roDesc, roSpecs],
+        { opacity: 0, y: 6 },
+        { opacity: 1, y: 0, duration: 0.28, stagger: 0.04, ease: 'power2.out', overwrite: true });
+    }
+  }
+
+  blkEls.forEach(function (el, i) {
+    el.addEventListener('click', function () { select(i); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault(); var nx = (i + 1) % blkEls.length; blkEls[nx].focus(); select(nx);
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault(); var pv = (i - 1 + blkEls.length) % blkEls.length; blkEls[pv].focus(); select(pv);
+      }
+    });
+  });
+  select(0);
+
+  /* ---------------- wide-diagram scroll affordance ---------------- */
+  var scroller = $('#chipScroller'), shell = $('#chipShell');
+  function scrollHint() {
+    if (!scroller || !shell) return;
+    var more = scroller.scrollWidth - scroller.clientWidth - scroller.scrollLeft > 8;
+    shell.setAttribute('data-more', more ? '1' : '0');
+  }
+  if (scroller) {
+    scroller.addEventListener('scroll', scrollHint, { passive: true });
+    window.addEventListener('resize', scrollHint);
+    scrollHint();
+    /* keep a selected block in view when chosen from the button row */
+    scroller.addEventListener('focusin', scrollHint);
+  }
+
+  /* ---------------- mobile menu ---------------- */
+  var menuBtn = $('#menuBtn'), menu = $('#mobileMenu');
+  menuBtn.addEventListener('click', function () {
+    var open = menu.classList.toggle('hidden') === false;
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  });
+  $$('#mobileMenu a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ---------------- D. size the timeline to its dots ----------------
+     The connector should span first dot to last, not run on to the end of the
+     list. Measured rather than guessed, so it survives text reflow and font
+     swap. */
+  function sizeTimeline() {
+    var line = $('.tl-line');
+    if (!line) return;
+    var ol = line.parentElement;
+    var dots = $$('.tl-dot', ol);
+    if (dots.length < 2) return;
+    var oTop = ol.getBoundingClientRect().top;
+    var a = dots[0].getBoundingClientRect();
+    var b = dots[dots.length - 1].getBoundingClientRect();
+    line.style.top = (a.top - oTop + a.height / 2) + 'px';
+    line.style.bottom = 'auto';
+    line.style.height = ((b.top + b.height / 2) - (a.top + a.height / 2)) + 'px';
+  }
+  sizeTimeline();
+  window.addEventListener('resize', sizeTimeline);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeTimeline);
+
+  /* ---------------- B. work-row cursor marker ----------------
+     A pointer-following edge marker, bound only where a real pointer exists so
+     touch devices get nothing to fight with. The easing lives in the CSS
+     transition, so moving the pointer just sets a target and the bar chases it. */
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    $$('.work-row').forEach(function (row) {
+      var mark = document.createElement('span');
+      mark.className = 'work-mark';
+      mark.setAttribute('aria-hidden', 'true');
+      row.appendChild(mark);
+      var h = 44, raf = 0, pendingY = 0;
+
+      function apply() { raf = 0; mark.style.transform = 'translate3d(0,' + pendingY + 'px,0)'; }
+
+      row.addEventListener('pointerenter', function (e) {
+        var r = row.getBoundingClientRect();
+        pendingY = Math.max(0, Math.min(r.height - h, e.clientY - r.top - h / 2));
+        mark.style.transition = 'none';
+        apply();
+        void mark.offsetWidth;                 /* land before easing resumes */
+        mark.style.transition = '';
+        mark.style.opacity = '1';
+      });
+      row.addEventListener('pointermove', function (e) {
+        var r = row.getBoundingClientRect();
+        pendingY = Math.max(0, Math.min(r.height - h, e.clientY - r.top - h / 2));
+        if (!raf) raf = requestAnimationFrame(apply);
+      });
+      row.addEventListener('pointerleave', function () {
+        mark.style.opacity = '0';
+        if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      });
+    });
+  }
+
+  /* ---------------- nav state ---------------- */
+  var nav = $('#nav');
+  var darkZone = $('[data-dark-zone]');
+  var navLinks = $$('.navlink');
+  var sections = navLinks.map(function (l) { return $(l.getAttribute('href')); });
+
+  function navState() {
+    var y = window.scrollY || 0;
+    nav.classList.toggle('stuck', y > 24);
+
+    if (darkZone) {
+      var r = darkZone.getBoundingClientRect();
+      nav.classList.toggle('over-dark', r.top < 34 && r.bottom > 34);
+    }
+
+    var cur = -1;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i] && sections[i].getBoundingClientRect().top <= 140) cur = i;
+    }
+    navLinks.forEach(function (l, i) {
+      if (i === cur) l.setAttribute('aria-current', 'true');
+      else l.removeAttribute('aria-current');
+    });
+  }
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { navState(); ticking = false; });
+  }, { passive: true });
+  navState();
+
+  /* ---------------- motion ---------------- */
+  if (!window.gsap) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  var head = $('#pulseHead'), trail = $('#pulseTrail');
+  var flashes = $$('#blocks .flash');
+  // fraction along the signal path where each block begins
+  var STOPS = [0.019, 0.146, 0.259, 0.434, 0.612, 0.778];
+  var signalTl = null;
+
+  gsap.matchMedia().add({
+    ok:      '(prefers-reduced-motion: no-preference)',
+    reduced: '(prefers-reduced-motion: reduce)'
+  }, function (ctx) {
+    var ok = ctx.conditions.ok;
+
+    /* --- reduced motion: final states, no loops --- */
+    if (!ok) {
+      gsap.set('[data-rv]', { opacity: 1, y: 0, scaleX: 1, clearProps: 'transform' });
+      $$('[data-rv="mask"]').forEach(function (h) { h.classList.add('is-revealed'); });
+      gsap.set('.tl-line', { scaleY: 1 });
+      gsap.set('.tl-dot', { scale: 1 });
+      gsap.set('#heroSwipe', { scaleX: 1 });
+      gsap.set([head, trail], { strokeDasharray: 'none', opacity: 0.45 });
+      var pb = $('#pulseToggle');
+      if (pb) pb.style.display = 'none';
+      return;
+    }
+
+    /* --- hero --- */
+    var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    heroTl.fromTo('#top [data-rv="up"]',
+            { opacity: 0, y: 22 },
+            { opacity: 1, y: 0, duration: 0.72, stagger: 0.055 })
+          .fromTo('#heroSwipe', { scaleX: 0 }, { scaleX: 1, duration: 0.65, ease: 'power2.inOut' }, 0.5)
+          .fromTo('#top [data-rv="line"]',
+            { scaleX: 0 },
+            { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 0.35);
+
+    /* --- generic scroll reveals --- */
+    ScrollTrigger.batch('section:not(#top) [data-rv="up"]', {
+      start: 'top 88%',
+      onEnter: function (b) {
+        gsap.to(b, { opacity: 1, y: 0, duration: 0.55, stagger: 0.05, ease: 'power2.out', overwrite: true });
+      }
+    });
+
+    /* A. headings rise out of their clip box a line at a time.
+       ScrollTrigger only decides *when*; the CSS transition on
+       .ln > span (see the [data-rv="mask"] rules) does the animating. */
+    $$('[data-rv="mask"]').forEach(function (h) {
+      ScrollTrigger.create({
+        trigger: h, start: 'top 88%', once: true,
+        onEnter: function () { h.classList.add('is-revealed'); }
+      });
+    });
+
+    /* D. the timeline draws itself as you pass, dots landing with it */
+    var tlLine = $('.tl-line');
+    if (tlLine) {
+      var ol = tlLine.parentElement;
+      sizeTimeline();
+      gsap.to(tlLine, {
+        scaleY: 1, ease: 'none',
+        scrollTrigger: { trigger: ol, start: 'top 78%', end: 'bottom 88%', scrub: 0.6 }
+      });
+      $$('.tl-dot', ol).forEach(function (d) {
+        gsap.to(d, {
+          scale: 1, duration: 0.5, ease: 'back.out(2.2)',
+          scrollTrigger: { trigger: d.parentElement, start: 'top 84%', once: true }
+        });
+      });
+    }
+    /* anything already above the fold on load reveals without waiting for a scroll */
+    ScrollTrigger.refresh();
+    $$('[data-rv="line"]').forEach(function (el) {
+      if (el.closest('#top')) return;
+      gsap.to(el, {
+        scaleX: 1, duration: 0.8, ease: 'power2.inOut',
+        scrollTrigger: { trigger: el, start: 'top 92%' }
+      });
+    });
+
+    /* --- die draw-in --- */
+    var dieTl = gsap.timeline({
+      scrollTrigger: { trigger: '#architecture', start: 'top 72%', once: true }
+    });
+    dieTl.from('#chipSvg .die-edge, #chipSvg .supp', {
+            strokeDasharray: 1, strokeDashoffset: 1, duration: 1.1, stagger: 0.06, ease: 'power2.inOut'
+          })
+         .from('#pads rect', { opacity: 0, duration: 0.5, stagger: { each: 0.004, from: 'random' } }, 0.2)
+         .from('#traces path, #busStatic', {
+            strokeDasharray: 1, strokeDashoffset: 1, duration: 0.9, stagger: 0.05, ease: 'power2.inOut'
+          }, 0.3)
+         .from('#blocks .blk', {
+            opacity: 0, y: 10, duration: 0.45, stagger: 0.07, ease: 'back.out(1.3)'
+          }, 0.5)
+         .from('#sramCells rect', { opacity: 0, duration: 0.35, stagger: 0.012 }, 0.7);
+
+    /* --- travelling signal --- */
+    gsap.set([head, trail], { strokeDasharray: '38 962', strokeDashoffset: 0 });
+    signalTl = gsap.timeline({ repeat: -1, paused: true });
+    signalTl.to(head,  { strokeDashoffset: -1000, duration: 5.2, ease: 'none' }, 0)
+            .to(trail, { strokeDashoffset: -1000, duration: 5.2, ease: 'none' }, 0.045);
+    STOPS.forEach(function (t, i) {
+      signalTl.to(flashes[i], { opacity: 0.3, duration: 0.16, ease: 'power1.out' }, t * 5.2)
+              .to(flashes[i], { opacity: 0,   duration: 0.5,  ease: 'power1.in'  }, t * 5.2 + 0.16);
+    });
+
+    /* run only while the die is on screen */
+    ScrollTrigger.create({
+      trigger: '#architecture', start: 'top bottom', end: 'bottom top',
+      onToggle: function (s) {
+        var btn = $('#pulseToggle');
+        var wantPaused = btn && btn.getAttribute('aria-pressed') === 'true';
+        if (s.isActive && !wantPaused) signalTl.play(); else signalTl.pause();
+      }
+    });
+
+    /* --- scroll tick --- */
+    gsap.to('#scrollTick span', {
+      xPercent: 240, duration: 1.5, ease: 'power1.inOut', repeat: -1, yoyo: true
+    });
+
+    return function () { if (signalTl) signalTl.kill(); };
+  });
+
+  /* ---------------- safety net ----------------
+     If requestAnimationFrame is throttled (backgrounded tab, aggressive power
+     saving, an extension), GSAP never ticks and reveal targets would sit at
+     opacity 0 forever. Once the page is actually visible, force anything in
+     view to its final state after a grace period. */
+  function safetyReveal() {
+    $$('[data-rv]').forEach(function (el) {
+      if (getComputedStyle(el).opacity !== '0') return;
+      if (el.getBoundingClientRect().top > window.innerHeight) return;
+      if (window.gsap) gsap.set(el, { opacity: 1, y: 0, scaleX: 1, overwrite: 'auto' });
+      else { el.style.opacity = '1'; el.style.transform = 'none'; }
+    });
+    /* mask headings don't hide via opacity (see the [data-rv="mask"] CSS
+       rules), so they need their own check rather than the opacity gate above */
+    $$('[data-rv="mask"]').forEach(function (h) {
+      if (h.classList.contains('is-revealed')) return;
+      if (h.getBoundingClientRect().top > window.innerHeight) return;
+      h.classList.add('is-revealed');
+    });
+  }
+  var netTimer;
+  function armNet() {
+    clearTimeout(netTimer);
+    if (!document.hidden) netTimer = setTimeout(safetyReveal, 3000);
+  }
+  document.addEventListener('visibilitychange', armNet);
+  armNet();
+
+  /* ---------------- pause / run control ---------------- */
+  var toggle = $('#pulseToggle');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var paused = toggle.getAttribute('aria-pressed') === 'true';
+      var next = !paused;
+      toggle.setAttribute('aria-pressed', next ? 'true' : 'false');
+      $('#pulseToggleLabel').textContent = next ? 'Run signal' : 'Pause signal';
+      if (signalTl) { next ? signalTl.pause() : signalTl.play(); }
+    });
+  }
+});
+</script>
+</body>
+</html>
