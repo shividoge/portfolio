@@ -99,12 +99,19 @@
     transition:background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   }
   .btn:active{ transform:translateY(1px); }
-  .btn-solid{ background:var(--ink); color:var(--bg); border:1px solid var(--ink); }
-  .btn-solid:hover{ background:var(--accent); color:var(--ink); border-color:var(--accent); }
-  .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
-  .btn-ghost:hover{ border-color:var(--ink); background:#fff; }
-  .btn-dk{ background:var(--accent); color:var(--dk); border:1px solid var(--accent); }
-  .btn-dk:hover{ background:transparent; color:var(--accent); }
+  /* every button wipes; the pair below says what colour it wipes to */
+  .btn-solid{ background:var(--ink); color:var(--bg); border:1px solid var(--ink);
+              --wipe-fill:var(--accent); --wipe-ink:var(--ink); }
+  .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line);
+              --wipe-fill:var(--ink); --wipe-ink:var(--bg); }
+  .btn-ghost:hover{ border-color:var(--ink); }
+  .btn-dk{ background:var(--accent); color:var(--dk); border:1px solid var(--accent);
+           --wipe-fill:var(--dk); --wipe-ink:var(--accent); }
+
+  /* small pill controls wipe too */
+  .chip-pause,.fp-ctl button,.orbit-hint{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
+  .chip-pause:hover,.fp-ctl button:hover{ border-color:var(--accent); }
+  #menuBtn{ --wipe-fill:var(--ink); --wipe-ink:var(--bg); }
 
   /* --- nav --- */
   #nav{ transition:background .35s var(--ease), border-color .35s var(--ease), backdrop-filter .35s var(--ease); }
@@ -112,7 +119,9 @@
   #nav.over-dark{ background:rgba(13,13,15,.72); border-bottom-color:var(--dkline); }
   #nav.over-dark .nav-ink{ color:var(--dkink); }
   #nav.over-dark .nav-mut{ color:var(--dkink2); }
-  #nav.over-dark .btn-solid{ background:var(--accent); color:var(--dk); border-color:var(--accent); }
+  #nav.over-dark .btn-solid{ background:var(--accent); color:var(--dk); border-color:var(--accent);
+                             --wipe-fill:var(--dkink); --wipe-ink:var(--dk); }
+  #nav.over-dark #menuBtn{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
   .navlink{ position:relative; padding:.45rem .1rem; }
   .navlink::after{
     content:""; position:absolute; left:0; right:0; bottom:0; height:1.5px; background:var(--accent);
@@ -128,8 +137,6 @@
   }
 
   /* --- work rows --- */
-  .work-row{ transition:background .4s var(--ease); }
-  .work-row:hover{ background:#fff; }
   .work-idx{ transition:color .4s var(--ease); }
   .work-row:hover .work-idx{ color:var(--accentd); }
 
@@ -141,52 +148,22 @@
   .tag-dk{ border-color:var(--dkline); color:var(--dkink2); }
 
   /* --- chip --- */
-  .chip-wrap{ background:var(--dk); border-radius:20px; position:relative; overflow:hidden; }
-  .chip-wrap::before{
     content:""; position:absolute; inset:0; pointer-events:none; border-radius:20px;
     border:1px solid var(--dkline);
   }
-  #chipSvg{ display:block; width:100%; height:auto; }
-  #chipSvg .die-edge{ fill:none; stroke:var(--dkline); stroke-width:1.25; }
-  #chipSvg .substrate{ fill:none; stroke:#1E1E24; stroke-width:1; stroke-dasharray:3 5; }
-  #chipSvg .pad{ fill:#1C1C22; }
-  #chipSvg .sram-cell{ fill:#141419; stroke:#232329; stroke-width:.6; }
-  #chipSvg .trace{ fill:none; stroke:#2E2E36; stroke-width:1.1; stroke-linecap:round; stroke-linejoin:round; }
-  #chipSvg .pulse{ fill:none; stroke:var(--accent); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; filter:url(#glow); }
-  #chipSvg .blk-body{ fill:#131318; stroke:#2C2C34; stroke-width:1.15; transition:fill .3s var(--ease), stroke .3s var(--ease); }
-  #chipSvg .blk-num{ fill:var(--dkink2); font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.08em; transition:fill .3s var(--ease); }
-  #chipSvg .blk-name{ fill:var(--dkink); font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:14px; letter-spacing:-.01em; transition:fill .3s var(--ease); }
-  #chipSvg .blk-sub{ fill:#85838F; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.06em; }
-  #chipSvg .static-name{ fill:#85838F; font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.1em; }
-  #chipSvg .blk{ cursor:pointer; }
-  #chipSvg .blk:hover .blk-body,#chipSvg .blk.active .blk-body{ fill:#1D1826; stroke:var(--accent); }
-  #chipSvg .blk:hover .blk-name,#chipSvg .blk.active .blk-name{ fill:var(--accent); }
-  #chipSvg .blk.active .blk-num{ fill:var(--accent); }
-  #chipSvg .blk-glow{ fill:var(--accent); opacity:0; transition:opacity .3s var(--ease); }
-  #chipSvg .blk.active .blk-glow{ opacity:.07; }
-  #chipSvg .flash{ fill:var(--accent); opacity:0; }
-
-  .rail-val{ font-family:"Space Grotesk",sans-serif; font-weight:600; letter-spacing:-.02em; }
 
   /* --- mobile chip selector --- */
-  .chipsel{
     flex:0 0 auto; min-height:44px; padding:.55rem .85rem; border-radius:8px;
     border:1px solid var(--dkline); background:transparent; color:var(--dkink2);
     font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.08em; cursor:pointer;
     transition:border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease);
   }
-  .chipsel:hover{ border-color:#4A4A55; color:var(--dkink); }
-  .chipsel[aria-pressed="true"]{ border-color:var(--accent); color:var(--accent); background:rgba(213,172,255,.07); }
 
   /* fade at the right edge while the wide diagram can still be scrolled */
-  .scroller{ position:relative; }
-  .scroller-shell{ position:relative; }
-  .scroller-shell::after{
     content:""; position:absolute; top:0; bottom:0; right:0; width:56px; pointer-events:none;
     background:linear-gradient(to right, rgba(13,13,15,0), var(--dk));
     opacity:0; transition:opacity .3s var(--ease);
   }
-  .scroller-shell[data-more="1"]::after{ opacity:1; }
   @media (min-width:1280px){ .scroller-shell::after{ display:none; } }
 
   .noscroll{ scrollbar-width:none; }
@@ -347,7 +324,6 @@
 
   /* --- B. cursor-tracked work rows --- */
   .work-row{ position:relative; transition:background .45s var(--ease); }
-  .work-row:hover{ background:rgba(255,255,255,.55); }
   .work-mark{
     position:absolute; left:0; top:0; width:2px; height:44px; border-radius:2px;
     background:var(--accent); opacity:0; pointer-events:none;
@@ -405,7 +381,7 @@
   }
   g.blk:focus-visible .blk-body{ stroke:var(--accent); stroke-width:2; }
   .ulink:focus-visible::after{ transform:scaleX(1); transform-origin:left; }
-  .work-row:focus-within{ background:rgba(255,255,255,.55); }
+  .work-row:focus-within::before{ clip-path:ellipse(150% 150% at 50% 100%); }
 
 
   /* ===================== 03 · CAPABILITY ORBIT ===================== */
@@ -520,6 +496,328 @@
     .js .orbit-core span{ animation:none; opacity:.4; }
   }
 
+
+  /* ===================== HOVER WIPE =====================
+     Lando's trick: the fill arrives on an ELLIPTICAL clip-path, not a
+     rectangular slide. The curved leading edge is the entire difference
+     between "liquid" and "a div changed colour". One class, used everywhere,
+     so the whole site reacts with the same material. */
+  .wipe{ position:relative; isolation:isolate; overflow:hidden; --wx:50%; --wy:100%; }
+  .wipe::before{
+    content:""; position:absolute; inset:0; z-index:-1;
+    background:var(--wipe-fill,var(--ink));
+    /* the origin is set by wipe.js from wherever the cursor crossed the edge,
+       so the fill arrives from the direction you actually came from */
+    clip-path:ellipse(0% 0% at var(--wx) var(--wy));
+    transition:clip-path .55s cubic-bezier(.22,.61,.36,1);
+  }
+  .wipe:hover::before,.wipe:focus-visible::before{ clip-path:ellipse(150% 150% at var(--wx) var(--wy)); }
+  .wipe:hover,.wipe:focus-visible{ color:var(--wipe-ink,var(--bg)); }
+  .wipe > *{ position:relative; }
+
+  /* light variant: for big surfaces where a full ink fill would shout */
+  .wipe-soft{ --wipe-fill:#fff; }
+  .wipe-soft:hover,.wipe-soft:focus-visible{ color:inherit; }
+
+  /* on the dark panel the fill goes the other way */
+  .on-dark .wipe{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
+  /* the nav is not inside .on-dark, but it flies over the dark panel —
+     without this the fill is #14130F on #0D0D0F, i.e. invisible */
+  #nav.over-dark .navlink{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
+
+  @media (prefers-reduced-motion: reduce){
+    .wipe::before{ transition-duration:.01ms; }
+  }
+
+  /* ===================== CIRCUIT SPINE =====================
+     The page sits on a board. One trace runs its whole length, routed with
+     45-degree corners and a via at every section boundary, drawn as you
+     scroll. Decorative, so it is hidden from assistive tech and dropped
+     entirely on narrow screens where the gutter does not exist. */
+  #spine{
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:0; overflow:visible;
+  }
+  #spine svg{ display:block; width:100%; height:100%; overflow:visible; }
+  #spine .trace-bed{ fill:none; stroke:var(--line); stroke-width:1.25; }
+  #spine .trace-live{
+    fill:none; stroke:var(--accentd); stroke-width:1.25;
+    stroke-linecap:round; stroke-linejoin:round;
+  }
+  #spine .via{ fill:var(--bg); stroke:var(--line); stroke-width:1.25; }
+  #spine .via-live{ fill:var(--accentd); stroke:none; opacity:0; transition:opacity .4s var(--ease); }
+  #spine .via-live.on{ opacity:1; }
+  @media (max-width:1100px){ #spine{ display:none; } }
+
+
+
+  /* ===================== FPGA PANEL ===================== */
+  .fpanel{
+    position:relative; background:var(--dk); color:var(--dkink);
+    border:1px solid rgba(213,172,255,.5); border-radius:18px; overflow:hidden;
+    display:grid; grid-template-columns:92px 1.15fr 340px;
+    box-shadow:0 0 44px rgba(213,172,255,.10), inset 0 0 90px rgba(213,172,255,.04);
+  }
+  .fp-rail{ border-right:1px solid var(--dkline); display:flex; align-items:center; justify-content:center; }
+  .fp-rail .vert{ writing-mode:vertical-rl; transform:rotate(180deg); font-family:"Space Grotesk",sans-serif;
+                  font-weight:600; font-size:1.55rem; letter-spacing:-.02em; color:var(--dkink); white-space:nowrap; }
+  /* the board is wider than the stage on purpose — clipping it is what makes
+     the panel read as a window onto a bench, not a floating object */
+  .fp-stage{ position:relative; padding:2.5rem; display:grid; place-items:center;
+             min-height:400px; perspective:1300px; overflow:hidden; }
+  /* --- the part itself. Fixed 400px layout box because translateZ has to be
+     absolute; fpga.js scales it to the stage through --chip-scale. --- */
+  .spinner{ width:400px; height:400px; position:relative; transform-style:preserve-3d;
+            transform:scale(var(--chip-scale,1)); }
+  .spinner svg{ display:block; overflow:visible; }
+  .chip-scene,.chip-spin{ position:absolute; inset:0; transform-style:preserve-3d; }
+  .chip-scene{ animation:chipTilt 17s ease-in-out infinite alternate; }
+  .chip-spin{ animation:chipSpin 26s linear infinite; }
+  @keyframes chipTilt{ from{ transform:rotateX(52deg); } to{ transform:rotateX(66deg); } }
+  @keyframes chipSpin{ from{ transform:rotateZ(0deg); } to{ transform:rotateZ(360deg); } }
+
+  .chip-face,.chip-wall,.chip-sheen,.chip-board{ backface-visibility:hidden; }
+  .chip-wall{ background:linear-gradient(#22222A,#0A0A0C); border-top:1px solid #3A3A45; }
+  .chip-wall-v{ background:linear-gradient(90deg,#1B1B22,#0A0A0C); border-top:0; }
+  .chip-board{ border-radius:2px; }
+  .chip-shadow{ background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.72), rgba(0,0,0,0) 68%);
+                filter:blur(9px); }
+  /* the highlight turns against the spin, so it reads as a fixed light source */
+  .chip-sheen{ pointer-events:none; border-radius:3px; mix-blend-mode:screen;
+               background:linear-gradient(118deg, rgba(255,255,255,0) 34%,
+                         rgba(214,206,232,.16) 48%, rgba(255,255,255,0) 60%);
+               animation:chipSpin 26s linear infinite reverse; }
+
+  #fpgaSpinner.is-paused .chip-scene,
+  #fpgaSpinner.is-paused .chip-spin,
+  #fpgaSpinner.is-paused .chip-sheen{ animation-play-state:paused; }
+  #fpgaSpinner.is-static .chip-scene{ animation:none; transform:rotateX(58deg); }
+  #fpgaSpinner.is-static .chip-spin{ animation:none; transform:rotateZ(-24deg); }
+  #fpgaSpinner.is-static .chip-sheen{ animation:none; }
+  .fp-side{ border-left:1px solid var(--dkline); padding:2.25rem 1.75rem; }
+  .fp-side p{ font-size:.875rem; line-height:1.66; color:var(--dkink2); margin:0 0 1.5rem; }
+  .fp-lbl{ color:var(--dkink2) !important; margin-bottom:.5rem !important; }
+  .fp-stats{ display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; margin-bottom:1.6rem; }
+  .fp-stats .lbl{ color:var(--dkink2); display:block; margin-bottom:.3rem; }
+  .fp-stats b{ font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:1.3rem;
+               letter-spacing:-.02em; color:var(--accent); }
+  .fp-stats b.p{ color:var(--dkink); }
+  .fp-stats .unit{ font-size:.75rem; color:var(--dkink2); }
+  .sched{ width:100%; border-collapse:collapse; margin-bottom:1.5rem; }
+  .sched td{ padding:.48rem 0; border-bottom:1px solid var(--dkline); font-size:.8125rem; color:var(--dkink2); }
+  .sched td:first-child{ font-family:"Space Grotesk",sans-serif; font-weight:600; color:var(--dkink); }
+  .sched td:last-child{ text-align:right; font-family:"JetBrains Mono",monospace; }
+  .sched tr.now td,.sched tr.now td:first-child{ color:var(--accent); }
+  .fp-link{ color:var(--accent); }
+  .fp-ctl{ position:absolute; right:1rem; bottom:1rem; }
+  .fp-ctl button{ min-height:36px; padding:0 .85rem; border-radius:999px; cursor:pointer;
+    background:transparent; border:1px solid var(--dkline); color:var(--dkink2);
+    font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.12em; text-transform:uppercase; }
+  .fp-ctl button:hover{ border-color:var(--accent); color:var(--accent); }
+  @media (max-width:1000px){
+    .fpanel{ grid-template-columns:1fr; }
+    .fp-rail{ border-right:0; border-bottom:1px solid var(--dkline); padding:1rem; }
+    .fp-rail .vert{ writing-mode:horizontal-tb; transform:none; }
+    .fp-side{ border-left:0; border-top:1px solid var(--dkline); }
+  }
+
+
+  /* project links; a pending one is a real gap, shown as unavailable */
+  .proj-link{ color:var(--accentd); position:relative; }
+  .proj-link:not(.is-pending):hover{ color:var(--ink); }
+  .proj-link.is-pending{ color:var(--ink3); opacity:.62; cursor:default; }
+
+
+
+
+  /* the HUD sits above the rail, so give it room (desktop only — the mobile
+     block below sets its own value and must not be overridden from here) */
+
+
+  /* ===================== CHIP HERO =====================
+     The object is a render Shivin made; the page is built around it rather
+     than decorated with it. Dark plate because that is where a product shot
+     of silicon reads as real, then the page lifts into the warm paper tone
+     over the last stretch of the section. */
+  .hero-chip{
+    position:relative; min-height:100svh; display:flex; align-items:center;
+    padding:7.5rem 0 10rem; background:var(--dk); color:var(--dkink);
+    isolation:isolate; overflow:hidden;
+  }
+  .hero-plate{
+    position:absolute; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(120% 78% at 68% 38%, rgba(213,172,255,.10), rgba(213,172,255,0) 62%),
+      radial-gradient(90% 60% at 50% 0%, #1A1A20, rgba(26,26,32,0) 70%),
+      linear-gradient(var(--dk), var(--dk));
+  }
+  /* No wash into the page tone: the opening ends at a routed board edge, and
+     seam.js draws the copper that crosses it. This is only the ambient
+     darkening that sits just above the cut. */
+  .hero-plate::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:150px;
+    background:linear-gradient(rgba(6,6,8,0), rgba(6,6,8,.55));
+  }
+  .hero-inner{ z-index:1; }
+  .hero-mut{ color:var(--dkink2); }
+  .hero-name{
+    position:relative; color:var(--dkink); margin:0;
+    font-size:clamp(2.6rem,7.4vw,6rem); line-height:.92; letter-spacing:-.04em;
+  }
+  .hero-lede{ margin:1.6rem 0 0; color:var(--dkink2);
+              font-size:1.0625rem; line-height:1.62; }
+  .hero-fact{ font-size:.9375rem; line-height:1.35; color:var(--dkink); font-weight:500; }
+  .hero-facts{ margin-top:3.5rem; }
+  .hero-cue{ margin:2.75rem 0 0; color:var(--dkink2); }
+
+  /* the seam straddles the boundary: half on the dark side, half on the page */
+  #seam{
+    position:absolute; left:0; right:0; top:-128px; height:224px;
+    pointer-events:none; z-index:3;
+  }
+  #seam svg{ display:block; width:100%; height:100%; overflow:visible; }
+
+  .hero-split{ display:grid; grid-template-columns:minmax(0,1fr); gap:2.5rem; align-items:center; }
+  @media (min-width:1000px){
+    .hero-split{ grid-template-columns:minmax(0,1.02fr) minmax(0,1fr); gap:3.5rem; }
+    .hero-lede{ font-size:1.1875rem; }
+  }
+
+  /* buttons have to flip for the dark plate */
+  .hero-chip .btn-solid{ background:var(--accent); color:var(--dk); border-color:var(--accent);
+                         --wipe-fill:var(--dkink); --wipe-ink:var(--dk); }
+  .hero-chip .btn-ghost{ border-color:var(--dkline); color:var(--dkink); background:transparent;
+                         --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
+  .hero-chip .btn-ghost:hover{ border-color:var(--accent); }
+
+  /* ---- the object ---- */
+  .hero-stage{ position:relative; display:flex; flex-direction:column; align-items:center;
+               perspective:1500px; }
+  /* --- the part ---------------------------------------------------------
+     Laid out at a fixed 520px because translateZ has to be absolute; the wrap
+     scales the whole rig to whatever width the column gives it. --- */
+  .chip-wrap{
+    position:relative; width:min(100%,560px); aspect-ratio:1;
+    transform:scale(var(--chip-k,1)); transform-origin:50% 50%;
+    transform-style:preserve-3d;
+  }
+  .chip-cast{
+    position:absolute; left:50%; top:54%; width:74%; height:52%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.72), rgba(0,0,0,0) 70%);
+    filter:blur(14px);
+  }
+  .chip-hold{
+    position:absolute; left:50%; top:50%; width:464px; height:464px;
+    margin:-232px 0 0 -232px;
+    transform-style:preserve-3d; will-change:transform; cursor:grab;
+    touch-action:pan-y;            /* vertical scroll still belongs to the page */
+  }
+  .chip-hold.is-drag{ cursor:grabbing; }
+  .hc-leads svg,.hc-face svg{ display:block; }
+
+  .hc-face{ backface-visibility:hidden; }
+  .hc-bottom{ background:linear-gradient(#0A0A0D,#131318); border-radius:7px; }
+  .hc-wall{ background:linear-gradient(#26262E,#0B0B0F); }
+
+  /* every raised part throws its own extrusion; --sx/--sy are the light
+     direction taken back out of the part's local frame by hero.js, so the
+     shadows do not swing round with it */
+  .hc-part,.hc-ring,.hc-eye,.hc-glass{
+    box-shadow:
+      calc(var(--sx,0) * var(--h,6) * 1px) calc(var(--sy,1) * var(--h,6) * 1px) 0 rgba(6,6,9,.95),
+      calc(var(--sx,0) * var(--h,6) * 2px) calc(var(--sy,1) * var(--h,6) * 2px) 9px rgba(0,0,0,.55);
+  }
+  .hc-lcd{ background:#111116; border-radius:3px; border:1px solid #33333D; }
+  .hc-glass{ --h:2; border-radius:2px; overflow:hidden; }
+  .hc-dkey{
+    --h:10; background:linear-gradient(150deg,#3A3A45,#16161C); border-radius:6px;
+    border:1px solid #45454F;
+    display:grid; place-items:center; color:#8A8A96; font-size:11px; line-height:1;
+  }
+  .hc-lbase{ --h:8; background:linear-gradient(150deg,#22222A,#0C0C10); border-radius:6px; }
+  /* the barrel: each ring needs a lit edge, or the stack collapses into one
+     black disc instead of reading as machined steps */
+  .hc-ring{ border-radius:999px; border:1px solid rgba(150,150,168,.5); }
+  .hc-r1{ --h:10; background:linear-gradient(145deg,#4A4A56 0%,#22222A 42%,#0C0C10 100%); }
+  .hc-r2{ --h:8;  background:linear-gradient(145deg,#5A5A66 0%,#2A2A33 46%,#0E0E13 100%); }
+  .hc-r3{ --h:6;  background:linear-gradient(145deg,#6A6A77 0%,#33333D 48%,#121218 100%); }
+  .hc-eye{
+    --h:5; border-radius:999px; overflow:hidden; border:1px solid rgba(120,120,140,.45);
+    background:
+      radial-gradient(circle at 36% 30%, rgba(190,175,230,.55) 0%, rgba(90,80,130,.18) 26%, rgba(0,0,0,0) 52%),
+      radial-gradient(circle at 60% 66%, #2A2440 0%, #101018 44%, #050508 100%);
+  }
+  .hc-glint{
+    position:absolute; inset:0; border-radius:999px;
+    background:
+      radial-gradient(circle at 30% 24%, rgba(240,232,255,.95) 0%, rgba(240,232,255,0) 22%),
+      radial-gradient(circle at 70% 78%, rgba(160,140,220,.35) 0%, rgba(160,140,220,0) 26%);
+  }
+  .hc-key{
+    --h:6; border-radius:5px; display:grid; place-items:center;
+    font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:10px; line-height:1;
+  }
+  .hc-sheen{
+    pointer-events:none; border-radius:7px; mix-blend-mode:screen;
+    background:
+      radial-gradient(70% 55% at 26% 18%, rgba(224,216,244,.16), rgba(224,216,244,0) 70%),
+      linear-gradient(118deg, rgba(255,255,255,0) 34%,
+              rgba(216,208,236,.16) 47%, rgba(255,255,255,0) 60%);
+  }
+
+  .spot{
+    position:absolute; width:34px; height:34px; margin:-17px 0 0 -17px; padding:0;
+    background:none; border:0; border-radius:999px; cursor:pointer;
+    display:grid; place-items:center;
+    outline:2px solid transparent; outline-offset:3px;
+  }
+  .spot:focus-visible{ outline-color:var(--accent); }
+  .spot-dot{
+    width:11px; height:11px; border-radius:999px; background:var(--accent);
+    box-shadow:0 0 0 4px rgba(213,172,255,.22), 0 0 12px rgba(213,172,255,.55);
+    transition:transform .22s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;
+  }
+  .spot:hover .spot-dot,.spot:focus-visible .spot-dot,.spot.is-on .spot-dot{
+    transform:scale(1.45); box-shadow:0 0 0 7px rgba(213,172,255,.2), 0 0 18px rgba(213,172,255,.8);
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .spot-dot{ animation:spotPulse 2.8s ease-in-out infinite; }
+    @keyframes spotPulse{ 0%,100%{ opacity:.68; } 50%{ opacity:1; } }
+  }
+
+  /* the tip box always holds its space, or hovering a dot shoves the whole
+     opening down by a line */
+  .chip-tip{
+    margin-top:.25rem; max-width:34rem; text-align:center; min-height:3.1rem;
+    font-size:.875rem; line-height:1.55; color:var(--dkink2);
+    opacity:0; transition:opacity .22s ease;
+  }
+  .chip-tip.is-on{ opacity:1; }
+  .chip-tip b{ color:var(--dkink); font-family:"Space Grotesk",sans-serif; font-weight:600; }
+  .chip-tip b::after{ content:" — "; color:var(--dkink2); font-weight:400; }
+
+  .chip-foot{ display:flex; align-items:center; gap:1rem; margin-top:1.1rem; }
+  .chip-pause{
+    min-height:32px; padding:0 .7rem; border-radius:999px; cursor:pointer;
+    background:transparent; border:1px solid var(--dkline); color:var(--dkink2);
+    font-family:"JetBrains Mono",monospace; font-size:.625rem;
+    letter-spacing:.12em; text-transform:uppercase;
+  }
+  .chip-pause:hover{ border-color:var(--accent); color:var(--accent); }
+
+  @media (max-width:999px){
+    .hero-chip{ padding:6.5rem 0 8rem; min-height:0; }
+    .hero-name{ font-size:clamp(2.3rem,11vw,4rem); letter-spacing:-.03em; }
+    .hero-split{ gap:2.25rem; }
+    .hero-stage{ order:2; }
+    .hero-facts{ margin-top:2.75rem; }
+    .chip-wrap{ width:min(100%,420px); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    .spot-dot{ animation:none; }
+  }
+
   /* --- skip link --- */
   .skip{ position:absolute; left:-9999px; top:0; z-index:200; }
   .skip:focus{ left:1rem; top:1rem; padding:.75rem 1.1rem; background:var(--ink); color:var(--bg); border-radius:6px; }
@@ -540,19 +838,19 @@
       </a>
 
       <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
-        <a href="#architecture" class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Architecture</a>
-        <a href="#work"         class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Work</a>
-        <a href="#capabilities" class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Capabilities</a>
-        <a href="#record"       class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Record</a>
-        <a href="#contact"      class="navlink lbl nav-mut text-ink3 hover:text-ink transition-colors">Contact</a>
+        <a href="#work"         class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Work</a>
+        <a href="#capabilities" class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Capabilities</a>
+        <a href="#architecture" class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Architecture</a>
+        <a href="#record"       class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Record</a>
+        <a href="#contact"      class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Contact</a>
       </nav>
 
       <div class="flex items-center gap-2.5">
-        <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn btn-solid !min-h-[42px] !px-4 text-[13px]">
+        <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn wipe btn-solid !min-h-[42px] !px-4 text-[13px]">
           Résumé
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </a>
-        <button id="menuBtn" class="lg:hidden nav-ink grid place-items-center w-11 h-11 -mr-1.5 rounded-lg border border-line" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <button id="menuBtn" class="wipe lg:hidden nav-ink grid place-items-center w-11 h-11 -mr-1.5 rounded-lg border border-line" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
         </button>
       </div>
@@ -561,538 +859,133 @@
 
   <div id="mobileMenu" class="lg:hidden hidden border-t border-line bg-bg/95 backdrop-blur-lg">
     <nav class="mx-auto max-w-[1400px] px-5 sm:px-8 py-3 flex flex-col" aria-label="Mobile">
-      <a href="#architecture" class="lbl text-ink2 py-3.5 border-b border-line/70">01 &nbsp;Architecture</a>
-      <a href="#work"         class="lbl text-ink2 py-3.5 border-b border-line/70">02 &nbsp;Work</a>
-      <a href="#capabilities" class="lbl text-ink2 py-3.5 border-b border-line/70">03 &nbsp;Capabilities</a>
+      <a href="#architecture" class="lbl text-ink2 py-3.5 border-b border-line/70">01 &nbsp;Work</a>
+      <a href="#work"         class="lbl text-ink2 py-3.5 border-b border-line/70">02 &nbsp;Capabilities</a>
+      <a href="#capabilities" class="lbl text-ink2 py-3.5 border-b border-line/70">03 &nbsp;Architecture</a>
       <a href="#record"       class="lbl text-ink2 py-3.5 border-b border-line/70">04 &nbsp;Record</a>
       <a href="#contact"      class="lbl text-ink2 py-3.5">05 &nbsp;Contact</a>
     </nav>
   </div>
 </header>
 
-<main id="main">
+<main id="main" class="relative">
+<div id="spine" aria-hidden="true"></div>
 
-<!-- ======================= SCROLL-TELLING INTRO ======================= -->
-<section id="intro" aria-label="Introduction: the board">
-  <div id="introPin">
-    <canvas id="seqCanvas" role="img"
-      aria-label="A 144-pin QFP chip rendered as a handheld console, rotating and zooming to reveal a camera lens, a screen, a D-pad and a row of keycaps — each standing for one of Shivin Anand's projects."></canvas>
+<!-- ======================= HERO — ROUTED ======================= -->
+<section id="top" class="hero-chip" data-dark-zone data-dark-fade="120">
+  <div class="hero-plate" aria-hidden="true"></div>
 
-    <div class="seq-rail" aria-hidden="true"><span id="seqRailFill"></span></div>
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 w-full relative hero-inner">
+    <div class="hero-split">
 
-    <div class="seq-copy">
-      <div class="beat" data-beat="0" data-in=".015" data-out=".145">
-        <p class="beat-label">00 &nbsp;/&nbsp; The board</p>
-        <h2 class="beat-head">Everything I've built, on one package.</h2>
-        <p class="beat-sub">A 144-pin QFP that doesn't exist. I modelled and rendered it as a map of the last four years — every feature on it is something I actually shipped.</p>
-      </div>
+      <div class="hero-copy">
+        <div class="flex items-start gap-3 mb-6" data-rv="up">
+          <span class="w-1.5 h-1.5 mt-[.5em] shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
+          <p class="lbl hero-mut">Computer Engineering &nbsp;/&nbsp; University of Florida &nbsp;/&nbsp; B.S. 2030</p>
+        </div>
 
-      <div class="beat" data-beat="1" data-in=".150" data-out=".335">
-        <p class="beat-label">01 &nbsp;/&nbsp; The lens</p>
-        <h2 class="beat-head">The lens is the grow chamber.</h2>
-        <p class="beat-sub">An autonomous hydroponic system built to test spaceflight viability. OpenCV running against a Teensy and BME680 rig — HSV and Excess Green Index segmentation tracking plant health, regressed against live sensor data. It won a NASA Kennedy Space Center award.</p>
-      </div>
+        <h1 class="hero-name display" id="heroName">Shivin&nbsp;Anand</h1>
 
-      <div class="beat" data-beat="2" data-in=".350" data-out=".500">
-        <p class="beat-label">02 &nbsp;/&nbsp; The display</p>
-        <h2 class="beat-head">The screen is a storefront.</h2>
-        <p class="beat-sub">Roughly a thousand products, each with a QR tag that resolves to its record. An admin surface and a public storefront over a MongoDB schema I designed myself — in production, running a real business.</p>
-      </div>
-
-      <div class="beat" data-beat="3" data-in=".550" data-out=".675">
-        <p class="beat-label">03 &nbsp;/&nbsp; The D-pad</p>
-        <h2 class="beat-head">The D-pad resembles a robot.</h2>
-        <p class="beat-sub">Four years of FRC, FTC, & VEX controllers. Java on the RoboRIO, C++ on VEX — and the harder half, getting a hundred-person team onto real version control and wireless deploys that could be rolled back between matches.</p>
-      </div>
-
-      <div class="beat" data-beat="4" data-in=".725" data-out=".845">
-        <p class="beat-label">04 &nbsp;/&nbsp; The keys</p>
-        <h2 class="beat-head">The keys are what I build with.</h2>
-        <p class="beat-sub">JavaScript, Python, C++, KiCad, Linux — seven caps for the tools I've shipped something in, rather than the ones I've only read about.</p>
-      </div>
-
-      <div class="beat" data-beat="5" data-in=".890" data-out="1.02">
-        <p class="beat-label">05 &nbsp;/&nbsp; The engineer</p>
-        <h2 class="beat-head">Shivin Anand</h2>
-        <p class="beat-sub">Computer Engineering at the University of Florida. That board was the practice run — keep scrolling for the one I'm actually trying to build.</p>
-      </div>
-    </div>
-
-    <div class="seq-cue lbl" id="seqCue" aria-hidden="true">
-      <span>Scroll</span>
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
-    </div>
-
-    <a href="#top" class="seq-skip" id="seqSkip">
-      Skip intro
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-    </a>
-
-    <div id="seqLoader">
-      <p class="lbl text-ink3">Loading board</p>
-      <div class="loader-bar"><span id="seqLoadBar"></span></div>
-      <p class="lbl text-ink3 num" id="seqLoadPct">0%</p>
-    </div>
-  </div>
-</section>
-
-<script>
-/* Independent of sequence.js: if that file 404s, throws, or the frames never
-   finish loading, this still fires and frees the page instead of leaving a
-   visitor staring at a stuck "Loading board" screen forever. */
-(function () {
-  setTimeout(function () {
-    var loader = document.getElementById('seqLoader');
-    if (loader && !loader.hidden) {
-      loader.hidden = true;
-      var intro = document.getElementById('intro');
-      if (intro) intro.style.height = '100svh';
-    }
-  }, 8000);
-})();
-</script>
-
-<!-- ======================= HERO ======================= -->
-<section id="top" class="relative min-h-[100svh] flex flex-col justify-center pt-28 pb-12">
-  <div class="absolute inset-0 gridbg pointer-events-none hidden md:block" aria-hidden="true"></div>
-
-  <div class="relative mx-auto max-w-[1400px] w-full px-5 sm:px-8 lg:px-12">
-
-    <div class="flex items-start gap-3 mb-8 sm:mb-12" data-rv="up">
-      <span class="w-1.5 h-1.5 mt-[.5em] shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
-      <p class="lbl text-ink3">Computer Engineering &nbsp;/&nbsp; University of Florida &nbsp;/&nbsp; B.S. 2030</p>
-    </div>
-
-    <h1 class="display text-ink text-[clamp(2.2rem,6.2vw,5.5rem)] mb-8 sm:mb-10">
-      <span class="block" data-rv="up">I design the path</span>
-      <span class="block" data-rv="up">from sensor
-        <span class="relative inline-block">
-          <span class="relative z-10">to&nbsp;decision.</span>
-          <span id="heroSwipe" class="absolute left-0 right-0 bottom-[.04em] h-[.11em] bg-accent origin-left z-0" aria-hidden="true"></span>
-        </span>
-      </span>
-    </h1>
-
-    <div class="grid lg:grid-cols-12 gap-x-10 gap-y-9 items-end">
-
-      <div class="lg:col-span-6 xl:col-span-5">
-        <p class="prose-measure text-[1.0625rem] sm:text-[1.1875rem] leading-[1.62] text-ink2" data-rv="up">
-          Real-time embedded hardware — circuits and firmware that stay stable and responsive
-          under load, whether that's a car at 200&nbsp;mph or a grow chamber with failing sensors.
-          Control systems engineering at the hardware level, where <span class="text-ink font-medium">reliability
-          under pressure</span> matters as much as raw speed.
+        <p class="hero-lede prose-measure" data-rv="up">
+          Real-time embedded hardware &mdash; circuits and firmware where timing is the specification,
+          not an afterthought. Right now that means CPU RTL in a research lab and sole ownership of a
+          competition robot&rsquo;s board.
         </p>
 
         <div class="flex flex-wrap items-center gap-2.5 mt-8" data-rv="up">
-          <a href="mailto:shivin.r.anand@gmail.com" class="btn btn-solid">
+          <a href="mailto:shivin.r.anand@gmail.com" class="btn wipe btn-solid">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             Get in touch
           </a>
-          <a href="https://github.com/shividoge" target="_blank" rel="noopener" class="btn btn-ghost">
+          <a href="https://github.com/shividoge" target="_blank" rel="noopener" class="btn wipe btn-ghost">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.26 5.69.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
             GitHub
           </a>
-          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener" class="btn btn-ghost">
+          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener" class="btn wipe btn-ghost">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46zM5.34 7.43a2.07 2.07 0 1 1 0-4.13 2.07 2.07 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
             LinkedIn
           </a>
         </div>
       </div>
 
-      <div class="lg:col-span-6 xl:col-start-8 xl:col-span-5">
-        <div class="hr mb-5" data-rv="line"></div>
-        <dl class="grid grid-cols-2 gap-x-6 gap-y-5">
-          <div data-rv="up">
-            <dt class="lbl text-ink3 mb-1.5">Focus</dt>
-            <dd class="text-[.9375rem] leading-snug text-ink font-medium">Real-time embedded systems</dd>
+      <!-- The part is built, not photographed: real faces, real thickness,
+           and components that stand off the surface, so turning it moves the
+           light and the parallax the way turning an object does. Every feature
+           maps to a real piece of the work, so the dots are content. -->
+      <div class="hero-stage" id="chipStage">
+        <div class="chip-wrap">
+          <div class="chip-cast" aria-hidden="true"></div>
+          <div class="chip-hold" id="chipHold" role="img"
+               aria-label="A microchip of my own design: a quad-flat package with a display, a D-pad, a camera lens and a row of keys, one for each tool I work in.">
+            <button type="button" class="spot" data-title="The display"
+                    aria-label="The display: web work"><span class="spot-dot" aria-hidden="true"></span></button>
+            <button type="button" class="spot" data-title="The D-pad"
+                    aria-label="The D-pad: robotics"><span class="spot-dot" aria-hidden="true"></span></button>
+            <button type="button" class="spot" data-title="The lens"
+                    aria-label="The lens: computer vision"><span class="spot-dot" aria-hidden="true"></span></button>
+            <button type="button" class="spot" data-title="The keys"
+                    aria-label="The keys: the stack"><span class="spot-dot" aria-hidden="true"></span></button>
           </div>
-          <div data-rv="up">
-            <dt class="lbl text-ink3 mb-1.5">Based</dt>
-            <dd class="text-[.9375rem] leading-snug text-ink font-medium">Gainesville, FL<span class="text-ink3 font-normal"> — from Tampa</span></dd>
-          </div>
-          <div data-rv="up">
-            <dt class="lbl text-ink3 mb-1.5">Graduating</dt>
-            <dd class="text-[.9375rem] leading-snug text-ink font-medium num">May 2030</dd>
-          </div>
-          <div data-rv="up">
-            <dt class="lbl text-ink3 mb-1.5">Seeking</dt>
-            <dd class="text-[.9375rem] leading-snug text-ink font-medium">Summer 2027 internship &amp; research</dd>
-          </div>
-        </dl>
-        <div class="hr mt-5" data-rv="line"></div>
-      </div>
-    </div>
-
-    <div class="mt-12 sm:mt-16 flex items-center gap-3 text-ink3" data-rv="up">
-      <span class="lbl">Scroll</span>
-      <span id="scrollTick" class="block w-10 h-px bg-line relative overflow-hidden" aria-hidden="true">
-        <span class="absolute inset-y-0 left-0 w-3 bg-accentd"></span>
-      </span>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= ARCHITECTURE / CHIP ======================= -->
-<section id="architecture" class="relative px-3 sm:px-5 lg:px-8 pb-20 sm:pb-28 pt-4">
-  <div class="mx-auto max-w-[1600px]">
-    <div class="chip-wrap on-dark px-5 sm:px-8 lg:px-12 py-12 sm:py-16" data-dark-zone>
-
-      <!-- header -->
-      <div class="flex flex-wrap items-start justify-between gap-6 mb-10 sm:mb-14">
-        <div>
-          <div class="flex items-center gap-3 mb-4" data-rv="up">
-            <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true"></span>
-            <p class="lbl text-dkink2">01 &nbsp;/&nbsp; Target architecture</p>
-          </div>
-          <h2 class="display text-dkink text-[clamp(2rem,5.6vw,4.25rem)] max-w-[16ch]" data-rv="mask"><span class="ln"><span>The chip I'm</span></span><span class="ln"><span>building toward.</span></span></h2>
-        </div>
-        <p class="text-dkink2 text-[.9375rem] leading-[1.66] max-w-[38ch] sm:pt-2" data-rv="up">
-          A real-time control SoC — the sensor-to-decision pipeline on one die.
-          Not a fabricated part. It's the reference I use to decide what to learn next,
-          and every block maps to a gap I'm closing.
-        </p>
-      </div>
-
-      <div class="hr-dk mb-8 sm:mb-12" data-rv="line"></div>
-
-      <div class="grid xl:grid-cols-12 gap-x-10 gap-y-10">
-
-        <!-- ---------- DIE ---------- -->
-        <div class="xl:col-span-8 2xl:col-span-9 min-w-0">
-          <div class="scroller-shell" id="chipShell">
-          <div class="scroller overflow-x-auto noscroll -mx-2 px-2" id="chipScroller">
-            <svg id="chipSvg" viewBox="0 0 1040 660" role="img"
-                 aria-labelledby="chipTitle chipDesc" class="min-w-[840px] xl:min-w-0">
-              <title id="chipTitle">Block diagram of a real-time control system-on-chip</title>
-              <desc id="chipDesc">Six functional blocks connected in a signal pipeline: sensor front-end, ADC array, real-time core, control-loop DSP, safety island, and CAN-FD / I²C physical layer. Supporting SRAM, PLL clock tree, and power management blocks sit alongside. Each block is selectable for details.</desc>
-
-              <defs>
-                <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
-                  <feGaussianBlur stdDeviation="3.4" result="b"/>
-                  <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                </filter>
-                <pattern id="dieTex" width="14" height="14" patternUnits="userSpaceOnUse">
-                  <circle cx="1" cy="1" r=".55" fill="#1E1E25"/>
-                </pattern>
-              </defs>
-
-              <!-- package substrate -->
-              <rect class="substrate" x="16" y="16" width="1008" height="628" rx="16"/>
-              <g id="pads" aria-hidden="true"></g>
-
-              <!-- die -->
-              <rect x="90" y="90" width="860" height="480" rx="5" fill="url(#dieTex)"/>
-              <rect class="die-edge" id="dieEdge" x="90" y="90" width="860" height="480" rx="5" pathLength="1"/>
-              <rect class="die-edge" x="102" y="102" width="836" height="456" rx="3" opacity=".45" pathLength="1"/>
-
-              <!-- corner registration marks -->
-              <g stroke="#3A3A44" stroke-width="1.2" fill="none" aria-hidden="true">
-                <path d="M64 90h-16M90 64v-16"/><path d="M976 90h16M950 64v-16"/>
-                <path d="M64 570h-16M90 596v16"/><path d="M976 570h16M950 596v16"/>
-              </g>
-
-              <!-- secondary routing -->
-              <g id="traces" aria-hidden="true">
-                <path class="trace" d="M460 310 V 336 H 254 V 360"     pathLength="1"/>
-                <path class="trace" d="M874 360 V 344 H 600 V 310"     pathLength="1"/>
-                <path class="trace" d="M822 285 H 638"                  pathLength="1"/>
-                <path class="trace" d="M700 360 V 328 H 470 V 310"      pathLength="1" stroke-dasharray="3 4"/>
-                <path class="trace" d="M170 140 V 118 H 620 V 140"      pathLength="1" opacity=".6"/>
-                <path class="trace" d="M950 490 H 900 V 542 H 200"      pathLength="1" opacity=".6"/>
-              </g>
-              <g fill="#3A3A44" aria-hidden="true">
-                <circle cx="460" cy="336" r="2"/><circle cx="254" cy="336" r="2"/>
-                <circle cx="874" cy="344" r="2"/><circle cx="600" cy="344" r="2"/>
-                <circle cx="900" cy="542" r="2"/><circle cx="620" cy="118" r="2"/>
-              </g>
-
-              <!-- primary signal bus (static) -->
-              <path id="busStatic" class="trace" stroke="#3E3E4A" stroke-width="1.6"
-                    d="M 90 250 H 528 V 452 H 730 V 250 H 950" pathLength="1"/>
-
-              <!-- static support blocks -->
-              <g aria-hidden="true">
-                <rect x="822" y="140" width="104" height="170" rx="4" fill="#111116" stroke="#242430" stroke-width="1" pathLength="1" class="supp"/>
-                <text class="static-name" x="836" y="164">SRAM</text>
-                <g id="sramCells"></g>
-
-                <rect x="822" y="360" width="104" height="130" rx="4" fill="#111116" stroke="#242430" stroke-width="1" pathLength="1" class="supp"/>
-                <text class="static-name" x="836" y="384">PLL</text>
-                <text class="static-name" x="836" y="400">CLK TREE</text>
-                <g stroke="#242430" stroke-width="1" fill="none">
-                  <path d="M836 424h76M836 440h76M836 456h76M836 472h76"/>
-                </g>
-
-                <rect x="114" y="360" width="280" height="130" rx="4" fill="#111116" stroke="#242430" stroke-width="1" pathLength="1" class="supp"/>
-                <text class="static-name" x="128" y="384">POWER MANAGEMENT</text>
-                <text class="static-name" x="128" y="400">LDO / BUCK ×4</text>
-                <g stroke="#242430" stroke-width="1" fill="none">
-                  <path d="M128 424h60v46h-60zM204 424h60v46h-60zM280 424h60v46h-60zM356 424h24v46h-24z"/>
-                </g>
-              </g>
-
-              <!-- ============ INTERACTIVE BLOCKS ============ -->
-              <g id="blocks">
-
-                <g class="blk" data-blk="1" role="button" tabindex="0" aria-pressed="false" aria-label="Block 01, Sensor front-end. Show details.">
-                  <rect class="blk-glow" x="114" y="140" width="136" height="170" rx="4"/>
-                  <rect class="blk-body" x="114" y="140" width="136" height="170" rx="4" pathLength="1"/>
-                  <rect class="flash"    x="114" y="140" width="136" height="170" rx="4"/>
-                  <text class="blk-num"  x="128" y="166">01</text>
-                  <text class="blk-sub"  x="236" y="166" text-anchor="end">ANALOG</text>
-                  <text class="blk-name" x="128" y="196">SENSOR</text>
-                  <text class="blk-name" x="128" y="215">FRONT-END</text>
-                </g>
-
-                <g class="blk" data-blk="2" role="button" tabindex="0" aria-pressed="false" aria-label="Block 02, ADC array. Show details.">
-                  <rect class="blk-glow" x="274" y="140" width="120" height="170" rx="4"/>
-                  <rect class="blk-body" x="274" y="140" width="120" height="170" rx="4" pathLength="1"/>
-                  <rect class="flash"    x="274" y="140" width="120" height="170" rx="4"/>
-                  <text class="blk-num"  x="288" y="166">02</text>
-                  <text class="blk-sub"  x="380" y="166" text-anchor="end">16-BIT</text>
-                  <text class="blk-name" x="288" y="196">ADC</text>
-                  <text class="blk-name" x="288" y="215">ARRAY</text>
-                </g>
-
-                <g class="blk" data-blk="3" role="button" tabindex="0" aria-pressed="false" aria-label="Block 03, Real-time core. Show details.">
-                  <rect class="blk-glow" x="418" y="140" width="220" height="170" rx="4"/>
-                  <rect class="blk-body" x="418" y="140" width="220" height="170" rx="4" pathLength="1"/>
-                  <rect class="flash"    x="418" y="140" width="220" height="170" rx="4"/>
-                  <text class="blk-num"  x="432" y="166">03</text>
-                  <text class="blk-sub"  x="624" y="166" text-anchor="end">2× LOCKSTEP</text>
-                  <text class="blk-name" x="432" y="200" style="font-size:19px">REAL-TIME</text>
-                  <text class="blk-name" x="432" y="223" style="font-size:19px">CORE</text>
-                  <g stroke="#2C2C34" stroke-width="1" fill="none">
-                    <path d="M432 262h88v34h-88zM540 262h84v34h-84z"/>
-                  </g>
-                </g>
-
-                <g class="blk" data-blk="4" role="button" tabindex="0" aria-pressed="false" aria-label="Block 04, Control-loop DSP. Show details.">
-                  <rect class="blk-glow" x="418" y="360" width="220" height="130" rx="4"/>
-                  <rect class="blk-body" x="418" y="360" width="220" height="130" rx="4" pathLength="1"/>
-                  <rect class="flash"    x="418" y="360" width="220" height="130" rx="4"/>
-                  <text class="blk-num"  x="432" y="386">04</text>
-                  <text class="blk-sub"  x="624" y="386" text-anchor="end">FIXED POINT</text>
-                  <text class="blk-name" x="432" y="416">CONTROL-LOOP</text>
-                  <text class="blk-name" x="432" y="435">DSP</text>
-                </g>
-
-                <g class="blk" data-blk="5" role="button" tabindex="0" aria-pressed="false" aria-label="Block 05, Safety island. Show details.">
-                  <rect class="blk-glow" x="662" y="360" width="136" height="130" rx="4"/>
-                  <rect class="blk-body" x="662" y="360" width="136" height="130" rx="4" pathLength="1"/>
-                  <rect class="flash"    x="662" y="360" width="136" height="130" rx="4"/>
-                  <text class="blk-num"  x="676" y="386">05</text>
-                  <text class="blk-sub"  x="784" y="386" text-anchor="end">ISOLATED</text>
-                  <text class="blk-name" x="676" y="416">SAFETY</text>
-                  <text class="blk-name" x="676" y="435">ISLAND</text>
-                </g>
-
-                <g class="blk" data-blk="6" role="button" tabindex="0" aria-pressed="false" aria-label="Block 06, CAN-FD and I²C physical layer. Show details.">
-                  <rect class="blk-glow" x="662" y="140" width="136" height="170" rx="4"/>
-                  <rect class="blk-body" x="662" y="140" width="136" height="170" rx="4" pathLength="1"/>
-                  <rect class="flash"    x="662" y="140" width="136" height="170" rx="4"/>
-                  <text class="blk-num"  x="676" y="166">06</text>
-                  <text class="blk-sub"  x="784" y="166" text-anchor="end">BUS OUT</text>
-                  <text class="blk-name" x="676" y="196">CAN-FD</text>
-                  <text class="blk-name" x="676" y="215">I²C PHY</text>
-                </g>
-              </g>
-
-              <!-- travelling signal -->
-              <path id="pulseTrail" class="pulse" opacity=".26" stroke-width="5"
-                    d="M 90 250 H 528 V 452 H 730 V 250 H 950" pathLength="1000"/>
-              <path id="pulseHead" class="pulse"
-                    d="M 90 250 H 528 V 452 H 730 V 250 H 950" pathLength="1000"/>
-
-              <text class="static-name" x="90" y="238">SENSOR BUS IN</text>
-              <text class="static-name" x="950" y="238" text-anchor="end">ACTUATOR OUT</text>
-            </svg>
-          </div>
-          </div>
-
-          <!-- mobile hint + selectors -->
-          <p class="lbl text-dkink2 mt-4 xl:hidden">Drag the diagram sideways — or pick a block:</p>
-          <div class="flex gap-2 overflow-x-auto noscroll mt-3 pb-1" id="chipSelectors" role="group" aria-label="Select an architecture block"></div>
         </div>
 
-        <!-- ---------- READOUT RAIL ---------- -->
-        <aside class="xl:col-span-4 2xl:col-span-3 min-w-0 flex flex-col gap-8" aria-label="Architecture specifications">
+        <div class="chip-tip" id="chipTip" role="status" aria-live="polite">
+          <b id="chipTipT"></b><span id="chipTipB"></span>
+        </div>
 
-          <div>
-            <p class="lbl text-dkink2 mb-4">Loop budget</p>
-            <dl class="grid grid-cols-2 gap-x-5 gap-y-5">
-              <div><dt class="lbl text-dkink2/70 mb-1">Loop rate</dt><dd class="rail-val text-accent text-[1.75rem] num">10<span class="text-[.95rem] text-dkink2 ml-1">kHz</span></dd></div>
-              <div><dt class="lbl text-dkink2/70 mb-1">Latency</dt><dd class="rail-val text-accent text-[1.75rem] num">&lt;100<span class="text-[.95rem] text-dkink2 ml-1">µs</span></dd></div>
-              <div><dt class="lbl text-dkink2/70 mb-1">Process</dt><dd class="rail-val text-dkink text-[1.75rem] num">22<span class="text-[.95rem] text-dkink2 ml-1">nm</span></dd></div>
-              <div><dt class="lbl text-dkink2/70 mb-1">Cores</dt><dd class="rail-val text-dkink text-[1.75rem] num">2<span class="text-[.95rem] text-dkink2 ml-1">+1</span></dd></div>
-            </dl>
-          </div>
-
-          <button id="pulseToggle" type="button" aria-pressed="false"
-                  class="chipsel !w-full !flex !items-center !justify-center !gap-2 !text-center">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-            <span id="pulseToggleLabel">Pause signal</span>
-          </button>
-
-          <div class="hr-dk"></div>
-
-          <!-- live block readout -->
-          <div id="chipReadout" aria-live="polite" class="min-h-[248px]">
-            <p class="lbl text-accent mb-3"><span id="roNum">01</span> &nbsp;/&nbsp; <span id="roStage">Stage 1 of 6</span></p>
-            <h3 id="roName" class="display text-dkink text-[1.65rem] mb-3 leading-[1.1]">Sensor front-end</h3>
-            <p id="roDesc" class="text-dkink2 text-[.9375rem] leading-[1.66] mb-6">Analog conditioning and protection for the raw sensor bus. Everything downstream inherits its noise floor.</p>
-            <dl id="roSpecs" class="flex flex-col gap-0 border-t border-dkline"></dl>
-          </div>
-
-          <div class="hr-dk"></div>
-
-          <p class="text-[.8125rem] leading-[1.7] text-dkink2/80">
-            <span class="text-dkink">Why this matters to me.</span> The hydroponics chamber failed the same way
-            twice — a sensor kept reporting, but stopped telling the truth. Block&nbsp;05 is the answer
-            I didn't have then.
-          </p>
-        </aside>
+        <div class="chip-foot">
+          <p class="lbl hero-mut" id="chipHint">Drag to turn it &nbsp;&#183;&nbsp; tap a part</p>
+          <button type="button" class="chip-pause wipe" id="chipPause" aria-pressed="false">Pause</button>
+        </div>
       </div>
     </div>
+
+    <div class="hero-facts">
+      <div class="hr-dk mb-5" data-rv="line"></div>
+      <dl class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+        <div data-rv="up">
+          <dt class="lbl hero-mut mb-1.5">Focus</dt>
+          <dd class="hero-fact">Real-time embedded systems</dd>
+        </div>
+        <div data-rv="up">
+          <dt class="lbl hero-mut mb-1.5">Based</dt>
+          <dd class="hero-fact">Gainesville, FL<span class="hero-mut font-normal"> &mdash; from Tampa</span></dd>
+        </div>
+        <div data-rv="up">
+          <dt class="lbl hero-mut mb-1.5">Graduating</dt>
+          <dd class="hero-fact num">May 2030</dd>
+        </div>
+        <div data-rv="up">
+          <dt class="lbl hero-mut mb-1.5">Seeking</dt>
+          <dd class="hero-fact">Summer 2027 internship &amp; research</dd>
+        </div>
+      </dl>
+    </div>
+
+    <p class="hero-cue lbl" aria-hidden="true">Scroll &nbsp;&#8595;</p>
   </div>
 </section>
 
 <!-- ======================= WORK ======================= -->
-<section id="work" class="relative pt-8 sm:pt-16 pb-20 sm:pb-28">
+<section id="work" class="relative pt-28 sm:pt-32 pb-20 sm:pb-28">
+  <!-- the board edge the opening is snapped off at; drawn by seam.js -->
+  <div id="seam" aria-hidden="true"></div>
   <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
 
     <div class="flex flex-wrap items-end justify-between gap-6 mb-10 sm:mb-14">
       <div>
         <div class="flex items-center gap-3 mb-4" data-rv="up">
           <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
-          <p class="lbl text-ink3">02 &nbsp;/&nbsp; Selected work</p>
+          <p class="lbl text-ink3">01 &nbsp;/&nbsp; Selected work</p>
         </div>
-        <h2 class="display text-ink text-[clamp(2rem,5.6vw,4.25rem)] max-w-[14ch]" data-rv="mask"><span class="ln"><span>Things I've</span></span><span class="ln"><span>actually shipped.</span></span></h2>
+        <h2 class="display text-ink text-[clamp(2rem,5.6vw,4.25rem)] max-w-[14ch]" data-rv="mask"><span class="ln"><span>Things I've built,</span></span><span class="ln"><span>current work first.</span></span></h2>
       </div>
-      <p class="lbl text-ink3 num pb-2" data-rv="up">04 projects &nbsp;·&nbsp; 2022 — present</p>
+      <p class="lbl text-ink3 num pb-2" id="workCount" data-rv="up">06 projects</p>
     </div>
 
     <div class="hr" data-rv="line"></div>
 
     <!-- ---- 01 ---- -->
-    <article class="work-row group border-b border-line" data-work>
-      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
-        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">01</span></div>
-        <div class="lg:col-span-4">
-          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">Autonomous Hydroponic Growth&nbsp;Chamber</span></h3>
-          <p class="lbl text-accentd mb-1">NASA Kennedy Space Center Award · SSEF</p>
-          <p class="lbl text-ink3">Independent research</p>
-        </div>
-        <div class="lg:col-span-6 lg:col-start-6">
-          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
-            A closed-loop plant growth system built to test whether a crop cycle could survive
-            conditions relevant to spaceflight.
-          </p>
-          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
-            I designed a custom I²C PCB around a Teensy microcontroller and a BME680 environmental
-            sensor, then paired the telemetry with an OpenCV vision pipeline. Combining HSV and
-            Excess&nbsp;Green&nbsp;Index segmentation gave a continuous read on plant health, and a
-            regression model correlated the sensor and visual streams against real growth outcomes
-            across repeated trials.
-          </p>
-          <div class="flex flex-wrap gap-1.5">
-            <span class="tag">Embedded C</span><span class="tag">Custom PCB</span><span class="tag">I²C</span>
-            <span class="tag">Teensy</span><span class="tag">BME680</span><span class="tag">Python</span><span class="tag">OpenCV</span>
-          </div>
-        </div>
-        <div class="lg:col-span-1 lg:text-right">
-          <span class="lbl text-ink3">Writeup<br>pending</span>
-        </div>
-      </div>
-    </article>
-
-    <!-- ---- 02 ---- -->
-    <article class="work-row group border-b border-line" data-work>
-      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
-        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">02</span></div>
-        <div class="lg:col-span-4">
-          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">Middleton Robotics — FRC &amp;&nbsp;VEX</span></h3>
-          <p class="lbl text-accentd mb-1">President · 100+ students mentored</p>
-          <p class="lbl text-ink3">2022 — 2026</p>
-        </div>
-        <div class="lg:col-span-6 lg:col-start-6">
-          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
-            Revived a dormant competitive robotics program and ran both its FRC and VEX teams.
-          </p>
-          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
-            Robot control code in Java on the RoboRIO and C++ on VEX controllers. The harder problem
-            was never the robot — it was getting a hundred-person team onto real version control and a
-            wireless over-the-air deployment workflow, so a change could be pushed and rolled back
-            between matches without bricking a machine on the field.
-          </p>
-          <div class="flex flex-wrap gap-1.5">
-            <span class="tag">Java</span><span class="tag">RoboRIO</span><span class="tag">C++</span>
-            <span class="tag">VEX</span><span class="tag">Git</span><span class="tag">OTA deployment</span>
-          </div>
-        </div>
-        <div class="lg:col-span-1 lg:text-right">
-          <span class="lbl text-ink3">Leadership</span>
-        </div>
-      </div>
-    </article>
-
-    <!-- ---- 03 ---- -->
-    <article class="work-row group border-b border-line" data-work>
-      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
-        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">03</span></div>
-        <div class="lg:col-span-4">
-          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">FLSAM Region 4a Infrastructure</span></h3>
-          <p class="lbl text-accentd mb-1">Regional Coordinator &amp; Webmaster</p>
-          <p class="lbl text-ink3">Florida STEM competition region</p>
-        </div>
-        <div class="lg:col-span-6 lg:col-start-6">
-          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
-            Kept a regional STEM organization's site and repositories running through a full handoff.
-          </p>
-          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
-            Administered Linux hosting and GitHub repository access for the region, then executed a
-            complete webmaster and repo-access transition — credentials, permissions, and deployment
-            moved without downtime for the schools and teams depending on it. Unglamorous work, and
-            the closest thing I've had to an on-call rotation.
-          </p>
-          <div class="flex flex-wrap gap-1.5">
-            <span class="tag">Linux admin</span><span class="tag">GitHub</span><span class="tag">Access control</span><span class="tag">Deployment</span>
-          </div>
-        </div>
-        <div class="lg:col-span-1 lg:text-right">
-          <a href="https://flsam.org" target="_blank" rel="noopener" class="ulink lbl text-ink3 hover:text-ink transition-colors">Live</a>
-        </div>
-      </div>
-    </article>
-
-    <!-- ---- 04 ---- -->
-    <article class="work-row group border-b border-line" data-work>
-      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">
-        <div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">04</span></div>
-        <div class="lg:col-span-4">
-          <h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3"><span class="work-title">Inventory &amp; Storefront Platform</span></h3>
-          <p class="lbl text-accentd mb-1">Built solo · In production</p>
-          <p class="lbl text-ink3">Family business</p>
-        </div>
-        <div class="lg:col-span-6 lg:col-start-6">
-          <p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">
-            A full-stack inventory system and public storefront that a real business runs on.
-          </p>
-          <p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">
-            Roughly 1,000 products, each with a QR-code tag that resolves straight to its record.
-            Two separately authenticated surfaces — an admin view for stock and pricing, and the
-            public storefront — over a MongoDB schema I designed and stood up myself.
-          </p>
-          <div class="flex flex-wrap gap-1.5">
-            <span class="tag">JavaScript</span><span class="tag">HTML/CSS</span><span class="tag">MongoDB</span>
-            <span class="tag">QR routing</span><span class="tag">Auth</span>
-          </div>
-        </div>
-        <div class="lg:col-span-1 lg:text-right">
-          <span class="lbl text-ink3">Private<br>deployment</span>
-        </div>
-      </div>
-    </article>
+    <div id="workList"></div>
   </div>
 </section>
 
@@ -1106,12 +999,11 @@
       <div class="lg:col-span-4">
         <div class="flex items-center gap-3 mb-4" data-rv="up">
           <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
-          <p class="lbl text-ink3">03 &nbsp;/&nbsp; Capabilities</p>
+          <p class="lbl text-ink3">02 &nbsp;/&nbsp; Capabilities</p>
         </div>
         <h2 class="display text-ink text-[clamp(2rem,5.2vw,3.75rem)] max-w-[12ch] mb-6" data-rv="mask"><span class="ln"><span>What I can</span></span><span class="ln"><span>do today.</span></span></h2>
         <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure mb-8" data-rv="up">
-          Ten capabilities, wired to the projects that earned them. Solid pads are things
-          I've shipped with; dashed pads are what year one goes to. Pick one.
+          Ten capabilities, each wired to the project that earned it. Solid pads are what I’ve shipped with; dashed pads are what this year is for.
         </p>
 
         <div class="cap-panel" data-rv="up">
@@ -1125,11 +1017,8 @@
             Firmware for the hydroponic chamber and the control loop it ran.
           </p>
 
-          <div class="flex items-baseline justify-between mb-2">
-            <p class="lbl text-ink3">Depth</p>
-            <p class="lbl text-ink num" id="capDepthVal">85</p>
-          </div>
-          <div class="cap-meter mb-6"><i id="capDepth"></i></div>
+          <p class="lbl text-ink3 mb-2">Used in</p>
+          <p class="text-[.9375rem] leading-[1.55] text-ink mb-6" id="capUsed">Hydroponic chamber firmware</p>
 
           <div id="capLinkedWrap">
             <p class="lbl text-ink3 mb-3">Wired to</p>
@@ -1155,12 +1044,56 @@
         </div>
 
         <div class="flex items-center justify-center gap-6 mt-4">
-          <button type="button" class="orbit-hint" id="orbitToggle" aria-pressed="false">
+          <button type="button" class="orbit-hint wipe" id="orbitToggle" aria-pressed="false">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
             <span id="orbitToggleLabel">Pause orbit</span>
           </button>
           <p class="lbl text-ink3" id="orbitCount">7 shipped &nbsp;·&nbsp; 3 building</p>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CURRENTLY BUILDING ======================= -->
+<section id="architecture" class="relative py-20 sm:py-28">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
+      <div>
+        <div class="flex items-center gap-3 mb-4" data-rv="up">
+          <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
+          <p class="lbl text-ink3">03 &nbsp;/&nbsp; Currently building</p>
+        </div>
+        <h2 class="display text-ink text-[clamp(2rem,5.2vw,3.75rem)]" data-rv="mask"><span class="ln"><span>FPGA work,</span></span><span class="ln"><span>right now.</span></span></h2>
+      </div>
+      <p class="lbl text-ink3" data-rv="up">Smart Systems Lab &nbsp;·&nbsp; UF ECE</p>
+    </div>
+
+    <div class="fpanel" data-dark-zone data-rv="up">
+      <div class="fp-rail"><span class="vert">SMART SYSTEMS LAB</span></div>
+      <div class="fp-stage">
+        <div class="spinner" id="fpgaSpinner"></div>
+        <div class="fp-ctl"><button type="button" class="wipe" id="fpgaToggle" aria-pressed="false">Pause</button></div>
+      </div>
+      <div class="fp-side on-dark">
+        <div class="fp-stats">
+          <div><span class="lbl">Since</span><b class="num">AUG<span class="unit"> 2026</span></b></div>
+          <div><span class="lbl">Language</span><b class="p">SystemVerilog</b></div>
+          <div><span class="lbl">Toolchain</span><b class="p">Vivado / Vitis</b></div>
+          <div><span class="lbl">Role</span><b>Research asst.</b></div>
+        </div>
+        <p>Designing a CPU in Verilog and SystemVerilog &mdash; ALU and datapath first &mdash; as the RTL
+        foundation for a quantized neural-network inference accelerator, under PhD student Peter Forcha.
+        The target is low-latency, near-sensor inference: move the compute to the data rather than the
+        data to the compute.</p>
+        <p class="lbl fp-lbl">Milestones</p>
+        <table class="sched">
+          <tr><td>ALU &mdash; add / sub / mul</td><td>in progress</td></tr>
+          <tr class="now"><td>Datapath + regfile</td><td>now</td></tr>
+          <tr><td>Quantized NN accelerator</td><td>next phase</td></tr>
+          <tr><td>Near-sensor inference</td><td>target</td></tr>
+        </table>
+        <a class="fp-link lbl" href="https://faculty.eng.ufl.edu/smartsystems/" target="_blank" rel="noopener">Smart Systems Lab &nbsp;↗</a>
       </div>
     </div>
   </div>
@@ -1189,6 +1122,20 @@
           </li>
 
           <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
+            <span class="tl-dot bg-accent" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">September 2026 &mdash; present</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5">Hardware Team &mdash; IEEE Student Branch, UF</h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Sole electrical and PCB designer on a ten-person team, building the board for IEEE SoutheastCon&rsquo;s Hardware Competition.</p>
+          </li>
+
+          <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
+            <span class="tl-dot bg-accent" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">August 2026 &mdash; present</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5">Undergraduate Research Assistant &mdash; Smart Systems Lab</h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">UF Dept. of ECE, under PhD student Peter Forcha. CPU design in Verilog and SystemVerilog toward a quantized neural-network inference accelerator.</p>
+          </li>
+
+          <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
             <span class="tl-dot bg-ink" aria-hidden="true"></span>
             <p class="lbl text-ink3 num mb-2">2026 · Science &amp; Engineering Fair</p>
             <h3 class="display text-ink text-[1.35rem] mb-1.5">NASA Kennedy Space Center Award</h3>
@@ -1204,14 +1151,14 @@
 
           <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
             <span class="tl-dot bg-ink" aria-hidden="true"></span>
-            <p class="lbl text-ink3 num mb-2">2022 — 2026</p>
+            <p class="lbl text-ink3 num mb-2">May 2024 — May 2026</p>
             <h3 class="display text-ink text-[1.35rem] mb-1.5">President — Middleton Robotics</h3>
             <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Rebuilt the FRC and VEX programs; mentored 100+&nbsp;students.</p>
           </li>
 
           <li class="relative pl-8 sm:pl-12" data-rv="up">
             <span class="tl-dot bg-ink" aria-hidden="true"></span>
-            <p class="lbl text-ink3 num mb-2">2023-2026</p>
+            <p class="lbl text-ink3 num mb-2">June 2023 — May 2026</p>
             <h3 class="display text-ink text-[1.35rem] mb-1.5">Region 4a Coordinator &amp; Webmaster — FLSAM</h3>
             <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Regional web and repository infrastructure.</p>
           </li>
@@ -1232,15 +1179,15 @@
           <ul class="flex flex-col gap-4">
             <li>
               <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">First semester at UF</p>
-              <p class="text-[.875rem] leading-[1.65] text-ink2">Week one of a four-year plan.</p>
+              <p class="text-[.875rem] leading-[1.65] text-ink2">One semester in, already on a hardware team and in a research lab.</p>
             </li>
             <li>
-              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">IEEE hardware team</p>
-              <p class="text-[.875rem] leading-[1.65] text-ink2">In discussion to join the main hardware team.</p>
+              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">IEEE Hardware Team</p>
+              <p class="text-[.875rem] leading-[1.65] text-ink2">Sole electrical/PCB designer, building the team’s SoutheastCon competition robot board.</p>
             </li>
             <li>
-              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">Looking for a lab</p>
-              <p class="text-[.875rem] leading-[1.65] text-ink2">Undergraduate research in embedded or control systems — happy to start by cleaning up someone's test rig.</p>
+              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">Smart Systems Lab, UF ECE</p>
+              <p class="text-[.875rem] leading-[1.65] text-ink2">Undergraduate research assistant — writing CPU RTL in Verilog and SystemVerilog toward a quantized neural-network accelerator, under PhD student Peter Forcha.</p>
             </li>
           </ul>
         </div>
@@ -1272,9 +1219,7 @@
     <div class="grid lg:grid-cols-12 gap-x-10 gap-y-8 items-end">
       <div class="lg:col-span-5">
         <p class="text-[1.0625rem] leading-[1.62] text-ink2 prose-measure" data-rv="up">
-          I'm a freshman, which means I'm cheap, available, and will happily take the
-          job nobody wants. Internships, undergraduate research, or a project that
-          needs someone to sit with an oscilloscope until it makes sense.
+          I’m early in the degree and already deep in the work — writing RTL in a research lab, and the sole designer on a competition robot’s board. If you have hardware that needs designing, debugging or bringing up, I’d like to hear about it. Internships, research, or something that simply has to work.
         </p>
       </div>
 
@@ -1285,12 +1230,12 @@
           shivin.r.anand@gmail.com
         </a>
         <div class="flex flex-wrap items-center gap-2.5 mt-8">
-          <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn btn-solid">
+          <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn wipe btn-solid">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Download résumé
           </a>
-          <a href="https://github.com/shividoge" target="_blank" rel="noopener" class="btn btn-ghost">GitHub</a>
-          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn</a>
+          <a href="https://github.com/shividoge" target="_blank" rel="noopener" class="btn wipe btn-ghost">GitHub</a>
+          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener" class="btn wipe btn-ghost">LinkedIn</a>
         </div>
       </div>
     </div>
@@ -1307,8 +1252,14 @@
 
 </main>
 
-<script src="sequence.js" defer></script>
-<script src="orbital.js" defer></script>
+<script src="seam.js?v=3842f1f3" defer></script>
+<script src="wipe.js?v=4ac6d1df" defer></script>
+<script src="hero.js?v=f59aa9af" defer></script>
+<script src="fpga.js?v=1ab4802d" defer></script>
+<script src="projects.js?v=ae1a142e" defer></script>
+<script src="cards.js?v=1460bd74" defer></script>
+<script src="orbital.js?v=e9c6b3c9" defer></script>
+<script src="spine.js?v=302ae2aa" defer></script>
 
 <!-- ======================= SCRIPTS ======================= -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
@@ -1322,147 +1273,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   $('#year').textContent = new Date().getFullYear();
-
-  /* ---------------- chip data ---------------- */
-  var BLOCKS = [
-    { n:'01', name:'Sensor front-end', short:'SENSOR',
-      desc:'Analog conditioning and protection for the raw sensor bus. Everything downstream inherits its noise floor, so this is the block you cannot fix in software.',
-      specs:[['Channels','16 differential'],['Input range','±10 V'],['Input noise','< 2 µVrms']] },
-    { n:'02', name:'ADC array', short:'ADC',
-      desc:'Simultaneous-sampling conversion across every channel. If sampling is not deterministic, the control loop downstream is just guessing at what happened when.',
-      specs:[['Resolution','16-bit'],['Sample rate','1 MSPS / ch'],['Aperture jitter','< 50 ps']] },
-    { n:'03', name:'Real-time core', short:'CORE',
-      desc:'Two cores in lockstep running the deterministic loop. Tightly-coupled memory instead of cache, and bounded interrupt latency — predictable beats fast.',
-      specs:[['Cores','2 × lockstep'],['Clock','600 MHz'],['Execution time','Bounded WCET']] },
-    { n:'04', name:'Control-loop DSP', short:'DSP',
-      desc:'Fixed-point PID and state estimation in hardware, so the loop closes in the same number of cycles every single time it runs.',
-      specs:[['MAC / cycle','4'],['Loop rate','10 kHz'],['Precision','Q15 / Q31']] },
-    { n:'05', name:'Safety island', short:'SAFETY',
-      desc:'Independent watchdog and plausibility checks on its own clock and power domain. Its whole job is deciding what happens when a sensor lies.',
-      specs:[['Watchdog','Windowed'],['Redundancy','2-out-of-3 vote'],['Fault reaction','< 50 µs']] },
-    { n:'06', name:'CAN-FD / I²C PHY', short:'BUS',
-      desc:'Gets the decision off the die and onto the bus with a deadline attached. A correct answer that arrives late is still a failure.',
-      specs:[['CAN-FD','8 Mbit/s'],['I²C','1 MHz Fm+'],['TX latency','< 12 µs']] }
-  ];
-
-  /* ---------------- generate die detail ---------------- */
-  var svg = $('#chipSvg');
-  if (svg) {
-    var NS = 'http://www.w3.org/2000/svg';
-    var pads = $('#pads');
-    function pad(x, y, w, h) {
-      var r = document.createElementNS(NS, 'rect');
-      r.setAttribute('x', x); r.setAttribute('y', y);
-      r.setAttribute('width', w); r.setAttribute('height', h);
-      r.setAttribute('rx', 1.5); r.setAttribute('class', 'pad');
-      pads.appendChild(r);
-    }
-    for (var px = 120; px <= 920; px += 26) { pad(px, 62, 14, 8); pad(px, 590, 14, 8); }
-    for (var py = 120; py <= 540; py += 26) { pad(62, py, 8, 14); pad(970, py, 8, 14); }
-
-    var cells = $('#sramCells');
-    for (var ci = 0; ci < 4; ci++) {
-      for (var cj = 0; cj < 6; cj++) {
-        var c = document.createElementNS(NS, 'rect');
-        c.setAttribute('x', 832 + ci * 22); c.setAttribute('y', 172 + cj * 22);
-        c.setAttribute('width', 18); c.setAttribute('height', 18);
-        c.setAttribute('class', 'sram-cell');
-        cells.appendChild(c);
-      }
-    }
-  }
-
-  /* ---------------- chip selection ---------------- */
-  var blkEls   = $$('#blocks .blk');
-  var selWrap  = $('#chipSelectors');
-  var roNum    = $('#roNum'), roStage = $('#roStage'), roName = $('#roName'),
-      roDesc   = $('#roDesc'), roSpecs = $('#roSpecs');
-  var active   = 0;
-
-  if (selWrap) {
-    BLOCKS.forEach(function (b, i) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'chipsel';
-      btn.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-      btn.textContent = b.n + '  ' + b.short;
-      btn.addEventListener('click', function () { select(i); });
-      selWrap.appendChild(btn);
-    });
-  }
-
-  function select(i) {
-    active = i;
-    var b = BLOCKS[i];
-
-    blkEls.forEach(function (el, k) {
-      el.classList.toggle('active', k === i);
-      el.setAttribute('aria-pressed', k === i ? 'true' : 'false');
-    });
-    $$('.chipsel', selWrap).forEach(function (el, k) {
-      el.setAttribute('aria-pressed', k === i ? 'true' : 'false');
-    });
-
-    roNum.textContent   = b.n;
-    roStage.textContent = 'Stage ' + (i + 1) + ' of 6';
-    roName.textContent  = b.name;
-    roDesc.textContent  = b.desc;
-
-    roSpecs.innerHTML = '';
-    b.specs.forEach(function (s) {
-      var row = document.createElement('div');
-      row.className = 'flex justify-between items-baseline gap-4 py-2.5 border-b border-dkline';
-      row.innerHTML = '<dt class="lbl text-dkink2/70">' + s[0] + '</dt>' +
-                      '<dd class="num text-[.8125rem] text-dkink text-right">' + s[1] + '</dd>';
-      roSpecs.appendChild(row);
-    });
-
-    var el = blkEls[i];
-    if (el && scroller && scroller.scrollWidth > scroller.clientWidth) {
-      var br = el.getBoundingClientRect(), sr = scroller.getBoundingClientRect();
-      if (br.left < sr.left || br.right > sr.right) {
-        scroller.scrollTo({
-          left: scroller.scrollLeft + (br.left - sr.left) - (sr.width - br.width) / 2,
-          behavior: reduce ? 'auto' : 'smooth'
-        });
-      }
-    }
-
-    if (!reduce && window.gsap) {
-      gsap.fromTo([roName, roDesc, roSpecs],
-        { opacity: 0, y: 6 },
-        { opacity: 1, y: 0, duration: 0.28, stagger: 0.04, ease: 'power2.out', overwrite: true });
-    }
-  }
-
-  blkEls.forEach(function (el, i) {
-    el.addEventListener('click', function () { select(i); });
-    el.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); }
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        e.preventDefault(); var nx = (i + 1) % blkEls.length; blkEls[nx].focus(); select(nx);
-      }
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        e.preventDefault(); var pv = (i - 1 + blkEls.length) % blkEls.length; blkEls[pv].focus(); select(pv);
-      }
-    });
-  });
-  select(0);
-
-  /* ---------------- wide-diagram scroll affordance ---------------- */
-  var scroller = $('#chipScroller'), shell = $('#chipShell');
-  function scrollHint() {
-    if (!scroller || !shell) return;
-    var more = scroller.scrollWidth - scroller.clientWidth - scroller.scrollLeft > 8;
-    shell.setAttribute('data-more', more ? '1' : '0');
-  }
-  if (scroller) {
-    scroller.addEventListener('scroll', scrollHint, { passive: true });
-    window.addEventListener('resize', scrollHint);
-    scrollHint();
-    /* keep a selected block in view when chosen from the button row */
-    scroller.addEventListener('focusin', scrollHint);
-  }
 
   /* ---------------- mobile menu ---------------- */
   var menuBtn = $('#menuBtn'), menu = $('#mobileMenu');
@@ -1536,7 +1346,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ---------------- nav state ---------------- */
   var nav = $('#nav');
-  var darkZone = $('[data-dark-zone]');
+  var darkZones = $$('[data-dark-zone]');
   var navLinks = $$('.navlink');
   var sections = navLinks.map(function (l) { return $(l.getAttribute('href')); });
 
@@ -1544,10 +1354,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var y = window.scrollY || 0;
     nav.classList.toggle('stuck', y > 24);
 
-    if (darkZone) {
-      var r = darkZone.getBoundingClientRect();
-      nav.classList.toggle('over-dark', r.top < 34 && r.bottom > 34);
+    /* more than one dark block on the page now, so the nav asks all of them */
+    var onDark = false;
+    for (var d = 0; d < darkZones.length; d++) {
+      var z = darkZones[d];
+      var r = z.getBoundingClientRect();
+      /* the hero's last stretch is already fading to paper, so it stops
+         counting as dark before its box ends */
+      var fade = parseFloat(z.getAttribute('data-dark-fade')) || 0;
+      if (r.top < 34 && (r.bottom - fade) > 34) { onDark = true; break; }
     }
+    nav.classList.toggle('over-dark', onDark);
 
     var cur = -1;
     for (var i = 0; i < sections.length; i++) {
@@ -1570,11 +1387,6 @@ document.addEventListener('DOMContentLoaded', function () {
   if (!window.gsap) return;
   gsap.registerPlugin(ScrollTrigger);
 
-  var head = $('#pulseHead'), trail = $('#pulseTrail');
-  var flashes = $$('#blocks .flash');
-  // fraction along the signal path where each block begins
-  var STOPS = [0.019, 0.146, 0.259, 0.434, 0.612, 0.778];
-  var signalTl = null;
 
   gsap.matchMedia().add({
     ok:      '(prefers-reduced-motion: no-preference)',
@@ -1589,9 +1401,6 @@ document.addEventListener('DOMContentLoaded', function () {
       gsap.set('.tl-line', { scaleY: 1 });
       gsap.set('.tl-dot', { scale: 1 });
       gsap.set('#heroSwipe', { scaleX: 1 });
-      gsap.set([head, trail], { strokeDasharray: 'none', opacity: 0.45 });
-      var pb = $('#pulseToggle');
-      if (pb) pb.style.display = 'none';
       return;
     }
 
@@ -1649,48 +1458,15 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    /* --- die draw-in --- */
-    var dieTl = gsap.timeline({
-      scrollTrigger: { trigger: '#architecture', start: 'top 72%', once: true }
-    });
-    dieTl.from('#chipSvg .die-edge, #chipSvg .supp', {
-            strokeDasharray: 1, strokeDashoffset: 1, duration: 1.1, stagger: 0.06, ease: 'power2.inOut'
-          })
-         .from('#pads rect', { opacity: 0, duration: 0.5, stagger: { each: 0.004, from: 'random' } }, 0.2)
-         .from('#traces path, #busStatic', {
-            strokeDasharray: 1, strokeDashoffset: 1, duration: 0.9, stagger: 0.05, ease: 'power2.inOut'
-          }, 0.3)
-         .from('#blocks .blk', {
-            opacity: 0, y: 10, duration: 0.45, stagger: 0.07, ease: 'back.out(1.3)'
-          }, 0.5)
-         .from('#sramCells rect', { opacity: 0, duration: 0.35, stagger: 0.012 }, 0.7);
 
-    /* --- travelling signal --- */
-    gsap.set([head, trail], { strokeDasharray: '38 962', strokeDashoffset: 0 });
-    signalTl = gsap.timeline({ repeat: -1, paused: true });
-    signalTl.to(head,  { strokeDashoffset: -1000, duration: 5.2, ease: 'none' }, 0)
-            .to(trail, { strokeDashoffset: -1000, duration: 5.2, ease: 'none' }, 0.045);
-    STOPS.forEach(function (t, i) {
-      signalTl.to(flashes[i], { opacity: 0.3, duration: 0.16, ease: 'power1.out' }, t * 5.2)
-              .to(flashes[i], { opacity: 0,   duration: 0.5,  ease: 'power1.in'  }, t * 5.2 + 0.16);
-    });
 
-    /* run only while the die is on screen */
-    ScrollTrigger.create({
-      trigger: '#architecture', start: 'top bottom', end: 'bottom top',
-      onToggle: function (s) {
-        var btn = $('#pulseToggle');
-        var wantPaused = btn && btn.getAttribute('aria-pressed') === 'true';
-        if (s.isActive && !wantPaused) signalTl.play(); else signalTl.pause();
-      }
-    });
 
     /* --- scroll tick --- */
     gsap.to('#scrollTick span', {
       xPercent: 240, duration: 1.5, ease: 'power1.inOut', repeat: -1, yoyo: true
     });
 
-    return function () { if (signalTl) signalTl.kill(); };
+
   });
 
   /* ---------------- safety net ----------------
@@ -1721,17 +1497,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('visibilitychange', armNet);
   armNet();
 
-  /* ---------------- pause / run control ---------------- */
-  var toggle = $('#pulseToggle');
-  if (toggle) {
-    toggle.addEventListener('click', function () {
-      var paused = toggle.getAttribute('aria-pressed') === 'true';
-      var next = !paused;
-      toggle.setAttribute('aria-pressed', next ? 'true' : 'false');
-      $('#pulseToggleLabel').textContent = next ? 'Run signal' : 'Pause signal';
-      if (signalTl) { next ? signalTl.pause() : signalTl.play(); }
-    });
-  }
 });
 </script>
 </body>

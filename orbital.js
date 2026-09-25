@@ -41,34 +41,34 @@
   };
 
   var DATA = [
-    { id:'embedded', label:'Embedded C',   cat:'Firmware',    icon:I.chip,  status:'shipped',  depth:85,
+    { id:'embedded', label:'Embedded C',   cat:'Firmware',    icon:I.chip,  status:'shipped',  used:'Hydroponic chamber firmware',
       desc:'Firmware for the hydroponic chamber and the control loop it ran. The language I reach for when the timing has to be provable, not just fast.',
       links:['pcb','sensors','robotics'] },
-    { id:'pcb', label:'PCB / KiCad',       cat:'Hardware',    icon:I.board, status:'shipped',  depth:70,
+    { id:'pcb', label:'PCB / KiCad',       cat:'Hardware',    icon:I.board, status:'shipped',  used:'One custom I²C board, designed and brought up',
       desc:'A custom I²C board around a Teensy and a BME680 — schematic, layout, and the bring-up when it did not work the first time.',
       links:['embedded','sensors','fpga'] },
-    { id:'sensors', label:'Sensor I/O',    cat:'Hardware',    icon:I.wave,  status:'shipped',  depth:80,
+    { id:'sensors', label:'Sensor I/O',    cat:'Hardware',    icon:I.wave,  status:'shipped',  used:'BME680 + I²C bus, hydroponic chamber',
       desc:'I²C bus architecture and environmental sensing. Also where I learned a sensor can keep reporting long after it stops telling the truth.',
       links:['embedded','pcb','vision'] },
-    { id:'vision', label:'Vision',         cat:'Software',    icon:I.lens,  status:'shipped',  depth:65,
+    { id:'vision', label:'Vision',         cat:'Software',    icon:I.lens,  status:'shipped',  used:'OpenCV pipeline, hydroponic chamber',
       desc:'OpenCV in Python — HSV and Excess Green Index segmentation, regressed against live sensor data to track plant health across trials.',
       links:['sensors','fullstack'] },
-    { id:'robotics', label:'Robotics',     cat:'Control',     icon:I.bot,   status:'shipped',  depth:80,
+    { id:'robotics', label:'Robotics',     cat:'Control',     icon:I.bot,   status:'shipped',  used:'Four seasons — FRC and VEX',
       desc:'Java on the RoboRIO, C++ on VEX, four seasons of it — plus the version control and wireless deploys that kept a hundred-person team from bricking a robot.',
       links:['embedded','rtos'] },
-    { id:'fullstack', label:'Full-stack',  cat:'Software',    icon:I.win,   status:'shipped',  depth:70,
+    { id:'fullstack', label:'Full-stack',  cat:'Software',    icon:I.win,   status:'shipped',  used:'~1,000 products, in production',
       desc:'JavaScript over a MongoDB schema I designed for roughly a thousand QR-tagged products. Two authenticated surfaces, running a real business.',
       links:['linux','vision'] },
-    { id:'linux', label:'Linux / Infra',   cat:'Systems',     icon:I.term,  status:'shipped',  depth:60,
+    { id:'linux', label:'Linux / Infra',   cat:'Systems',     icon:I.term,  status:'shipped',  used:'FLSAM Region 4a, ongoing',
       desc:'Server administration and repository access for FLSAM Region 4a, including a full webmaster handoff with no downtime for the teams depending on it.',
       links:['fullstack'] },
-    { id:'matlab', label:'MATLAB',         cat:'Building next', icon:I.sigma, status:'building', depth:15,
+    { id:'matlab', label:'MATLAB',         cat:'Building next', icon:I.sigma, status:'building', used:'Year one target',
       desc:'Not on my résumé yet, on purpose. Model-based control design is the gap between sketching a loop and being able to prove it before it runs.',
       links:['robotics','rtos'] },
-    { id:'fpga', label:'FPGA / VHDL',      cat:'Building next', icon:I.grid, status:'building', depth:10,
+    { id:'fpga', label:'FPGA / VHDL',      cat:'Building next', icon:I.grid, status:'building', used:'Year one target',
       desc:'The one that turns the die diagram above from a drawing into something I could actually help design. First target of year one.',
       links:['pcb','embedded'] },
-    { id:'rtos', label:'RTOS',             cat:'Building next', icon:I.clock, status:'building', depth:20,
+    { id:'rtos', label:'RTOS',             cat:'Building next', icon:I.clock, status:'building', used:'Year one target',
       desc:'Deterministic task scheduling and bounded interrupt latency — the whole promise of the safety island on that chip.',
       links:['embedded','robotics','matlab'] }
   ];
@@ -109,8 +109,7 @@
     status:document.getElementById('capStatus'),
     name:  document.getElementById('capName'),
     desc:  document.getElementById('capDesc'),
-    depth: document.getElementById('capDepth'),
-    depthV:document.getElementById('capDepthVal'),
+    used:  document.getElementById('capUsed'),
     linked:document.getElementById('capLinked')
   };
 
@@ -124,8 +123,7 @@
     el.desc.textContent   = d.desc;
     el.status.textContent = d.status === 'shipped' ? 'Shipped' : 'Building next';
     el.status.dataset.s   = d.status;
-    el.depth.style.transform = 'scaleX(' + (d.depth / 100) + ')';
-    el.depthV.textContent = d.depth;
+    el.used.textContent   = d.used;
 
     el.linked.innerHTML = '';
     d.links.forEach(function (id) {
