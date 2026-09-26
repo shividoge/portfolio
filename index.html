@@ -113,6 +113,111 @@
   .chip-pause:hover,.fp-ctl button:hover{ border-color:var(--accent); }
   #menuBtn{ --wipe-fill:var(--ink); --wipe-ink:var(--bg); }
 
+  /* ===================== MENU =====================
+     One button at every width, and a panel that opens as a circle grown from
+     that button. The items ride up out of their own masks in sequence, the
+     way the section headings do, so the menu is made of the same material as
+     the rest of the page. */
+  html.no-scroll{ overflow:hidden; }
+
+  .menu-btn{
+    position:relative; display:grid; place-items:center;
+    width:44px; height:44px; margin-right:-.35rem; border-radius:12px;
+    border:1px solid var(--line); background:transparent; cursor:pointer;
+    color:var(--ink);
+    transition:border-color .3s var(--ease), background .3s var(--ease);
+  }
+  .menu-btn:hover{ border-color:var(--ink); }
+  #nav.over-dark .menu-btn{ border-color:var(--dkline); color:var(--dkink); }
+  #nav.over-dark .menu-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  #nav.menu-open .menu-btn{ border-color:var(--dkline); color:var(--dkink); }
+  #nav.menu-open .menu-btn:hover{ border-color:var(--accent); color:var(--accent); }
+  .menu-btn:focus-visible{ outline:2px solid transparent; outline-offset:3px; }
+  @media (forced-colors: active){ .menu-btn:focus-visible{ outline-color:Highlight; } }
+
+  .menu-bars{ position:relative; width:18px; height:12px; display:block; }
+  .menu-bars i{
+    position:absolute; left:0; width:100%; height:1.6px; border-radius:2px;
+    background:currentColor;
+    transition:transform .42s cubic-bezier(.76,0,.24,1), top .28s var(--ease);
+  }
+  .menu-bars i:nth-child(1){ top:2px; }
+  .menu-bars i:nth-child(2){ top:8px; }
+  .menu-btn.is-open .menu-bars i:nth-child(1){ top:5px; transform:rotate(45deg); }
+  .menu-btn.is-open .menu-bars i:nth-child(2){ top:5px; transform:rotate(-45deg); }
+
+  .menu-panel{
+    position:fixed; inset:0; z-index:45; background:var(--dk); color:var(--dkink);
+    display:flex; align-items:center;
+    clip-path:circle(0px at var(--mx,92%) var(--my,34px));
+    transition:clip-path .72s cubic-bezier(.76,0,.24,1);
+    overflow-y:auto; overscroll-behavior:contain;
+  }
+  .menu-panel.is-open{ clip-path:circle(150% at var(--mx,92%) var(--my,34px)); }
+  .menu-inner{
+    width:100%; max-width:1400px; margin:0 auto;
+    padding:7rem 1.25rem 3rem;
+  }
+  @media (min-width:640px){ .menu-inner{ padding:7.5rem 2rem 3.5rem; } }
+  @media (min-width:1024px){ .menu-inner{ padding:8rem 3rem 4rem; } }
+
+  .menu-nav{ display:flex; flex-direction:column; }
+  .menu-item{
+    display:flex; align-items:baseline; gap:1rem; padding:.28rem 0;
+    color:var(--dkink); text-decoration:none;
+  }
+  .menu-n{
+    font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.14em;
+    color:var(--dkink2); flex:none; width:2.2rem;
+    transition:color .3s var(--ease);
+  }
+  /* each line rides up out of its own mask */
+  .menu-t{ display:block; overflow:hidden; }
+  .menu-t > span{
+    display:block;
+    font-family:"Space Grotesk",sans-serif; font-weight:600;
+    font-size:clamp(2.1rem,7.4vw,4.6rem); line-height:1.12; letter-spacing:-.035em;
+    transform:translateY(105%);
+    transition:transform .62s cubic-bezier(.22,.61,.36,1), color .3s var(--ease);
+  }
+  .menu-panel.is-open .menu-t > span{
+    transform:translateY(0);
+    transition-delay:calc(var(--i) * 55ms + 120ms);
+  }
+  .menu-item:hover .menu-t > span,
+  .menu-item:focus-visible .menu-t > span{ color:var(--accent); }
+  .menu-item:hover .menu-n{ color:var(--accent); }
+  .menu-item:focus-visible{ outline:2px solid transparent; outline-offset:4px; }
+  @media (forced-colors: active){ .menu-item:focus-visible{ outline-color:Highlight; } }
+
+  .menu-foot{
+    display:grid; gap:1.75rem; margin-top:3rem;
+    padding-top:1.75rem; border-top:1px solid var(--dkline);
+  }
+  @media (min-width:760px){ .menu-foot{ grid-template-columns:repeat(3,1fr); } }
+  .menu-col{
+    opacity:0; transform:translateY(12px);
+    transition:opacity .5s var(--ease), transform .5s var(--ease);
+  }
+  .menu-panel.is-open .menu-col{
+    opacity:1; transform:none;
+    transition-delay:calc(var(--i) * 55ms + 120ms);
+  }
+  .menu-mut{ color:var(--dkink2); margin:0 0 .55rem; }
+  .menu-link{
+    display:block; color:var(--dkink); text-decoration:none;
+    font-size:.9375rem; line-height:1.7;
+    transition:color .25s var(--ease);
+  }
+  .menu-link:hover{ color:var(--accent); }
+
+  @media (prefers-reduced-motion: reduce){
+    .menu-panel{ transition-duration:.01ms; }
+    .menu-t > span{ transform:none; transition:none; }
+    .menu-col{ opacity:1; transform:none; transition:none; }
+    .menu-bars i{ transition:none; }
+  }
+
   /* --- nav --- */
   #nav{ transition:background .35s var(--ease), border-color .35s var(--ease), backdrop-filter .35s var(--ease); }
   #nav.stuck{ background:rgba(247,245,241,.82); backdrop-filter:blur(14px) saturate(1.4); border-bottom-color:var(--line); }
@@ -641,7 +746,7 @@
      over the last stretch of the section. */
   .hero-chip{
     position:relative; min-height:100svh; display:flex; align-items:center;
-    padding:7.5rem 0 10rem; background:var(--dk); color:var(--dkink);
+    padding:6.75rem 0 8.5rem; background:var(--dk); color:var(--dkink);
     isolation:isolate; overflow:hidden;
   }
   .hero-plate{
@@ -669,6 +774,51 @@
   .hero-fact{ font-size:.9375rem; line-height:1.35; color:var(--dkink); font-weight:500; }
   .hero-facts{ margin-top:3.5rem; }
   .hero-cue{ margin:2.75rem 0 0; color:var(--dkink2); }
+
+  /* ---- what I'm on right now ----
+     A plate, not a button: label riding above the frame, the part drawn in
+     line, a crest under it. Everything inside is currentColor, so the wipe
+     flips the whole object rather than just the background. */
+  .hero-bottom{ display:grid; gap:2.5rem; align-items:start; }
+  @media (min-width:1000px){
+    .hero-bottom{ grid-template-columns:198px minmax(0,1fr); gap:3rem; }
+  }
+  .now-wrap{ position:relative; width:198px; }
+  .now-card{
+    position:relative; display:flex; flex-direction:column; align-items:center;
+    width:198px; padding:1.05rem 1rem .95rem;
+    border:1px solid var(--dkline); border-radius:16px;
+    color:var(--dkink); text-decoration:none; text-align:center;
+    --wipe-fill:var(--accent); --wipe-ink:var(--dk);
+    transition:border-color .45s var(--ease);
+  }
+  .now-card:hover,.now-card:focus-visible{ border-color:var(--accent); }
+  .now-card:focus-visible{ outline:2px solid transparent; outline-offset:4px; }
+  @media (forced-colors: active){ .now-card:focus-visible{ outline-color:Highlight; } }
+
+  .now-label{
+    display:block; margin:0 0 .55rem 2px;
+    color:var(--dkink2); transition:color .45s var(--ease);
+  }
+  .now-wrap:hover .now-label{ color:var(--accent); }
+  .now-card .now-art{ display:block; width:100px; margin:.3rem 0 .85rem; }
+  .now-card .now-crest{ display:block; width:94px; margin:.1rem 0 .6rem; }
+  .now-card svg{ display:block; width:100%; height:auto; }
+  .now-title{
+    font-family:"Space Grotesk",sans-serif; font-weight:600;
+    font-size:.9375rem; letter-spacing:.08em; text-transform:uppercase;
+  }
+  .now-rule{ display:block; width:64%; height:1px; background:currentColor;
+             opacity:.45; margin:.7rem 0 .2rem; }
+  .now-foot{
+    font-family:"JetBrains Mono",monospace; font-size:.5625rem;
+    letter-spacing:.13em; text-transform:uppercase; line-height:1.85;
+    opacity:.72;
+  }
+
+  @media (max-width:999px){
+    .now-wrap{ margin-top:.5rem; }
+  }
 
   /* the seam straddles the boundary: half on the dark side, half on the page */
   #seam{
@@ -837,36 +987,47 @@
         <span class="lbl nav-mut text-ink3 hidden sm:inline">CE&nbsp;·&nbsp;UF</span>
       </a>
 
-      <nav class="hidden lg:flex items-center gap-8" aria-label="Primary">
-        <a href="#work"         class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Work</a>
-        <a href="#capabilities" class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Capabilities</a>
-        <a href="#architecture" class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Architecture</a>
-        <a href="#record"       class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Record</a>
-        <a href="#contact"      class="navlink wipe lbl nav-mut text-ink3 transition-colors px-2 py-1 rounded">Contact</a>
-      </nav>
-
       <div class="flex items-center gap-2.5">
         <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn wipe btn-solid !min-h-[42px] !px-4 text-[13px]">
           Résumé
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </a>
-        <button id="menuBtn" class="wipe lg:hidden nav-ink grid place-items-center w-11 h-11 -mr-1.5 rounded-lg border border-line" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+        <button id="menuBtn" class="menu-btn nav-ink" aria-label="Open menu" aria-expanded="false" aria-controls="menuPanel">
+          <span class="menu-bars" aria-hidden="true"><i></i><i></i></span>
         </button>
       </div>
     </div>
   </div>
-
-  <div id="mobileMenu" class="lg:hidden hidden border-t border-line bg-bg/95 backdrop-blur-lg">
-    <nav class="mx-auto max-w-[1400px] px-5 sm:px-8 py-3 flex flex-col" aria-label="Mobile">
-      <a href="#architecture" class="lbl text-ink2 py-3.5 border-b border-line/70">01 &nbsp;Work</a>
-      <a href="#work"         class="lbl text-ink2 py-3.5 border-b border-line/70">02 &nbsp;Capabilities</a>
-      <a href="#capabilities" class="lbl text-ink2 py-3.5 border-b border-line/70">03 &nbsp;Architecture</a>
-      <a href="#record"       class="lbl text-ink2 py-3.5 border-b border-line/70">04 &nbsp;Record</a>
-      <a href="#contact"      class="lbl text-ink2 py-3.5">05 &nbsp;Contact</a>
-    </nav>
-  </div>
 </header>
+
+<!-- The menu opens as a circle from the button it came out of. -->
+<div id="menuPanel" class="menu-panel" inert>
+  <div class="menu-inner">
+    <nav class="menu-nav" aria-label="Primary">
+      <a class="navlink menu-item" href="#work"         style="--i:0"><span class="menu-n">01</span><span class="menu-t"><span>Work</span></span></a>
+      <a class="navlink menu-item" href="#capabilities" style="--i:1"><span class="menu-n">02</span><span class="menu-t"><span>Capabilities</span></span></a>
+      <a class="navlink menu-item" href="#architecture" style="--i:2"><span class="menu-n">03</span><span class="menu-t"><span>Architecture</span></span></a>
+      <a class="navlink menu-item" href="#record"       style="--i:3"><span class="menu-n">04</span><span class="menu-t"><span>Record</span></span></a>
+      <a class="navlink menu-item" href="#contact"      style="--i:4"><span class="menu-n">05</span><span class="menu-t"><span>Contact</span></span></a>
+    </nav>
+
+    <div class="menu-foot">
+      <div class="menu-col" style="--i:5">
+        <p class="lbl menu-mut">Get in touch</p>
+        <a class="menu-link" href="mailto:shivin.r.anand@gmail.com">shivin.r.anand@gmail.com</a>
+      </div>
+      <div class="menu-col" style="--i:6">
+        <p class="lbl menu-mut">Elsewhere</p>
+        <a class="menu-link" href="https://github.com/shividoge" target="_blank" rel="noopener">GitHub &#8599;</a>
+        <a class="menu-link" href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+      </div>
+      <div class="menu-col" style="--i:7">
+        <p class="lbl menu-mut">Right now</p>
+        <a class="menu-link" href="#architecture">FPGA CPU &mdash; Smart Systems Lab</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main id="main" class="relative">
 <div id="spine" aria-hidden="true"></div>
@@ -906,6 +1067,7 @@
             LinkedIn
           </a>
         </div>
+
       </div>
 
       <!-- The part is built, not photographed: real faces, real thickness,
@@ -941,7 +1103,39 @@
 
     <div class="hero-facts">
       <div class="hr-dk mb-5" data-rv="line"></div>
-      <dl class="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+      <div class="hero-bottom">
+        <div class="now-wrap" data-rv="up">
+          <span class="now-label lbl">Working on now</span>
+        <!-- What I'm on right now, as its own object: label above the rule,
+             the part drawn in line, and the crest underneath. Links straight
+             to the section that explains it. -->
+        <a href="#architecture" class="now-card wipe" data-rv="up"
+           aria-label="Working on now: FPGA CPU at the UF Smart Systems Lab. Jump to that section.">
+
+          <span class="now-art" aria-hidden="true">
+            <svg viewBox="0 0 132 62" fill="none" stroke="currentColor" stroke-width="1.1"
+                 stroke-linejoin="round" stroke-linecap="round">
+              <path d="M30 2 V12"/><path d="M102 2 V12"/>
+              <path d="M26 7 L34 4"/><path d="M98 7 L106 4"/>
+              <path d="M12 12 L52 12 L66 28 L80 12 L120 12 L94 52 L38 52 Z"/>
+              <path d="M66 52 V60"/><path d="M62 57 L70 54"/>
+            </svg>
+          </span>
+
+          <span class="now-title">FPGA&nbsp;CPU</span>
+          <span class="now-rule" aria-hidden="true"></span>
+
+          <span class="now-crest" aria-hidden="true">
+            <svg viewBox="0 0 140 62"><g fill="none" stroke="currentColor" stroke-width="1" stroke-linejoin="round">
+<g><path d="M48.0 56.0 Q 23.0 44.0 27.0 11.0"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(40.7 51.6) rotate(-9.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(40.7 51.6) rotate(-97.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(34.4 45.4) rotate(5.7)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(34.4 45.4) rotate(-82.3)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(29.8 37.8) rotate(20.6)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(29.8 37.8) rotate(-67.4)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(27.2 28.9) rotate(34.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(27.2 28.9) rotate(-54.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(26.4 19.8) rotate(43.9)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(26.4 19.8) rotate(-44.1)"/></g>
+<g transform="translate(140 0) scale(-1 1)"><path d="M48.0 56.0 Q 23.0 44.0 27.0 11.0"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(40.7 51.6) rotate(-9.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(40.7 51.6) rotate(-97.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(34.4 45.4) rotate(5.7)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(34.4 45.4) rotate(-82.3)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(29.8 37.8) rotate(20.6)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(29.8 37.8) rotate(-67.4)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(27.2 28.9) rotate(34.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(27.2 28.9) rotate(-54.0)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(26.4 19.8) rotate(43.9)"/><path d="M0 0c4.6-3.1 10.1-1.6 11.9 2.8-4.2 3.5-9.8 2.3-11.9-2.8z" transform="translate(26.4 19.8) rotate(-44.1)"/></g>
+</g> <g fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"><rect x="52" y="20" width="36" height="24" rx="2.5"/><rect x="60" y="27" width="20" height="10" rx="1.5"/><path d="M55.0 20 V16"/><path d="M55.0 44 V48"/><path d="M52 22.0 H48"/><path d="M88 22.0 H92"/><path d="M60.0 20 V16"/><path d="M60.0 44 V48"/><path d="M52 26.6 H48"/><path d="M88 26.6 H92"/><path d="M65.0 20 V16"/><path d="M65.0 44 V48"/><path d="M52 31.2 H48"/><path d="M88 31.2 H92"/><path d="M70.0 20 V16"/><path d="M70.0 44 V48"/><path d="M52 35.8 H48"/><path d="M88 35.8 H92"/><path d="M75.0 20 V16"/><path d="M75.0 44 V48"/><path d="M52 40.4 H48"/><path d="M88 40.4 H92"/></g></svg>
+          </span>
+
+          <span class="now-foot">Smart Systems Lab<br>Since 2026</span>
+        </a>
+        </div>
+      <dl class="grid grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-5">
         <div data-rv="up">
           <dt class="lbl hero-mut mb-1.5">Focus</dt>
           <dd class="hero-fact">Real-time embedded systems</dd>
@@ -959,6 +1153,7 @@
           <dd class="hero-fact">Summer 2027 internship &amp; research</dd>
         </div>
       </dl>
+      </div>
     </div>
 
     <p class="hero-cue lbl" aria-hidden="true">Scroll &nbsp;&#8595;</p>
@@ -1274,19 +1469,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
   $('#year').textContent = new Date().getFullYear();
 
-  /* ---------------- mobile menu ---------------- */
-  var menuBtn = $('#menuBtn'), menu = $('#mobileMenu');
-  menuBtn.addEventListener('click', function () {
-    var open = menu.classList.toggle('hidden') === false;
+  var nav = $('#nav');
+
+  /* ---------------- menu ----------------
+     One button at every width. The panel opens as a circle grown from the
+     button itself, so the thing you pressed is where the page comes from,
+     then the items rise out of their own masks in sequence. */
+  var menuBtn = $('#menuBtn'), panel = $('#menuPanel');
+  var menuOpen = false, lastFocus = null;
+
+  function originFromButton() {
+    var r = menuBtn.getBoundingClientRect();
+    panel.style.setProperty('--mx', (r.left + r.width / 2) + 'px');
+    panel.style.setProperty('--my', (r.top + r.height / 2) + 'px');
+  }
+
+  function setMenu(open) {
+    if (open === menuOpen) return;
+    menuOpen = open;
+    if (open) { originFromButton(); lastFocus = document.activeElement; }
+
+    panel.classList.toggle('is-open', open);
+    menuBtn.classList.toggle('is-open', open);
+    nav.classList.toggle('menu-open', open);
     menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.documentElement.classList.toggle('no-scroll', open);
+
+    if (open) {
+      panel.removeAttribute('inert');
+      var first = $('.menu-item', panel);
+      if (first) setTimeout(function () { first.focus({ preventScroll: true }); }, reduce ? 0 : 260);
+    } else {
+      panel.setAttribute('inert', '');
+      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    }
+  }
+
+  menuBtn.addEventListener('click', function () { setMenu(!menuOpen); });
+  $$('#menuPanel a').forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
   });
-  $$('#mobileMenu a').forEach(function (a) {
-    a.addEventListener('click', function () {
-      menu.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
-    });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && menuOpen) setMenu(false);
   });
+  window.addEventListener('resize', function () { if (menuOpen) originFromButton(); });
 
   /* ---------------- D. size the timeline to its dots ----------------
      The connector should span first dot to last, not run on to the end of the
@@ -1345,7 +1572,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ---------------- nav state ---------------- */
-  var nav = $('#nav');
   var darkZones = $$('[data-dark-zone]');
   var navLinks = $$('.navlink');
   var sections = navLinks.map(function (l) { return $(l.getAttribute('href')); });

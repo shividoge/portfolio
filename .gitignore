@@ -1,3 +1,13 @@
-.playwright-cli/
+# The source renders for the chip. They are Shivin's own 3D output and worth
+# keeping locally, but the site no longer loads them — the hero builds the
+# part in CSS instead — so they do not belong in the deploy.
+frames/
+frames-sm/
+
+# Prototypes and dead ends kept on disk for reference only.
+concepts/
+
+# Tooling that is local to a machine, not to the site.
+.claude/
+.impeccable/
 .DS_Store
-node_modules/
