@@ -163,7 +163,8 @@
       var n = nodes[i];
       n.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0)';
       n.style.zIndex = String(10 + Math.round(depth * 40) + (i === pinned ? 100 : 0));
-      n.style.opacity = (i === pinned || i === hovered) ? '1' : (0.55 + 0.45 * depth).toFixed(3);
+      /* depth dims the pad only: the label stays at full contrast */
+      n.style.setProperty('--dim', (i === pinned || i === hovered) ? '1' : (0.55 + 0.45 * depth).toFixed(3));
     }
 
     /* traces from the pinned pad to everything it feeds */

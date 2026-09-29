@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-home>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,478 +16,28 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- not render-blocking: the loading screen has to paint before the fonts arrive -->
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 <link rel="stylesheet" href="tailwind.min.css">
+<link rel="stylesheet" href="base.css?v=72274e92">
+<link rel="stylesheet" href="parts.css?v=be8d890f">
+<link rel="stylesheet" href="chipread.css?v=f5c8c128">
+<link rel="stylesheet" href="scene.css?v=2257b8ce">
+<link rel="stylesheet" href="explorers.css?v=5d344d5b">
+<link rel="stylesheet" href="bands.css?v=6f11cb6a">
+<link rel="stylesheet" href="curtain.css?v=4693be32">
+<link rel="stylesheet" href="chrome.css?v=4b7c8fe4">
 <script>document.documentElement.classList.add('js');</script>
+<!-- Show the loading screen once per session, never on a deep link and never
+     for reduced motion. With no JavaScript this class is never added, so the
+     loader is simply never displayed. -->
+<script>try{var d=document.documentElement,ss=sessionStorage,rm=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!rm){if(ss.getItem('w2tx')){ss.removeItem('w2tx');d.classList.add('boot','boot-tx');}else if(!ss.getItem('w2boot')&&!location.hash){d.classList.add('boot',d.hasAttribute('data-home')?'boot-full':'boot-tx');}}}catch(e){}</script>
 
 <style>
-  :root{
-    --bg:#F7F5F1; --bg2:#EFEBE4; --ink:#14130F; --ink2:#55524A; --ink3:#66635B;
-    --line:#DDD8CF; --accent:#D5ACFF; --accentd:#6B3FA0;
-    --dk:#0D0D0F; --dk2:#16161A; --dkline:#2A2A31; --dkink:#EDEBE6; --dkink2:#9A968C;
-    --ease:cubic-bezier(.22,.61,.36,1);
-  }
-
-  html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
-  body{
-    background:var(--bg); color:var(--ink);
-    font-family:Archivo,ui-sans-serif,system-ui,sans-serif;
-    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    overflow-x:hidden;
-  }
-  @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior:auto; }
-    *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
-  }
-
-  ::selection{ background:var(--accent); color:var(--ink); }
-
-  /* --- scrollbar ---
-     Track stays transparent so it reads correctly over both the cream page
-     and the dark chip section; the thumb reuses --dkink2, already tuned as a
-     mid-tone that holds up against near-black as well as near-white. */
-  html{ scrollbar-width:thin; scrollbar-color:var(--dkink2) transparent; }
-  ::-webkit-scrollbar{ width:10px; height:10px; }
-  ::-webkit-scrollbar-track{ background:transparent; }
-  ::-webkit-scrollbar-thumb{
-    background-color:var(--dkink2); border-radius:999px;
-    border:2px solid transparent; background-clip:padding-box;
-  }
-  ::-webkit-scrollbar-thumb:hover{ background-color:var(--ink3); }
-
-  /* --- focus --- */
-  a,button,[tabindex]{ outline:none; }
-
-  /* --- type --- */
-  .display{ font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; font-weight:600; letter-spacing:-.03em; line-height:.96; }
-  .lbl{ font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem; letter-spacing:.14em; text-transform:uppercase; }
-  .num{ font-family:"JetBrains Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums; }
-  .prose-measure{ max-width:62ch; }
-
-  /* --- reveal (JS-gated so no-JS still shows everything) ---
-     Only "up" is an opacity-driven reveal, so only it starts hidden that way
-     (and only it is ever animated back to opacity:1, by ScrollTrigger.batch
-     below). "line" and "mask" already read as hidden purely through geometry
-     — zero-width scaleX, and the mask span pushed below its overflow:hidden
-     clip box — so layering opacity:0 on top of those left them with no code
-     path that ever set it back once they scrolled past the one-shot safety
-     net's initial-viewport check. */
-  .js [data-rv="up"]{ opacity:0; transform:translate3d(0,14px,0); }
-  .js [data-rv="line"]{ transform:scaleX(0); transform-origin:left; }
-
-  /* --- rules --- */
-  /* deep links / nav jumps must clear the fixed header */
-  section[id]{ scroll-margin-top:84px; }
-
-  .hr{ height:1px; background:var(--line); border:0; }
-  .hr-dk{ height:1px; background:var(--dkline); border:0; }
-
-  /* --- accent underline link --- */
-  .ulink{ position:relative; display:inline-block; }
-  .ulink::after{
-    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
-    background:var(--accent); transform:scaleX(0); transform-origin:right;
-    transition:transform .32s var(--ease);
-  }
-  .ulink:hover::after,.ulink:focus-visible::after{ transform:scaleX(1); transform-origin:left; }
-
-  /* --- buttons --- */
-  .btn{
-    display:inline-flex; align-items:center; gap:.6rem; min-height:48px;
-    padding:0 1.35rem; border-radius:999px; cursor:pointer;
-    font-size:.9375rem; font-weight:500; letter-spacing:-.01em;
-    transition:background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
-  }
-  .btn:active{ transform:translateY(1px); }
-  /* every button wipes; the pair below says what colour it wipes to */
-  .btn-solid{ background:var(--ink); color:var(--bg); border:1px solid var(--ink);
-              --wipe-fill:var(--accent); --wipe-ink:var(--ink); }
-  .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line);
-              --wipe-fill:var(--ink); --wipe-ink:var(--bg); }
-  .btn-ghost:hover{ border-color:var(--ink); }
-  .btn-dk{ background:var(--accent); color:var(--dk); border:1px solid var(--accent);
-           --wipe-fill:var(--dk); --wipe-ink:var(--accent); }
-
-  /* small pill controls wipe too */
-  .chip-pause,.fp-ctl button,.orbit-hint{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
-  .chip-pause:hover,.fp-ctl button:hover{ border-color:var(--accent); }
-  #menuBtn{ --wipe-fill:var(--ink); --wipe-ink:var(--bg); }
-
-  /* ===================== MENU =====================
-     One button at every width, and a panel that opens as a circle grown from
-     that button. The items ride up out of their own masks in sequence, the
-     way the section headings do, so the menu is made of the same material as
-     the rest of the page. */
-  html.no-scroll{ overflow:hidden; }
-
-  .menu-btn{
-    position:relative; display:grid; place-items:center;
-    width:44px; height:44px; margin-right:-.35rem; border-radius:12px;
-    border:1px solid var(--line); background:transparent; cursor:pointer;
-    color:var(--ink);
-    transition:border-color .3s var(--ease), background .3s var(--ease);
-  }
-  .menu-btn:hover{ border-color:var(--ink); }
-  #nav.over-dark .menu-btn{ border-color:var(--dkline); color:var(--dkink); }
-  #nav.over-dark .menu-btn:hover{ border-color:var(--accent); color:var(--accent); }
-  #nav.menu-open .menu-btn{ border-color:var(--dkline); color:var(--dkink); }
-  #nav.menu-open .menu-btn:hover{ border-color:var(--accent); color:var(--accent); }
-  .menu-btn:focus-visible{ outline:2px solid transparent; outline-offset:3px; }
-  @media (forced-colors: active){ .menu-btn:focus-visible{ outline-color:Highlight; } }
-
-  .menu-bars{ position:relative; width:18px; height:12px; display:block; }
-  .menu-bars i{
-    position:absolute; left:0; width:100%; height:1.6px; border-radius:2px;
-    background:currentColor;
-    transition:transform .42s cubic-bezier(.76,0,.24,1), top .28s var(--ease);
-  }
-  .menu-bars i:nth-child(1){ top:2px; }
-  .menu-bars i:nth-child(2){ top:8px; }
-  .menu-btn.is-open .menu-bars i:nth-child(1){ top:5px; transform:rotate(45deg); }
-  .menu-btn.is-open .menu-bars i:nth-child(2){ top:5px; transform:rotate(-45deg); }
-
-  .menu-panel{
-    position:fixed; inset:0; z-index:45; background:var(--dk); color:var(--dkink);
-    display:flex; align-items:center;
-    clip-path:circle(0px at var(--mx,92%) var(--my,34px));
-    transition:clip-path .72s cubic-bezier(.76,0,.24,1);
-    overflow-y:auto; overscroll-behavior:contain;
-  }
-  .menu-panel.is-open{ clip-path:circle(150% at var(--mx,92%) var(--my,34px)); }
-  .menu-inner{
-    width:100%; max-width:1400px; margin:0 auto;
-    padding:7rem 1.25rem 3rem;
-  }
-  @media (min-width:640px){ .menu-inner{ padding:7.5rem 2rem 3.5rem; } }
-  @media (min-width:1024px){ .menu-inner{ padding:8rem 3rem 4rem; } }
-
-  .menu-nav{ display:flex; flex-direction:column; }
-  .menu-item{
-    display:flex; align-items:baseline; gap:1rem; padding:.28rem 0;
-    color:var(--dkink); text-decoration:none;
-  }
-  .menu-n{
-    font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.14em;
-    color:var(--dkink2); flex:none; width:2.2rem;
-    transition:color .3s var(--ease);
-  }
-  /* each line rides up out of its own mask */
-  .menu-t{ display:block; overflow:hidden; }
-  .menu-t > span{
-    display:block;
-    font-family:"Space Grotesk",sans-serif; font-weight:600;
-    font-size:clamp(2.1rem,7.4vw,4.6rem); line-height:1.12; letter-spacing:-.035em;
-    transform:translateY(105%);
-    transition:transform .62s cubic-bezier(.22,.61,.36,1), color .3s var(--ease);
-  }
-  .menu-panel.is-open .menu-t > span{
-    transform:translateY(0);
-    transition-delay:calc(var(--i) * 55ms + 120ms);
-  }
-  .menu-item:hover .menu-t > span,
-  .menu-item:focus-visible .menu-t > span{ color:var(--accent); }
-  .menu-item:hover .menu-n{ color:var(--accent); }
-  .menu-item:focus-visible{ outline:2px solid transparent; outline-offset:4px; }
-  @media (forced-colors: active){ .menu-item:focus-visible{ outline-color:Highlight; } }
-
-  .menu-foot{
-    display:grid; gap:1.75rem; margin-top:3rem;
-    padding-top:1.75rem; border-top:1px solid var(--dkline);
-  }
-  @media (min-width:760px){ .menu-foot{ grid-template-columns:repeat(3,1fr); } }
-  .menu-col{
-    opacity:0; transform:translateY(12px);
-    transition:opacity .5s var(--ease), transform .5s var(--ease);
-  }
-  .menu-panel.is-open .menu-col{
-    opacity:1; transform:none;
-    transition-delay:calc(var(--i) * 55ms + 120ms);
-  }
-  .menu-mut{ color:var(--dkink2); margin:0 0 .55rem; }
-  .menu-link{
-    display:block; color:var(--dkink); text-decoration:none;
-    font-size:.9375rem; line-height:1.7;
-    transition:color .25s var(--ease);
-  }
-  .menu-link:hover{ color:var(--accent); }
-
-  @media (prefers-reduced-motion: reduce){
-    .menu-panel{ transition-duration:.01ms; }
-    .menu-t > span{ transform:none; transition:none; }
-    .menu-col{ opacity:1; transform:none; transition:none; }
-    .menu-bars i{ transition:none; }
-  }
-
-  /* --- nav --- */
-  #nav{ transition:background .35s var(--ease), border-color .35s var(--ease), backdrop-filter .35s var(--ease); }
-  #nav.stuck{ background:rgba(247,245,241,.82); backdrop-filter:blur(14px) saturate(1.4); border-bottom-color:var(--line); }
-  #nav.over-dark{ background:rgba(13,13,15,.72); border-bottom-color:var(--dkline); }
-  #nav.over-dark .nav-ink{ color:var(--dkink); }
-  #nav.over-dark .nav-mut{ color:var(--dkink2); }
-  #nav.over-dark .btn-solid{ background:var(--accent); color:var(--dk); border-color:var(--accent);
-                             --wipe-fill:var(--dkink); --wipe-ink:var(--dk); }
-  #nav.over-dark #menuBtn{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
-  .navlink{ position:relative; padding:.45rem .1rem; }
-  .navlink::after{
-    content:""; position:absolute; left:0; right:0; bottom:0; height:1.5px; background:var(--accent);
-    transform:scaleX(0); transform-origin:right; transition:transform .3s var(--ease);
-  }
-  .navlink:hover::after,.navlink[aria-current="true"]::after{ transform:scaleX(1); transform-origin:left; }
-  .navlink[aria-current="true"]{ color:var(--ink); }
-
-  /* --- hairline grid backdrop --- */
-  .gridbg{
-    background-image:linear-gradient(to right, rgba(20,19,15,.055) 1px, transparent 1px);
-    background-size:calc(100% / 6) 100%;
-  }
-
   /* --- work rows --- */
   .work-idx{ transition:color .4s var(--ease); }
   .work-row:hover .work-idx{ color:var(--accentd); }
-
-  /* --- tag --- */
-  .tag{
-    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem; letter-spacing:.06em;
-    padding:.3rem .6rem; border:1px solid var(--line); border-radius:4px; color:var(--ink2); white-space:nowrap;
-  }
-  .tag-dk{ border-color:var(--dkline); color:var(--dkink2); }
-
-  /* --- chip --- */
-    content:""; position:absolute; inset:0; pointer-events:none; border-radius:20px;
-    border:1px solid var(--dkline);
-  }
-
-  /* --- mobile chip selector --- */
-    flex:0 0 auto; min-height:44px; padding:.55rem .85rem; border-radius:8px;
-    border:1px solid var(--dkline); background:transparent; color:var(--dkink2);
-    font-family:"JetBrains Mono",monospace; font-size:.6875rem; letter-spacing:.08em; cursor:pointer;
-    transition:border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease);
-  }
-
-  /* fade at the right edge while the wide diagram can still be scrolled */
-    content:""; position:absolute; top:0; bottom:0; right:0; width:56px; pointer-events:none;
-    background:linear-gradient(to right, rgba(13,13,15,0), var(--dk));
-    opacity:0; transition:opacity .3s var(--ease);
-  }
-  @media (min-width:1280px){ .scroller-shell::after{ display:none; } }
-
-  .noscroll{ scrollbar-width:none; }
-  .noscroll::-webkit-scrollbar{ display:none; }
-
-
-  /* ===================== SCROLL-TELLING INTRO ===================== */
-  :root{ --seq-bg:#F8F8F8; }
-
-  #intro{ position:relative; background:var(--seq-bg); }
-  #introPin{
-    position:sticky; top:0; height:100svh; overflow:hidden;
-    background:var(--seq-bg); display:block;
-  }
-  #seqCanvas{
-    display:block; width:100%;
-    background:var(--seq-bg);
-  }
-  /* A 16:9 sequence inside a portrait viewport would be cropped to a narrow
-     slice by cover. On phones the canvas gets its own band and the copy sits
-     under it; the frame's near-white ground matches the page, so the product
-     still reads as floating with no visible edge. */
-  #seqCanvas{
-    height:62svh; margin-top:4svh;
-    -webkit-mask-image:linear-gradient(to bottom, #000 78%, transparent 100%);
-            mask-image:linear-gradient(to bottom, #000 78%, transparent 100%);
-  }
-  @media (max-width:767px){ #seqCanvas{ height:56svh; margin-top:5svh; } }
-
-  /* No scrim. The copy sits under the image on clean ground instead of over it,
-     so the render is never veiled. Measured behind the old copy box, the macro
-     beats ran mean luminance 0.09-0.17 but spiked to 0.82 on the gold pins and
-     keycaps — neither dark nor light text clears AA over that, which is the only
-     reason an overlay existed. */
-  .seq-copy{
-    position:absolute; left:0; right:0; bottom:0;
-    height:34svh; display:flex; align-items:center;
-    padding:0 1.25rem 1.5rem;
-  }
-  @media (min-width:640px){ .seq-copy{ padding:0 2rem 2rem; } }
-  @media (min-width:1024px){ .seq-copy{ height:28svh; padding:0 3rem 2.25rem; } }
-
-  .beat{
-    position:absolute; left:1.25rem; right:1.25rem; top:50%;
-    opacity:0; transform:translate3d(0,calc(-50% + 14px),0); will-change:opacity,transform;
-  }
-  @media (min-width:640px){ .beat{ left:2rem; right:2rem; } }
-  @media (min-width:1024px){
-    .beat{
-      /* stop short of the skip control in the bottom-right corner */
-      left:3rem; right:11rem;
-      display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
-      column-gap:3.5rem; align-items:end;
-    }
-    .beat-label{ grid-column:1; grid-row:1; }
-    .beat-head { grid-column:1; grid-row:2; margin-bottom:0; }
-    .beat-sub  { grid-column:2; grid-row:1 / span 2; align-self:end; padding-bottom:.35rem; }
-  }
-
-  .beat-label{
-    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem;
-    letter-spacing:.16em; text-transform:uppercase; color:var(--accentd);
-    display:flex; align-items:center; gap:.6rem; margin-bottom:.7rem;
-  }
-  .beat-label::after{ content:""; flex:1; max-width:70px; height:1px; background:var(--accent); }
-  .beat-head{
-    font-family:"Space Grotesk",ui-sans-serif,sans-serif; font-weight:600;
-    letter-spacing:-.03em; line-height:1.04; color:var(--ink);
-    font-size:clamp(1.5rem,3.4vw,2.6rem); margin-bottom:.7rem;
-  }
-  .beat-sub{
-    font-size:clamp(.875rem,1.15vw,1rem); line-height:1.6; color:var(--ink2);
-    max-width:54ch;
-  }
-
-  /* progress rail */
-  .seq-rail{
-    position:absolute; right:1.25rem; top:50%; transform:translateY(-50%);
-    width:2px; height:110px; background:rgba(20,19,15,.12); border-radius:2px; overflow:hidden;
-  }
-  @media (min-width:1024px){ .seq-rail{ right:2rem; height:150px; } }
-  .seq-rail span{
-    position:absolute; inset:0 0 auto 0; height:100%; background:var(--accentd);
-    border-radius:2px; transform-origin:top; transform:scaleY(0);
-  }
-
-  /* loader */
-  #seqLoader{
-    position:absolute; inset:0; display:grid; place-content:center; gap:1rem;
-    justify-items:center; background:var(--seq-bg); z-index:5;
-    transition:opacity .6s var(--ease), visibility .6s var(--ease);
-  }
-  #seqLoader[hidden]{ opacity:0; visibility:hidden; display:grid; }
-  .loader-bar{ width:132px; height:2px; background:rgba(20,19,15,.12); border-radius:2px; overflow:hidden; }
-  .loader-bar span{ display:block; height:100%; width:100%; transform:scaleX(0); transform-origin:left; background:var(--ink); transition:transform .25s linear; }
-
-  /* scroll cue + skip */
-  .seq-cue{
-    position:absolute; left:50%; bottom:calc(34svh + .5rem); transform:translateX(-50%);
-    display:flex; align-items:center; gap:.55rem; color:var(--ink3);
-    transition:opacity .4s var(--ease);
-  }
-  .seq-skip{
-    position:absolute; right:1.25rem; top:calc(68px + .25rem); z-index:6;
-    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem;
-    letter-spacing:.14em; text-transform:uppercase; color:var(--ink3);
-    min-height:44px; display:inline-flex; align-items:center; gap:.5rem; padding:0 .25rem;
-    transition:color .25s var(--ease);
-  }
-  .seq-skip:hover{ color:var(--ink); }
-  @media (min-width:768px){ .seq-skip{ top:auto; bottom:1.5rem; } }
-  @media (min-width:1024px){
-    .seq-skip{ right:2rem; }
-    .seq-copy{ height:30svh; }
-    .seq-cue{ bottom:calc(30svh + .5rem); }
-  }
-
-  /* reduced motion: no pin, no sequence — one still frame and the copy as normal text */
-  @media (prefers-reduced-motion: reduce){
-    #intro{ height:auto !important; }
-    #introPin{ position:relative; height:auto; }
-    #seqCanvas{ height:auto; aspect-ratio:16/9; }
-    .seq-rail,.seq-cue{ display:none; }
-    .seq-copy{ position:static; padding:2.5rem 1.25rem 3rem; }
-    .beat{
-      position:static; opacity:1 !important; transform:none !important;
-      display:block; max-width:60ch; margin:0 0 2.5rem; left:auto; right:auto; top:auto;
-    }
-    .seq-copy{ height:auto; display:block; }
-  }
-
-
-  /* ===================== HANDCRAFTED DETAIL ===================== */
-
-  /* --- A. masked line reveal ---
-     Headings rise out of a clip box line by line rather than fading as a block.
-     The padding/negative-margin pair gives descenders room to live inside the
-     overflow box without changing where the line actually sits. */
-  [data-rv="mask"] .ln{
-    display:block; overflow:hidden;
-    padding-bottom:.14em; margin-bottom:-.14em;
-  }
-  .js [data-rv="mask"] .ln > span{
-    display:block; transform:translate3d(0,130%,0);
-    transition:transform .95s cubic-bezier(.16,1,.3,1);
-  }
-  .js [data-rv="mask"] .ln:nth-child(2) > span{ transition-delay:.075s; }
-  /* 130%, not 100%: the clip box is taller than the line (descender padding
-     above), so a smaller offset leaves a sliver of letter-tops showing.
-     Revealed via this CSS transition, not a GSAP yPercent tween: GSAP caches
-     a CSS-authored percentage transform as a fixed px offset the first time
-     it reads the element, so a later yPercent tween animates its own
-     separately-tracked (defaulted-to-0) yPercent component and never
-     touches that cached offset — the line silently never moves. Toggling
-     .is-revealed and letting the browser interpolate the actual computed
-     value sidesteps that entirely. */
-  [data-rv="mask"].is-revealed .ln > span{ transform:translate3d(0,0,0); }
-
-  /* --- B. cursor-tracked work rows --- */
-  .work-row{ position:relative; transition:background .45s var(--ease); }
-  .work-mark{
-    position:absolute; left:0; top:0; width:2px; height:44px; border-radius:2px;
-    background:var(--accent); opacity:0; pointer-events:none;
-    transition:opacity .32s var(--ease), transform .5s var(--ease);
-  }
-  .work-idx{ display:inline-block; transition:color .4s var(--ease), transform .45s var(--ease); }
-  .work-row:hover .work-idx{ color:var(--accentd); transform:translateX(5px); }
-  .work-title{
-    position:relative; display:inline;
-    background-image:linear-gradient(var(--accent),var(--accent));
-    background-repeat:no-repeat; background-position:0 100%; background-size:0% 2px;
-    /* clone so a wrapped title draws a correctly-sized rule under each line
-       rather than one rule stretched across the whole box */
-    -webkit-box-decoration-break:clone; box-decoration-break:clone;
-    transition:background-size .55s var(--ease);
-  }
-  .work-row:hover .work-title{ background-size:100% 2px; }
-  @media (hover:none){
-    .work-row:hover{ background:transparent; }
-    .work-mark{ display:none; }
-  }
-
-  /* --- D. timeline that draws itself --- */
-  .tl-line{
-    position:absolute; left:0; top:6px; bottom:0; width:1px;
-    background:var(--line); transform-origin:top center;
-  }
-  .js .tl-line{ transform:scaleY(0); }
-  .tl-dot{
-    position:absolute; left:-5px; top:6px; width:10px; height:10px; border-radius:999px;
-    box-shadow:0 0 0 4px var(--bg);
-  }
-  .js .tl-dot{ transform:scale(0); }
-
-  /* --- H. focus that matches the hover language ---
-     A drawn lavender ring with a background-coloured gap, so the indicator keeps
-     its own contrast against whatever sits behind it. #6B3FA0 on #F7F5F1 is
-     6.6:1, comfortably past the 3:1 non-text minimum. */
-  a:focus-visible,button:focus-visible,[tabindex]:focus-visible,g.blk:focus-visible{
-    /* transparent rather than none: Windows High Contrast / forced-colors strips
-       box-shadow, and outline:none would leave no indicator at all. Forced
-       colors repaints this outline in a system colour instead. */
-    outline:2px solid transparent; outline-offset:2px;
-    box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--accentd);
-    border-radius:4px;
-  }
-  @media (forced-colors: active){
-    a:focus-visible,button:focus-visible,[tabindex]:focus-visible,g.blk:focus-visible{
-      outline-color:Highlight;
-    }
-  }
-  .btn:focus-visible{ border-radius:999px; }
-  .on-dark a:focus-visible,.on-dark button:focus-visible,.on-dark [tabindex]:focus-visible{
-    box-shadow:0 0 0 2px var(--dk), 0 0 0 4px var(--accent);
-  }
-  g.blk:focus-visible .blk-body{ stroke:var(--accent); stroke-width:2; }
-  .ulink:focus-visible::after{ transform:scaleX(1); transform-origin:left; }
-  .work-row:focus-within::before{ clip-path:ellipse(150% 150% at 50% 100%); }
-
 
   /* ===================== 03 · CAPABILITY ORBIT ===================== */
   .orbit-wrap{
@@ -536,6 +86,7 @@
     position:absolute; left:50%; top:50%; width:0; height:0;
     display:block; background:none; border:0; padding:0; cursor:pointer;
   }
+  .orbit-pad{ opacity:var(--dim,1); }
   .orbit-pad{
     position:absolute; left:50%; top:50%; translate:-50% -50%;
     width:44px; height:44px; border-radius:11px;
@@ -578,7 +129,8 @@
     font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.625rem; letter-spacing:.08em;
     text-transform:uppercase; padding:.34rem .55rem; border:1px solid var(--line);
     border-radius:4px; color:var(--ink2); background:transparent; cursor:pointer; min-height:44px;
-    transition:border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease);
+    transition:border-color .25s var(--ease), color .25s var(--ease), background .25s var(--ease),
+               transform .25s var(--ease);
   }
   .cap-chip:hover{ border-color:var(--accentd); color:var(--accentd); background:#FBF7FF; }
   .cap-status{
@@ -593,7 +145,7 @@
     letter-spacing:.13em; text-transform:uppercase; color:var(--ink3);
     display:inline-flex; align-items:center; gap:.5rem; min-height:44px;
     background:none; border:0; cursor:pointer; padding:0;
-    transition:color .25s var(--ease);
+    transition:color .25s var(--ease), transform .25s var(--ease);
   }
   .orbit-hint:hover{ color:var(--ink); }
 
@@ -601,38 +153,6 @@
     .js .orbit-core span{ animation:none; opacity:.4; }
   }
 
-
-  /* ===================== HOVER WIPE =====================
-     Lando's trick: the fill arrives on an ELLIPTICAL clip-path, not a
-     rectangular slide. The curved leading edge is the entire difference
-     between "liquid" and "a div changed colour". One class, used everywhere,
-     so the whole site reacts with the same material. */
-  .wipe{ position:relative; isolation:isolate; overflow:hidden; --wx:50%; --wy:100%; }
-  .wipe::before{
-    content:""; position:absolute; inset:0; z-index:-1;
-    background:var(--wipe-fill,var(--ink));
-    /* the origin is set by wipe.js from wherever the cursor crossed the edge,
-       so the fill arrives from the direction you actually came from */
-    clip-path:ellipse(0% 0% at var(--wx) var(--wy));
-    transition:clip-path .55s cubic-bezier(.22,.61,.36,1);
-  }
-  .wipe:hover::before,.wipe:focus-visible::before{ clip-path:ellipse(150% 150% at var(--wx) var(--wy)); }
-  .wipe:hover,.wipe:focus-visible{ color:var(--wipe-ink,var(--bg)); }
-  .wipe > *{ position:relative; }
-
-  /* light variant: for big surfaces where a full ink fill would shout */
-  .wipe-soft{ --wipe-fill:#fff; }
-  .wipe-soft:hover,.wipe-soft:focus-visible{ color:inherit; }
-
-  /* on the dark panel the fill goes the other way */
-  .on-dark .wipe{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
-  /* the nav is not inside .on-dark, but it flies over the dark panel —
-     without this the fill is #14130F on #0D0D0F, i.e. invisible */
-  #nav.over-dark .navlink{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
-
-  @media (prefers-reduced-motion: reduce){
-    .wipe::before{ transition-duration:.01ms; }
-  }
 
   /* ===================== CIRCUIT SPINE =====================
      The page sits on a board. One trace runs its whole length, routed with
@@ -655,89 +175,36 @@
   @media (max-width:1100px){ #spine{ display:none; } }
 
 
+  @media (prefers-reduced-motion:reduce){ .rail-dot,.rail-tip{ transition:none; } }
 
-  /* ===================== FPGA PANEL ===================== */
-  .fpanel{
-    position:relative; background:var(--dk); color:var(--dkink);
-    border:1px solid rgba(213,172,255,.5); border-radius:18px; overflow:hidden;
-    display:grid; grid-template-columns:92px 1.15fr 340px;
-    box-shadow:0 0 44px rgba(213,172,255,.10), inset 0 0 90px rgba(213,172,255,.04);
+
+
+  /* ===================== PROOF BAND =====================
+     One number per project, the one that best shows it worked. Each is a
+     link to the row that explains where the number comes from. */
+  .glance{ background:var(--ink); color:var(--bg); padding:5rem 0 5rem; }
+  .glance-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 1.5rem; }
+  @media (min-width:800px){ .glance-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 2rem; } }
+  @media (min-width:1200px){ .glance-grid{ grid-template-columns:repeat(6,minmax(0,1fr)); } }
+  .glance-stat{
+    display:block; padding:1.8rem 0 2rem; border-top:1px solid rgba(247,245,241,.16);
+    color:inherit; text-decoration:none; transition:border-color .25s var(--ease);
   }
-  .fp-rail{ border-right:1px solid var(--dkline); display:flex; align-items:center; justify-content:center; }
-  .fp-rail .vert{ writing-mode:vertical-rl; transform:rotate(180deg); font-family:"Space Grotesk",sans-serif;
-                  font-weight:600; font-size:1.55rem; letter-spacing:-.02em; color:var(--dkink); white-space:nowrap; }
-  /* the board is wider than the stage on purpose — clipping it is what makes
-     the panel read as a window onto a bench, not a floating object */
-  .fp-stage{ position:relative; padding:2.5rem; display:grid; place-items:center;
-             min-height:400px; perspective:1300px; overflow:hidden; }
-  /* --- the part itself. Fixed 400px layout box because translateZ has to be
-     absolute; fpga.js scales it to the stage through --chip-scale. --- */
-  .spinner{ width:400px; height:400px; position:relative; transform-style:preserve-3d;
-            transform:scale(var(--chip-scale,1)); }
-  .spinner svg{ display:block; overflow:visible; }
-  .chip-scene,.chip-spin{ position:absolute; inset:0; transform-style:preserve-3d; }
-  .chip-scene{ animation:chipTilt 17s ease-in-out infinite alternate; }
-  .chip-spin{ animation:chipSpin 26s linear infinite; }
-  @keyframes chipTilt{ from{ transform:rotateX(52deg); } to{ transform:rotateX(66deg); } }
-  @keyframes chipSpin{ from{ transform:rotateZ(0deg); } to{ transform:rotateZ(360deg); } }
-
-  .chip-face,.chip-wall,.chip-sheen,.chip-board{ backface-visibility:hidden; }
-  .chip-wall{ background:linear-gradient(#22222A,#0A0A0C); border-top:1px solid #3A3A45; }
-  .chip-wall-v{ background:linear-gradient(90deg,#1B1B22,#0A0A0C); border-top:0; }
-  .chip-board{ border-radius:2px; }
-  .chip-shadow{ background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.72), rgba(0,0,0,0) 68%);
-                filter:blur(9px); }
-  /* the highlight turns against the spin, so it reads as a fixed light source */
-  .chip-sheen{ pointer-events:none; border-radius:3px; mix-blend-mode:screen;
-               background:linear-gradient(118deg, rgba(255,255,255,0) 34%,
-                         rgba(214,206,232,.16) 48%, rgba(255,255,255,0) 60%);
-               animation:chipSpin 26s linear infinite reverse; }
-
-  #fpgaSpinner.is-paused .chip-scene,
-  #fpgaSpinner.is-paused .chip-spin,
-  #fpgaSpinner.is-paused .chip-sheen{ animation-play-state:paused; }
-  #fpgaSpinner.is-static .chip-scene{ animation:none; transform:rotateX(58deg); }
-  #fpgaSpinner.is-static .chip-spin{ animation:none; transform:rotateZ(-24deg); }
-  #fpgaSpinner.is-static .chip-sheen{ animation:none; }
-  .fp-side{ border-left:1px solid var(--dkline); padding:2.25rem 1.75rem; }
-  .fp-side p{ font-size:.875rem; line-height:1.66; color:var(--dkink2); margin:0 0 1.5rem; }
-  .fp-lbl{ color:var(--dkink2) !important; margin-bottom:.5rem !important; }
-  .fp-stats{ display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; margin-bottom:1.6rem; }
-  .fp-stats .lbl{ color:var(--dkink2); display:block; margin-bottom:.3rem; }
-  .fp-stats b{ font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:1.3rem;
-               letter-spacing:-.02em; color:var(--accent); }
-  .fp-stats b.p{ color:var(--dkink); }
-  .fp-stats .unit{ font-size:.75rem; color:var(--dkink2); }
-  .sched{ width:100%; border-collapse:collapse; margin-bottom:1.5rem; }
-  .sched td{ padding:.48rem 0; border-bottom:1px solid var(--dkline); font-size:.8125rem; color:var(--dkink2); }
-  .sched td:first-child{ font-family:"Space Grotesk",sans-serif; font-weight:600; color:var(--dkink); }
-  .sched td:last-child{ text-align:right; font-family:"JetBrains Mono",monospace; }
-  .sched tr.now td,.sched tr.now td:first-child{ color:var(--accent); }
-  .fp-link{ color:var(--accent); }
-  .fp-ctl{ position:absolute; right:1rem; bottom:1rem; }
-  .fp-ctl button{ min-height:36px; padding:0 .85rem; border-radius:999px; cursor:pointer;
-    background:transparent; border:1px solid var(--dkline); color:var(--dkink2);
-    font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.12em; text-transform:uppercase; }
-  .fp-ctl button:hover{ border-color:var(--accent); color:var(--accent); }
-  @media (max-width:1000px){
-    .fpanel{ grid-template-columns:1fr; }
-    .fp-rail{ border-right:0; border-bottom:1px solid var(--dkline); padding:1rem; }
-    .fp-rail .vert{ writing-mode:horizontal-tb; transform:none; }
-    .fp-side{ border-left:0; border-top:1px solid var(--dkline); }
+  .glance-stat:hover{ border-top-color:var(--accent); }
+  .glance-stat:focus-visible{ outline:2px solid var(--accent); outline-offset:4px; }
+  .glance-num{
+    display:block; font-family:"Space Grotesk",sans-serif; font-weight:600;
+    font-size:clamp(2.1rem,4.6vw,3.25rem); letter-spacing:-.02em; color:var(--accent); line-height:1;
   }
-
-
-  /* project links; a pending one is a real gap, shown as unavailable */
-  .proj-link{ color:var(--accentd); position:relative; }
-  .proj-link:not(.is-pending):hover{ color:var(--ink); }
-  .proj-link.is-pending{ color:var(--ink3); opacity:.62; cursor:default; }
-
-
-
-
-  /* the HUD sits above the rail, so give it room (desktop only — the mobile
-     block below sets its own value and must not be overridden from here) */
-
+  .glance-lbl{
+    display:block; margin-top:.6rem; max-width:24ch;
+    font-size:.875rem; line-height:1.45; color:rgba(247,245,241,.78);
+  }
+  .glance-proj{
+    display:block; margin-top:.75rem; font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.625rem;
+    letter-spacing:.08em; text-transform:uppercase; color:rgba(247,245,241,.62);
+  }
+  .glance-stat:hover .glance-proj{ color:var(--accent); }
 
   /* ===================== CHIP HERO =====================
      The object is a render Shivin made; the page is built around it rather
@@ -746,7 +213,7 @@
      over the last stretch of the section. */
   .hero-chip{
     position:relative; min-height:100svh; display:flex; align-items:center;
-    padding:6.75rem 0 8.5rem; background:var(--dk); color:var(--dkink);
+    padding:5.75rem 0 3rem; background:var(--dk); color:var(--dkink);
     isolation:isolate; overflow:hidden;
   }
   .hero-plate{
@@ -756,9 +223,7 @@
       radial-gradient(90% 60% at 50% 0%, #1A1A20, rgba(26,26,32,0) 70%),
       linear-gradient(var(--dk), var(--dk));
   }
-  /* No wash into the page tone: the opening ends at a routed board edge, and
-     seam.js draws the copper that crosses it. This is only the ambient
-     darkening that sits just above the cut. */
+  /* the ambient darkening that sits just above the bottom edge of the opening */
   .hero-plate::after{
     content:""; position:absolute; left:0; right:0; bottom:0; height:150px;
     background:linear-gradient(rgba(6,6,8,0), rgba(6,6,8,.55));
@@ -785,16 +250,19 @@
   }
   .now-wrap{ position:relative; width:198px; }
   .now-card{
-    position:relative; display:flex; flex-direction:column; align-items:center;
-    width:198px; padding:1.05rem 1rem .95rem;
-    border:1px solid var(--dkline); border-radius:16px;
-    color:var(--dkink); text-decoration:none; text-align:center;
+    position:relative; display:block; width:198px;
+    text-decoration:none;
     --wipe-fill:var(--accent); --wipe-ink:var(--dk);
-    transition:border-color .45s var(--ease);
+    --notch-c:var(--dkline);
   }
-  .now-card:hover,.now-card:focus-visible{ border-color:var(--accent); }
+  .now-card:hover,.now-card:focus-visible{ --notch-c:var(--accent); }
   .now-card:focus-visible{ outline:2px solid transparent; outline-offset:4px; }
   @media (forced-colors: active){ .now-card:focus-visible{ outline-color:Highlight; } }
+  .now-face{
+    display:flex; flex-direction:column; align-items:center;
+    padding:1.05rem 1rem .95rem;
+    color:var(--dkink); text-align:center;
+  }
 
   .now-label{
     display:block; margin:0 0 .55rem 2px;
@@ -820,14 +288,11 @@
     .now-wrap{ margin-top:.5rem; }
   }
 
-  /* the seam straddles the boundary: half on the dark side, half on the page */
-  #seam{
-    position:absolute; left:0; right:0; top:-128px; height:224px;
-    pointer-events:none; z-index:3;
-  }
-  #seam svg{ display:block; width:100%; height:100%; overflow:visible; }
 
   .hero-split{ display:grid; grid-template-columns:minmax(0,1fr); gap:2.5rem; align-items:center; }
+  /* the stage is taller than the copy now that it carries the readout, so the
+     copy anchors to the top of it instead of floating in the middle */
+  @media (min-width:1000px){ .hero-split{ align-items:start; } .hero-copy{ padding-top:clamp(2rem,11vh,7rem); } }
   @media (min-width:1000px){
     .hero-split{ grid-template-columns:minmax(0,1.02fr) minmax(0,1fr); gap:3.5rem; }
     .hero-lede{ font-size:1.1875rem; }
@@ -847,7 +312,7 @@
      Laid out at a fixed 520px because translateZ has to be absolute; the wrap
      scales the whole rig to whatever width the column gives it. --- */
   .chip-wrap{
-    position:relative; width:min(100%,560px); aspect-ratio:1;
+    position:relative; width:min(100%,520px); aspect-ratio:1 / .8;
     transform:scale(var(--chip-k,1)); transform-origin:50% 50%;
     transform-style:preserve-3d;
   }
@@ -860,10 +325,9 @@
   .chip-hold{
     position:absolute; left:50%; top:50%; width:464px; height:464px;
     margin:-232px 0 0 -232px;
-    transform-style:preserve-3d; will-change:transform; cursor:grab;
+    transform-style:preserve-3d; will-change:transform;
     touch-action:pan-y;            /* vertical scroll still belongs to the page */
   }
-  .chip-hold.is-drag{ cursor:grabbing; }
   .hc-leads svg,.hc-face svg{ display:block; }
 
   .hc-face{ backface-visibility:hidden; }
@@ -936,28 +400,18 @@
     @keyframes spotPulse{ 0%,100%{ opacity:.68; } 50%{ opacity:1; } }
   }
 
-  /* the tip box always holds its space, or hovering a dot shoves the whole
-     opening down by a line */
-  .chip-tip{
-    margin-top:.25rem; max-width:34rem; text-align:center; min-height:3.1rem;
-    font-size:.875rem; line-height:1.55; color:var(--dkink2);
-    opacity:0; transition:opacity .22s ease;
-  }
-  .chip-tip.is-on{ opacity:1; }
-  .chip-tip b{ color:var(--dkink); font-family:"Space Grotesk",sans-serif; font-weight:600; }
-  .chip-tip b::after{ content:" — "; color:var(--dkink2); font-weight:400; }
-
-  .chip-foot{ display:flex; align-items:center; gap:1rem; margin-top:1.1rem; }
+  .chip-foot{ display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:.4rem 1rem; margin-top:.35rem; }
   .chip-pause{
     min-height:32px; padding:0 .7rem; border-radius:999px; cursor:pointer;
     background:transparent; border:1px solid var(--dkline); color:var(--dkink2);
     font-family:"JetBrains Mono",monospace; font-size:.625rem;
     letter-spacing:.12em; text-transform:uppercase;
+    transition:border-color .2s var(--ease), color .2s var(--ease), transform .25s var(--ease);
   }
   .chip-pause:hover{ border-color:var(--accent); color:var(--accent); }
 
   @media (max-width:999px){
-    .hero-chip{ padding:6.5rem 0 8rem; min-height:0; }
+    .hero-chip{ padding:6.5rem 0 3rem; min-height:0; }
     .hero-name{ font-size:clamp(2.3rem,11vw,4rem); letter-spacing:-.03em; }
     .hero-split{ gap:2.25rem; }
     .hero-stage{ order:2; }
@@ -969,13 +423,278 @@
   }
 
   /* --- skip link --- */
-  .skip{ position:absolute; left:-9999px; top:0; z-index:200; }
-  .skip:focus{ left:1rem; top:1rem; padding:.75rem 1.1rem; background:var(--ink); color:var(--bg); border-radius:6px; }
 </style>
 </head>
 
 <body class="antialiased">
+
+<!-- The circuit-board loading screen and page transition (curtain.js). It is in the
+     page so it paints before any script runs; the head script decides whether it is shown. -->
+<div id="boot" class="boot" role="status" aria-live="polite" aria-label="Loading the page">
+  <div class="boot-fill" aria-hidden="true"></div>
+  <svg class="boot-board" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<defs>
+<path id="bt0" pathLength="1" d="M682.0 373.5 L652.0 373.5 L535.3 256.8 L120.0 256.8"/>
+<path id="bt1" pathLength="1" d="M682.0 390.5 L630.0 390.5 L537.7 298.2 L160.0 298.2"/>
+<path id="bt2" pathLength="1" d="M682.0 407.5 L608.0 407.5 L546.9 346.4 L110.0 346.4"/>
+<path id="bt3" pathLength="1" d="M682.0 424.5 L586.0 424.5 L549.2 387.7 L110.0 387.7"/>
+<path id="bt4" pathLength="1" d="M682.0 441.5 L564.0 441.5 L551.8 429.3 L110.0 429.3"/>
+<path id="bt5" pathLength="1" d="M682.0 458.5 L564.0 458.5 L551.4 471.1 L160.0 471.1"/>
+<path id="bt6" pathLength="1" d="M682.0 475.5 L586.0 475.5 L546.1 515.4 L160.0 515.4"/>
+<path id="bt7" pathLength="1" d="M682.0 492.5 L608.0 492.5 L544.4 556.1 L110.0 556.1"/>
+<path id="bt8" pathLength="1" d="M682.0 509.5 L630.0 509.5 L537.1 602.4 L110.0 602.4"/>
+<path id="bt9" pathLength="1" d="M682.0 526.5 L652.0 526.5 L540.7 637.8 L120.0 637.8"/>
+<path id="bt10" pathLength="1" d="M918.0 373.5 L948.0 373.5 L1071.4 250.1 L1490.0 250.1"/>
+<path id="bt11" pathLength="1" d="M918.0 390.5 L970.0 390.5 L1071.1 289.4 L1480.0 289.4"/>
+<path id="bt12" pathLength="1" d="M918.0 407.5 L992.0 407.5 L1053.5 346.0 L1490.0 346.0"/>
+<path id="bt13" pathLength="1" d="M918.0 424.5 L1014.0 424.5 L1055.8 382.7 L1490.0 382.7"/>
+<path id="bt14" pathLength="1" d="M918.0 441.5 L1036.0 441.5 L1048.3 429.2 L1440.0 429.2"/>
+<path id="bt15" pathLength="1" d="M918.0 458.5 L1036.0 458.5 L1049.7 472.2 L1490.0 472.2"/>
+<path id="bt16" pathLength="1" d="M918.0 475.5 L1014.0 475.5 L1051.9 513.4 L1490.0 513.4"/>
+<path id="bt17" pathLength="1" d="M918.0 492.5 L992.0 492.5 L1058.4 558.9 L1490.0 558.9"/>
+<path id="bt18" pathLength="1" d="M918.0 509.5 L970.0 509.5 L1063.8 603.3 L1490.0 603.3"/>
+<path id="bt19" pathLength="1" d="M918.0 526.5 L948.0 526.5 L1065.8 644.3 L1480.0 644.3"/>
+<path id="bt20" pathLength="1" d="M723.5 332.0 L723.5 302.0 L604.2 182.7 L604.2 90.0"/>
+<path id="bt21" pathLength="1" d="M740.5 332.0 L740.5 280.0 L653.3 192.8 L653.3 90.0"/>
+<path id="bt22" pathLength="1" d="M757.5 332.0 L757.5 258.0 L691.2 191.7 L691.2 90.0"/>
+<path id="bt23" pathLength="1" d="M774.5 332.0 L774.5 236.0 L731.6 193.1 L731.6 90.0"/>
+<path id="bt24" pathLength="1" d="M791.5 332.0 L791.5 214.0 L777.1 199.6 L777.1 90.0"/>
+<path id="bt25" pathLength="1" d="M808.5 332.0 L808.5 214.0 L821.5 201.0 L821.5 90.0"/>
+<path id="bt26" pathLength="1" d="M825.5 332.0 L825.5 236.0 L866.8 194.7 L866.8 90.0"/>
+<path id="bt27" pathLength="1" d="M842.5 332.0 L842.5 258.0 L914.5 186.0 L914.5 90.0"/>
+<path id="bt28" pathLength="1" d="M859.5 332.0 L859.5 280.0 L961.1 178.4 L961.1 90.0"/>
+<path id="bt29" pathLength="1" d="M876.5 332.0 L876.5 302.0 L997.3 181.2 L997.3 90.0"/>
+<path id="bt30" pathLength="1" d="M723.5 568.0 L723.5 598.0 L611.0 710.5 L611.0 810.0"/>
+<path id="bt31" pathLength="1" d="M740.5 568.0 L740.5 620.0 L646.1 714.4 L646.1 810.0"/>
+<path id="bt32" pathLength="1" d="M757.5 568.0 L757.5 642.0 L686.0 713.5 L686.0 810.0"/>
+<path id="bt33" pathLength="1" d="M774.5 568.0 L774.5 664.0 L731.9 706.6 L731.9 810.0"/>
+<path id="bt34" pathLength="1" d="M791.5 568.0 L791.5 686.0 L778.3 699.2 L778.3 810.0"/>
+<path id="bt35" pathLength="1" d="M808.5 568.0 L808.5 686.0 L820.7 698.2 L820.7 810.0"/>
+<path id="bt36" pathLength="1" d="M825.5 568.0 L825.5 664.0 L865.1 703.6 L865.1 810.0"/>
+<path id="bt37" pathLength="1" d="M842.5 568.0 L842.5 642.0 L915.8 715.3 L915.8 810.0"/>
+<path id="bt38" pathLength="1" d="M859.5 568.0 L859.5 620.0 L961.6 722.1 L961.6 810.0"/>
+<path id="bt39" pathLength="1" d="M876.5 568.0 L876.5 598.0 L1003.6 725.1 L1003.6 810.0"/>
+</defs>
+<rect class="bb-edge" x="24" y="24" width="1552" height="852" rx="26"/>
+<circle class="bb-hole" cx="70" cy="70" r="16"/><circle class="bb-hole-in" cx="70" cy="70" r="6"/>
+<circle class="bb-hole" cx="1530" cy="70" r="16"/><circle class="bb-hole-in" cx="1530" cy="70" r="6"/>
+<circle class="bb-hole" cx="70" cy="830" r="16"/><circle class="bb-hole-in" cx="70" cy="830" r="6"/>
+<circle class="bb-hole" cx="1530" cy="830" r="16"/><circle class="bb-hole-in" cx="1530" cy="830" r="6"/>
+<g class="bb-base">
+<use href="#bt0"/>
+<use href="#bt1"/>
+<use href="#bt2"/>
+<use href="#bt3"/>
+<use href="#bt4"/>
+<use href="#bt5"/>
+<use href="#bt6"/>
+<use href="#bt7"/>
+<use href="#bt8"/>
+<use href="#bt9"/>
+<use href="#bt10"/>
+<use href="#bt11"/>
+<use href="#bt12"/>
+<use href="#bt13"/>
+<use href="#bt14"/>
+<use href="#bt15"/>
+<use href="#bt16"/>
+<use href="#bt17"/>
+<use href="#bt18"/>
+<use href="#bt19"/>
+<use href="#bt20"/>
+<use href="#bt21"/>
+<use href="#bt22"/>
+<use href="#bt23"/>
+<use href="#bt24"/>
+<use href="#bt25"/>
+<use href="#bt26"/>
+<use href="#bt27"/>
+<use href="#bt28"/>
+<use href="#bt29"/>
+<use href="#bt30"/>
+<use href="#bt31"/>
+<use href="#bt32"/>
+<use href="#bt33"/>
+<use href="#bt34"/>
+<use href="#bt35"/>
+<use href="#bt36"/>
+<use href="#bt37"/>
+<use href="#bt38"/>
+<use href="#bt39"/>
+</g>
+<g class="bb-lit">
+<use href="#bt0" style="--d:0.315"/>
+<use href="#bt1" style="--d:0.291"/>
+<use href="#bt2" style="--d:0.031"/>
+<use href="#bt3" style="--d:0.293"/>
+<use href="#bt4" style="--d:0.025"/>
+<use href="#bt5" style="--d:0.111"/>
+<use href="#bt6" style="--d:0.278"/>
+<use href="#bt7" style="--d:0.067"/>
+<use href="#bt8" style="--d:0.21"/>
+<use href="#bt9" style="--d:0.27"/>
+<use href="#bt10" style="--d:0.397"/>
+<use href="#bt11" style="--d:0.349"/>
+<use href="#bt12" style="--d:0.122"/>
+<use href="#bt13" style="--d:0.287"/>
+<use href="#bt14" style="--d:0.263"/>
+<use href="#bt15" style="--d:0.438"/>
+<use href="#bt16" style="--d:0.365"/>
+<use href="#bt17" style="--d:0.144"/>
+<use href="#bt18" style="--d:0.49"/>
+<use href="#bt19" style="--d:0.059"/>
+<use href="#bt20" style="--d:0.03"/>
+<use href="#bt21" style="--d:0.351"/>
+<use href="#bt22" style="--d:0.324"/>
+<use href="#bt23" style="--d:0.497"/>
+<use href="#bt24" style="--d:0.411"/>
+<use href="#bt25" style="--d:0.142"/>
+<use href="#bt26" style="--d:0.193"/>
+<use href="#bt27" style="--d:0.334"/>
+<use href="#bt28" style="--d:0.011"/>
+<use href="#bt29" style="--d:0.231"/>
+<use href="#bt30" style="--d:0.341"/>
+<use href="#bt31" style="--d:0.19"/>
+<use href="#bt32" style="--d:0.115"/>
+<use href="#bt33" style="--d:0.041"/>
+<use href="#bt34" style="--d:0.076"/>
+<use href="#bt35" style="--d:0.329"/>
+<use href="#bt36" style="--d:0.006"/>
+<use href="#bt37" style="--d:0.416"/>
+<use href="#bt38" style="--d:0.091"/>
+<use href="#bt39" style="--d:0.141"/>
+</g>
+<g class="bb-spark">
+<use href="#bt0" style="--s:1.77s;--o:1.07s"/>
+<use href="#bt2" style="--s:2.33s;--o:0.64s"/>
+<use href="#bt4" style="--s:1.75s;--o:1.72s"/>
+<use href="#bt6" style="--s:2.74s;--o:1.31s"/>
+<use href="#bt8" style="--s:2.49s;--o:0.91s"/>
+<use href="#bt10" style="--s:2.65s;--o:1.90s"/>
+<use href="#bt12" style="--s:2.42s;--o:1.12s"/>
+<use href="#bt14" style="--s:2.08s;--o:0.79s"/>
+<use href="#bt16" style="--s:2.18s;--o:0.80s"/>
+<use href="#bt18" style="--s:1.83s;--o:1.97s"/>
+<use href="#bt20" style="--s:2.13s;--o:0.22s"/>
+<use href="#bt22" style="--s:2.32s;--o:0.20s"/>
+<use href="#bt24" style="--s:2.28s;--o:1.07s"/>
+<use href="#bt26" style="--s:2.74s;--o:1.23s"/>
+<use href="#bt28" style="--s:1.68s;--o:0.42s"/>
+<use href="#bt30" style="--s:2.05s;--o:1.27s"/>
+<use href="#bt32" style="--s:2.75s;--o:1.20s"/>
+<use href="#bt34" style="--s:2.17s;--o:0.23s"/>
+<use href="#bt36" style="--s:2.19s;--o:1.96s"/>
+<use href="#bt38" style="--s:2.18s;--o:0.62s"/>
+</g>
+<g class="bb-pads">
+<circle cx="120.0" cy="256.8" r="6.5" style="--d:0.7150000000000001"/><circle class="bb-pad-in" cx="120.0" cy="256.8" r="2.4"/>
+<circle cx="160.0" cy="298.2" r="6.5" style="--d:0.6910000000000001"/><circle class="bb-pad-in" cx="160.0" cy="298.2" r="2.4"/>
+<circle cx="110.0" cy="346.4" r="6.5" style="--d:0.43100000000000005"/><circle class="bb-pad-in" cx="110.0" cy="346.4" r="2.4"/>
+<circle cx="110.0" cy="387.7" r="6.5" style="--d:0.6930000000000001"/><circle class="bb-pad-in" cx="110.0" cy="387.7" r="2.4"/>
+<circle cx="110.0" cy="429.3" r="6.5" style="--d:0.42500000000000004"/><circle class="bb-pad-in" cx="110.0" cy="429.3" r="2.4"/>
+<circle cx="160.0" cy="471.1" r="6.5" style="--d:0.511"/><circle class="bb-pad-in" cx="160.0" cy="471.1" r="2.4"/>
+<circle cx="160.0" cy="515.4" r="6.5" style="--d:0.678"/><circle class="bb-pad-in" cx="160.0" cy="515.4" r="2.4"/>
+<circle cx="110.0" cy="556.1" r="6.5" style="--d:0.467"/><circle class="bb-pad-in" cx="110.0" cy="556.1" r="2.4"/>
+<circle cx="110.0" cy="602.4" r="6.5" style="--d:0.61"/><circle class="bb-pad-in" cx="110.0" cy="602.4" r="2.4"/>
+<circle cx="120.0" cy="637.8" r="6.5" style="--d:0.67"/><circle class="bb-pad-in" cx="120.0" cy="637.8" r="2.4"/>
+<circle cx="1490.0" cy="250.1" r="6.5" style="--d:0.797"/><circle class="bb-pad-in" cx="1490.0" cy="250.1" r="2.4"/>
+<circle cx="1480.0" cy="289.4" r="6.5" style="--d:0.749"/><circle class="bb-pad-in" cx="1480.0" cy="289.4" r="2.4"/>
+<circle cx="1490.0" cy="346.0" r="6.5" style="--d:0.522"/><circle class="bb-pad-in" cx="1490.0" cy="346.0" r="2.4"/>
+<circle cx="1490.0" cy="382.7" r="6.5" style="--d:0.687"/><circle class="bb-pad-in" cx="1490.0" cy="382.7" r="2.4"/>
+<circle cx="1440.0" cy="429.2" r="6.5" style="--d:0.663"/><circle class="bb-pad-in" cx="1440.0" cy="429.2" r="2.4"/>
+<circle cx="1490.0" cy="472.2" r="6.5" style="--d:0.8380000000000001"/><circle class="bb-pad-in" cx="1490.0" cy="472.2" r="2.4"/>
+<circle cx="1490.0" cy="513.4" r="6.5" style="--d:0.765"/><circle class="bb-pad-in" cx="1490.0" cy="513.4" r="2.4"/>
+<circle cx="1490.0" cy="558.9" r="6.5" style="--d:0.544"/><circle class="bb-pad-in" cx="1490.0" cy="558.9" r="2.4"/>
+<circle cx="1490.0" cy="603.3" r="6.5" style="--d:0.89"/><circle class="bb-pad-in" cx="1490.0" cy="603.3" r="2.4"/>
+<circle cx="1480.0" cy="644.3" r="6.5" style="--d:0.459"/><circle class="bb-pad-in" cx="1480.0" cy="644.3" r="2.4"/>
+<circle cx="604.2" cy="90.0" r="6.5" style="--d:0.43000000000000005"/><circle class="bb-pad-in" cx="604.2" cy="90.0" r="2.4"/>
+<circle cx="653.3" cy="90.0" r="6.5" style="--d:0.751"/><circle class="bb-pad-in" cx="653.3" cy="90.0" r="2.4"/>
+<circle cx="691.2" cy="90.0" r="6.5" style="--d:0.724"/><circle class="bb-pad-in" cx="691.2" cy="90.0" r="2.4"/>
+<circle cx="731.6" cy="90.0" r="6.5" style="--d:0.897"/><circle class="bb-pad-in" cx="731.6" cy="90.0" r="2.4"/>
+<circle cx="777.1" cy="90.0" r="6.5" style="--d:0.8109999999999999"/><circle class="bb-pad-in" cx="777.1" cy="90.0" r="2.4"/>
+<circle cx="821.5" cy="90.0" r="6.5" style="--d:0.542"/><circle class="bb-pad-in" cx="821.5" cy="90.0" r="2.4"/>
+<circle cx="866.8" cy="90.0" r="6.5" style="--d:0.593"/><circle class="bb-pad-in" cx="866.8" cy="90.0" r="2.4"/>
+<circle cx="914.5" cy="90.0" r="6.5" style="--d:0.734"/><circle class="bb-pad-in" cx="914.5" cy="90.0" r="2.4"/>
+<circle cx="961.1" cy="90.0" r="6.5" style="--d:0.41100000000000003"/><circle class="bb-pad-in" cx="961.1" cy="90.0" r="2.4"/>
+<circle cx="997.3" cy="90.0" r="6.5" style="--d:0.631"/><circle class="bb-pad-in" cx="997.3" cy="90.0" r="2.4"/>
+<circle cx="611.0" cy="810.0" r="6.5" style="--d:0.7410000000000001"/><circle class="bb-pad-in" cx="611.0" cy="810.0" r="2.4"/>
+<circle cx="646.1" cy="810.0" r="6.5" style="--d:0.5900000000000001"/><circle class="bb-pad-in" cx="646.1" cy="810.0" r="2.4"/>
+<circle cx="686.0" cy="810.0" r="6.5" style="--d:0.515"/><circle class="bb-pad-in" cx="686.0" cy="810.0" r="2.4"/>
+<circle cx="731.9" cy="810.0" r="6.5" style="--d:0.441"/><circle class="bb-pad-in" cx="731.9" cy="810.0" r="2.4"/>
+<circle cx="778.3" cy="810.0" r="6.5" style="--d:0.47600000000000003"/><circle class="bb-pad-in" cx="778.3" cy="810.0" r="2.4"/>
+<circle cx="820.7" cy="810.0" r="6.5" style="--d:0.7290000000000001"/><circle class="bb-pad-in" cx="820.7" cy="810.0" r="2.4"/>
+<circle cx="865.1" cy="810.0" r="6.5" style="--d:0.406"/><circle class="bb-pad-in" cx="865.1" cy="810.0" r="2.4"/>
+<circle cx="915.8" cy="810.0" r="6.5" style="--d:0.8160000000000001"/><circle class="bb-pad-in" cx="915.8" cy="810.0" r="2.4"/>
+<circle cx="961.6" cy="810.0" r="6.5" style="--d:0.491"/><circle class="bb-pad-in" cx="961.6" cy="810.0" r="2.4"/>
+<circle cx="1003.6" cy="810.0" r="6.5" style="--d:0.541"/><circle class="bb-pad-in" cx="1003.6" cy="810.0" r="2.4"/>
+</g>
+<g class="bb-chip">
+<g class="bb-pins">
+<rect x="682.0" y="370.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="387.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="404.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="421.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="438.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="455.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="472.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="489.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="506.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="523.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="370.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="387.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="404.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="421.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="438.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="455.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="472.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="489.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="506.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="523.5" width="18" height="6" rx="1.5"/>
+<rect x="720.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="737.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="754.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="771.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="788.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="805.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="822.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="839.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="856.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="873.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="720.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="737.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="754.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="771.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="788.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="805.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="822.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="839.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="856.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="873.5" y="550.0" width="6" height="18" rx="1.5"/>
+</g>
+<rect class="bb-body" x="700" y="350" width="200" height="200" rx="10"/>
+<circle class="bb-dot" cx="718" cy="368" r="5"/>
+<text class="bb-num" id="bootN" x="800" y="468" text-anchor="middle">00</text>
+<text class="bb-pct" x="800" y="504" text-anchor="middle">PERCENT</text>
+<text class="bb-tag" x="800" y="392" text-anchor="middle">SA-01</text>
+</g>
+</svg>
+  <div class="boot-ui" aria-hidden="true">
+    <div class="boot-head"><span class="lbl">Shivin Anand</span><span class="lbl" id="bootMode">Power-on self test</span></div>
+    <div class="boot-dest"><span class="lbl">Now loading</span><b id="bootDest"></b></div>
+    <ul class="boot-list">
+      <li class="boot-row"><span class="st"></span><b>FPGA CPU</b><span class="v">ALU · in progress</span></li>
+      <li class="boot-row"><span class="st"></span><b>Robot PCB</b><span class="v">sole designer · KiCad</span></li>
+      <li class="boot-row"><span class="st"></span><b>Env board</b><span class="v">BME680 · I²C · 3.3 V</span></li>
+      <li class="boot-row"><span class="st"></span><b>Robotics</b><span class="v">2 national + 1 world award</span></li>
+      <li class="boot-row"><span class="st"></span><b>FSAM site</b><span class="v">60% less overhead</span></li>
+      <li class="boot-row"><span class="st"></span><b>Hydro CV</b><span class="v">6.9% MAPE · 6 trials</span></li>
+    </ul>
+    <div class="boot-foot"><span class="lbl">Press any key to skip</span></div>
+  </div>
+</div>
+
 <a href="#main" class="skip">Skip to content</a>
+<div id="scrollProgress" aria-hidden="true"></div>
 
 <!-- ======================= NAV ======================= -->
 <header id="nav" class="fixed top-0 inset-x-0 z-50 border-b border-transparent">
@@ -984,14 +703,9 @@
 
       <a href="#top" class="nav-ink flex items-baseline gap-2.5 py-3 -my-3 group" aria-label="Shivin Anand, back to start">
         <span class="display text-[17px] tracking-[-.02em]">Shivin&nbsp;Anand</span>
-        <span class="lbl nav-mut text-ink3 hidden sm:inline">CE&nbsp;·&nbsp;UF</span>
       </a>
 
       <div class="flex items-center gap-2.5">
-        <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn wipe btn-solid !min-h-[42px] !px-4 text-[13px]">
-          Résumé
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </a>
         <button id="menuBtn" class="menu-btn nav-ink" aria-label="Open menu" aria-expanded="false" aria-controls="menuPanel">
           <span class="menu-bars" aria-hidden="true"><i></i><i></i></span>
         </button>
@@ -1001,39 +715,62 @@
 </header>
 
 <!-- The menu opens as a circle from the button it came out of. -->
-<div id="menuPanel" class="menu-panel" inert>
+<!--MENU-->
+<div id="menuPanel" class="menu-panel on-dark" inert>
   <div class="menu-inner">
-    <nav class="menu-nav" aria-label="Primary">
-      <a class="navlink menu-item" href="#work"         style="--i:0"><span class="menu-n">01</span><span class="menu-t"><span>Work</span></span></a>
+    <div class="menu-grid">
+    <nav class="menu-nav" aria-label="Sections">
+      <p class="lbl menu-mut menu-lab">Sections</p>
+      <a class="navlink menu-item" href="#work" style="--i:0"><span class="menu-n">01</span><span class="menu-t"><span>Work</span></span></a>
       <a class="navlink menu-item" href="#capabilities" style="--i:1"><span class="menu-n">02</span><span class="menu-t"><span>Capabilities</span></span></a>
       <a class="navlink menu-item" href="#architecture" style="--i:2"><span class="menu-n">03</span><span class="menu-t"><span>Architecture</span></span></a>
-      <a class="navlink menu-item" href="#record"       style="--i:3"><span class="menu-n">04</span><span class="menu-t"><span>Record</span></span></a>
-      <a class="navlink menu-item" href="#contact"      style="--i:4"><span class="menu-n">05</span><span class="menu-t"><span>Contact</span></span></a>
+      <a class="navlink menu-item" href="#record" style="--i:3"><span class="menu-n">04</span><span class="menu-t"><span>Record</span></span></a>
+      <a class="navlink menu-item" href="#foot" style="--i:4"><span class="menu-n">05</span><span class="menu-t"><span>Contact</span></span></a>
     </nav>
+    <nav class="menu-projects" aria-label="Projects">
+      <p class="lbl menu-mut menu-lab">Projects, each with its own page</p>
+      <a class="menu-proj" href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 · FPGA CPU" style="--i:2;--pc:#D5ACFF"><span class="menu-n">01</span><span class="menu-pt"><span>FPGA CPU</span><small>Current</small></span></a>
+      <a class="menu-proj" href="robot-pcb.html" data-pa="#E3B45C" data-dest="02 · Robot PCB" style="--i:3;--pc:#E3B45C"><span class="menu-n">02</span><span class="menu-pt"><span>Robot PCB</span><small>Current</small></span></a>
+      <a class="menu-proj" href="environmental-pcb.html" data-pa="#5FD6D0" data-dest="03 · Monitoring PCB" style="--i:4;--pc:#5FD6D0"><span class="menu-n">03</span><span class="menu-pt"><span>Monitoring PCB</span><small>Shipped</small></span></a>
+      <a class="menu-proj" href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 · Middleton Robotics" style="--i:5;--pc:#FF7A1A"><span class="menu-n">04</span><span class="menu-pt"><span>Middleton Robotics</span><small>Leadership</small></span></a>
+      <a class="menu-proj" href="fsam.html" data-pa="#7C93FF" data-dest="05 · FSAM" style="--i:6;--pc:#7C93FF"><span class="menu-n">05</span><span class="menu-pt"><span>FSAM</span><small>Live</small></span></a>
+      <a class="menu-proj" href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 · Growth chamber" style="--i:7;--pc:#8EE36B"><span class="menu-n">06</span><span class="menu-pt"><span>Growth chamber</span><small>Shipped</small></span></a>
+    </nav>
+    </div>
 
     <div class="menu-foot">
-      <div class="menu-col" style="--i:5">
-        <p class="lbl menu-mut">Get in touch</p>
+      <div class="menu-col" style="--i:7">
+        <p class="lbl menu-mut">Get in touch &middot; what is it about?</p>
+        <div class="menu-topics">
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Internship%20inquiry&amp;body=Hi%20Shivin%2C%0A%0A">Internship</a>
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Research%20opportunity&amp;body=Hi%20Shivin%2C%0A%0A">Research</a>
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Hardware%20project&amp;body=Hi%20Shivin%2C%0A%0A">Hardware bring-up</a>
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Hello%20from%20your%20site&amp;body=Hi%20Shivin%2C%0A%0A">Something else</a>
+        </div>
         <a class="menu-link" href="mailto:shivin.r.anand@gmail.com">shivin.r.anand@gmail.com</a>
       </div>
-      <div class="menu-col" style="--i:6">
+      <div class="menu-col" style="--i:8">
         <p class="lbl menu-mut">Elsewhere</p>
         <a class="menu-link" href="https://github.com/shividoge" target="_blank" rel="noopener">GitHub &#8599;</a>
         <a class="menu-link" href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+        <a class="menu-link" href="ShivinAnandResume.pdf" target="_blank" rel="noopener">R&eacute;sum&eacute; (pdf)</a>
       </div>
-      <div class="menu-col" style="--i:7">
+      <div class="menu-col" style="--i:9">
         <p class="lbl menu-mut">Right now</p>
-        <a class="menu-link" href="#architecture">FPGA CPU &mdash; Smart Systems Lab</a>
+        <a class="menu-link" href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 &middot; FPGA CPU">FPGA CPU &mdash; Smart Systems Lab</a>
       </div>
     </div>
   </div>
 </div>
+<!--/MENU-->
 
 <main id="main" class="relative">
 <div id="spine" aria-hidden="true"></div>
 
 <!-- ======================= HERO — ROUTED ======================= -->
-<section id="top" class="hero-chip" data-dark-zone data-dark-fade="120">
+<section id="top" class="scene">
+
+  <div class="hero-chip" id="heroLayer" data-dark-zone>
   <div class="hero-plate" aria-hidden="true"></div>
 
   <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 w-full relative hero-inner">
@@ -1078,29 +815,60 @@
         <div class="chip-wrap">
           <div class="chip-cast" aria-hidden="true"></div>
           <div class="chip-hold" id="chipHold" role="img"
-               aria-label="A microchip of my own design: a quad-flat package with a display, a D-pad, a camera lens and a row of keys, one for each tool I work in.">
-            <button type="button" class="spot" data-title="The display"
+               aria-label="A microchip of my own design: a quad-flat package with a display, a D-pad, a camera lens and a row of keys, one for each tool I work in. Each part opens the work it stands for.">
+            <button type="button" class="spot" data-group="web"
                     aria-label="The display: web work"><span class="spot-dot" aria-hidden="true"></span></button>
-            <button type="button" class="spot" data-title="The D-pad"
+            <button type="button" class="spot" data-group="robotics"
                     aria-label="The D-pad: robotics"><span class="spot-dot" aria-hidden="true"></span></button>
-            <button type="button" class="spot" data-title="The lens"
+            <button type="button" class="spot" data-group="vision"
                     aria-label="The lens: computer vision"><span class="spot-dot" aria-hidden="true"></span></button>
-            <button type="button" class="spot" data-title="The keys"
-                    aria-label="The keys: the stack"><span class="spot-dot" aria-hidden="true"></span></button>
           </div>
         </div>
 
-        <div class="chip-tip" id="chipTip" role="status" aria-live="polite">
-          <b id="chipTipT"></b><span id="chipTipB"></span>
-        </div>
-
         <div class="chip-foot">
-          <p class="lbl hero-mut" id="chipHint">Drag to turn it &nbsp;&#183;&nbsp; tap a part</p>
+          <p class="lbl hero-mut" id="chipHint">Drag to turn it &nbsp;&#183;&nbsp; pick a part</p>
           <button type="button" class="chip-pause wipe" id="chipPause" aria-pressed="false">Pause</button>
         </div>
+
+        <!-- The chip as an index of the work: four picks, and the numbers behind
+             whichever one is open. hero.js builds the panels from real data. -->
+        <div class="chip-index" id="chipIndex" role="group" aria-label="Parts of the chip. Each one is a piece of my work."></div>
+        <div class="chip-read" id="chipRead"></div>
+
       </div>
     </div>
 
+
+    <p class="hero-cue lbl" aria-hidden="true">Scroll to enter the display &nbsp;&#8595;</p>
+  </div>
+  </div>
+
+  <!-- The About page. On a wide screen it lives inside the chip's own display:
+       scrolling zooms out of the screen into it (portal.js). Below that, or
+       for reduced motion, it is simply the page that follows the opening.
+       It comes after the hero in the source so a screen reader meets the
+       name first, whatever the visual stacking. -->
+  <div class="scene-about" id="about" role="region" aria-labelledby="aboutLbl">
+    <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 scene-about-in">
+      <div class="flex items-center gap-3 mb-8">
+        <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
+        <p class="lbl text-ink3" id="aboutLbl">About</p>
+      </div>
+      <div class="about-body" id="aboutBody">
+        <p class="about-text" id="aboutText">I&rsquo;m a computer engineering student at the University of Florida, and I like the place where software meets a signal.
+        Before UF I designed a <em data-p="envpcb">sensor board</em>, built a <em data-p="hydro">closed-loop grow chamber</em> around it, and took the research to
+        a <em data-p="hydro">NASA Kennedy Space Center award</em>. I also got my school&rsquo;s <em data-p="robotics">robotics program</em> competing again after years away.
+        Now I&rsquo;m writing <em data-p="fpga">CPU RTL</em> in the Smart Systems Lab and designing the whole board for IEEE&rsquo;s <em data-p="pcb">SoutheastCon robot</em>.</p>
+        <ol class="about-notes" id="aboutNotes" aria-label="Where each of those came from"></ol>
+        <svg class="about-lines" id="aboutLines" aria-hidden="true"></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= RIGHT NOW ======================= -->
+<section id="now" class="nowband" data-dark-zone aria-label="Right now">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 w-full relative">
     <div class="hero-facts">
       <div class="hr-dk mb-5" data-rv="line"></div>
       <div class="hero-bottom">
@@ -1109,9 +877,9 @@
         <!-- What I'm on right now, as its own object: label above the rule,
              the part drawn in line, and the crest underneath. Links straight
              to the section that explains it. -->
-        <a href="#architecture" class="now-card wipe" data-rv="up"
-           aria-label="Working on now: FPGA CPU at the UF Smart Systems Lab. Jump to that section.">
-
+        <a href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 &middot; FPGA CPU" class="now-card notch notch-dk wipe" data-rv="up"
+           aria-label="Working on now: FPGA CPU at the UF Smart Systems Lab. Open its project page.">
+          <span class="now-face notch-in">
           <span class="now-art" aria-hidden="true">
             <svg viewBox="0 0 132 62" fill="none" stroke="currentColor" stroke-width="1.1"
                  stroke-linejoin="round" stroke-linecap="round">
@@ -1133,37 +901,43 @@
           </span>
 
           <span class="now-foot">Smart Systems Lab<br>Since 2026</span>
+          </span>
         </a>
         </div>
-      <dl class="grid grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-5">
-        <div data-rv="up">
-          <dt class="lbl hero-mut mb-1.5">Focus</dt>
-          <dd class="hero-fact">Real-time embedded systems</dd>
-        </div>
-        <div data-rv="up">
-          <dt class="lbl hero-mut mb-1.5">Based</dt>
-          <dd class="hero-fact">Gainesville, FL<span class="hero-mut font-normal"> &mdash; from Tampa</span></dd>
-        </div>
-        <div data-rv="up">
-          <dt class="lbl hero-mut mb-1.5">Graduating</dt>
-          <dd class="hero-fact num">May 2030</dd>
-        </div>
-        <div data-rv="up">
-          <dt class="lbl hero-mut mb-1.5">Seeking</dt>
-          <dd class="hero-fact">Summer 2027 internship &amp; research</dd>
-        </div>
-      </dl>
+      <div class="now-tiles">
+        <article class="nt" data-rv="up">
+          <p class="lbl nt-l"><span class="nt-dot" aria-hidden="true"></span>Local time</p>
+          <p class="nt-v num" id="ntClock" aria-live="off" title="Gainesville, FL">--:--<small>:--</small></p>
+          <svg class="nt-ring" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16"/><circle cx="20" cy="20" r="16" id="ntSec" pathLength="60"/></svg>
+          <p class="nt-s" id="ntPart">Gainesville, Florida. Originally from Tampa.</p>
+        </article>
+        <article class="nt" data-rv="up">
+          <p class="lbl nt-l">Degree &middot; B.S. Computer Engineering</p>
+          <p class="nt-v num"><span id="ntDeg">0</span>%</p>
+          <div class="nt-bar" aria-hidden="true"><i id="ntBar"></i></div>
+          <p class="nt-s">Through the degree, by the calendar. <span class="num" id="ntDays">&hellip;</span> days to May 2030.</p>
+        </article>
+        <article class="nt" data-rv="up">
+          <p class="lbl nt-l">Seeking &middot; Summer 2027</p>
+          <p class="nt-v num"><span id="ntSeek">&hellip;</span><small>days to go</small></p>
+          <div class="nt-pips" aria-hidden="true" id="ntPips"></div>
+          <p class="nt-s">An internship or research position. The clock is real.</p>
+        </article>
+        <article class="nt" data-rv="up">
+          <p class="lbl nt-l">Focus</p>
+          <p class="nt-v nt-vt">Real-time embedded systems</p>
+          <svg class="nt-wave" viewBox="0 0 240 40" preserveAspectRatio="none" aria-hidden="true"><path id="ntWave" d=""/></svg>
+          <p class="nt-s">Circuits and firmware where timing is the specification.</p>
+        </article>
+      </div>
       </div>
     </div>
 
-    <p class="hero-cue lbl" aria-hidden="true">Scroll &nbsp;&#8595;</p>
   </div>
 </section>
 
 <!-- ======================= WORK ======================= -->
-<section id="work" class="relative pt-28 sm:pt-32 pb-20 sm:pb-28">
-  <!-- the board edge the opening is snapped off at; drawn by seam.js -->
-  <div id="seam" aria-hidden="true"></div>
+<section id="work" class="relative pt-20 sm:pt-28 pb-16 sm:pb-24">
   <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
 
     <div class="flex flex-wrap items-end justify-between gap-6 mb-10 sm:mb-14">
@@ -1174,7 +948,9 @@
         </div>
         <h2 class="display text-ink text-[clamp(2rem,5.6vw,4.25rem)] max-w-[14ch]" data-rv="mask"><span class="ln"><span>Things I've built,</span></span><span class="ln"><span>current work first.</span></span></h2>
       </div>
-      <p class="lbl text-ink3 num pb-2" id="workCount" data-rv="up">06 projects</p>
+      <div class="text-right" data-rv="up">
+        <p class="lbl text-ink3 num pb-2" id="workCount">06 projects</p>
+      </div>
     </div>
 
     <div class="hr" data-rv="line"></div>
@@ -1184,9 +960,20 @@
   </div>
 </section>
 
+<!-- ======================= PROOF ======================= -->
+<div class="glance" aria-label="One number from each project">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 glance-grid">
+    <a class="glance-stat" href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 &middot; FPGA CPU" style="--pc:#D5ACFF"><span class="gl-viz" data-viz="alu" aria-hidden="true"></span><span class="glance-num" data-count="3">3</span><span class="glance-lbl">ALU operations in RTL first: add, subtract, multiply</span><span class="glance-proj">FPGA CPU &rarr;</span></a>
+    <a class="glance-stat" href="robot-pcb.html" data-pa="#E3B45C" data-dest="02 &middot; Robot PCB" style="--pc:#E3B45C"><span class="gl-viz" data-viz="board" aria-hidden="true"></span><span class="glance-num" data-count="1">1</span><span class="glance-lbl">board running every electrical system on the robot</span><span class="glance-proj">Robot PCB &rarr;</span></a>
+    <a class="glance-stat" href="environmental-pcb.html" data-pa="#5FD6D0" data-dest="03 &middot; Monitoring PCB" style="--pc:#5FD6D0"><span class="gl-viz" data-viz="waves" aria-hidden="true"></span><span class="glance-num" data-count="4">4</span><span class="glance-lbl">channels logged: CO&#8322;, VOCs, temperature, humidity</span><span class="glance-proj">Monitoring PCB &rarr;</span></a>
+    <a class="glance-stat" href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 &middot; Middleton Robotics" style="--pc:#FF7A1A"><span class="gl-viz" data-viz="dots" aria-hidden="true"></span><span class="glance-num" data-count="100" data-suffix="+">100+</span><span class="glance-lbl">students in the program I revived and ran</span><span class="glance-proj">Middleton Robotics &rarr;</span></a>
+    <a class="glance-stat" href="fsam.html" data-pa="#7C93FF" data-dest="05 &middot; FSAM" style="--pc:#7C93FF"><span class="gl-viz" data-viz="ring" aria-hidden="true"></span><span class="glance-num" data-count="60" data-suffix="%">60%</span><span class="glance-lbl">less manual communication after the site rebuild</span><span class="glance-proj">FSAM &rarr;</span></a>
+    <a class="glance-stat" href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 &middot; Growth chamber" style="--pc:#8EE36B"><span class="gl-viz" data-viz="bars" aria-hidden="true"></span><span class="glance-num" data-count="6.9" data-dec="1" data-suffix="%">6.9%</span><span class="glance-lbl">mean error estimating plant mass from video</span><span class="glance-proj">Growth chamber &rarr;</span></a>
+  </div>
+</div>
 <!-- ======================= CAPABILITIES ======================= -->
-<section id="capabilities" class="relative bg-bg2 py-20 sm:py-28">
-  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+<section id="capabilities" class="relative bg-bg2 py-24 sm:py-36">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 relative z-10">
 
     <div class="grid lg:grid-cols-12 gap-x-10 gap-y-14 items-start">
 
@@ -1251,7 +1038,7 @@
 </section>
 
 <!-- ======================= CURRENTLY BUILDING ======================= -->
-<section id="architecture" class="relative py-20 sm:py-28">
+<section id="architecture" class="relative py-24 sm:py-36">
   <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
     <div class="flex flex-wrap items-end justify-between gap-6 mb-8">
       <div>
@@ -1268,7 +1055,10 @@
       <div class="fp-rail"><span class="vert">SMART SYSTEMS LAB</span></div>
       <div class="fp-stage">
         <div class="spinner" id="fpgaSpinner"></div>
-        <div class="fp-ctl"><button type="button" class="wipe" id="fpgaToggle" aria-pressed="false">Pause</button></div>
+        <div class="fp-ctl">
+          <span class="fp-hint">Drag to rotate</span>
+          <button type="button" class="wipe" id="fpgaToggle" aria-pressed="false">Pause</button>
+        </div>
       </div>
       <div class="fp-side on-dark">
         <div class="fp-stats">
@@ -1295,7 +1085,7 @@
 </section>
 
 <!-- ======================= RECORD ======================= -->
-<section id="record" class="relative py-20 sm:py-28">
+<section id="record" class="relative py-24 sm:py-36">
   <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
 
     <div class="flex items-center gap-3 mb-4" data-rv="up">
@@ -1363,31 +1153,6 @@
       <!-- now / coursework -->
       <div class="lg:col-span-4 lg:col-start-9 flex flex-col gap-10">
         <div data-rv="up">
-          <div class="flex items-center gap-2.5 mb-4">
-            <span class="relative flex w-2 h-2" aria-hidden="true">
-              <span class="animate-ping absolute inline-flex w-full h-full rounded-full bg-accent opacity-70"></span>
-              <span class="relative inline-flex w-2 h-2 rounded-full bg-accentd"></span>
-            </span>
-            <p class="lbl text-ink3">Right now</p>
-          </div>
-          <div class="hr mb-5"></div>
-          <ul class="flex flex-col gap-4">
-            <li>
-              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">First semester at UF</p>
-              <p class="text-[.875rem] leading-[1.65] text-ink2">One semester in, already on a hardware team and in a research lab.</p>
-            </li>
-            <li>
-              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">IEEE Hardware Team</p>
-              <p class="text-[.875rem] leading-[1.65] text-ink2">Sole electrical/PCB designer, building the team’s SoutheastCon competition robot board.</p>
-            </li>
-            <li>
-              <p class="text-[.9375rem] text-ink font-medium leading-snug mb-1">Smart Systems Lab, UF ECE</p>
-              <p class="text-[.875rem] leading-[1.65] text-ink2">Undergraduate research assistant — writing CPU RTL in Verilog and SystemVerilog toward a quantized neural-network accelerator, under PhD student Peter Forcha.</p>
-            </li>
-          </ul>
-        </div>
-
-        <div data-rv="up">
           <p class="lbl text-ink3 mb-4">Coursework</p>
           <div class="hr mb-5"></div>
           <ul class="flex flex-col gap-2.5 num text-[.8125rem] text-ink2">
@@ -1400,60 +1165,72 @@
   </div>
 </section>
 
-<!-- ======================= CONTACT ======================= -->
-<section id="contact" class="relative bg-bg2 pt-20 sm:pt-28 pb-16 sm:pb-20">
-  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
-
-    <div class="flex items-center gap-3 mb-6" data-rv="up">
-      <span class="w-1.5 h-1.5 shrink-0 rounded-full bg-accentd" aria-hidden="true"></span>
-      <p class="lbl text-ink3">05 &nbsp;/&nbsp; Contact</p>
-    </div>
-
-    <h2 class="display text-ink text-[clamp(2.2rem,8vw,6.5rem)] mb-8" data-rv="mask"><span class="ln"><span>Got a rig that</span></span><span class="ln"><span>keeps failing?</span></span></h2>
-
-    <div class="grid lg:grid-cols-12 gap-x-10 gap-y-8 items-end">
-      <div class="lg:col-span-5">
-        <p class="text-[1.0625rem] leading-[1.62] text-ink2 prose-measure" data-rv="up">
-          I’m early in the degree and already deep in the work — writing RTL in a research lab, and the sole designer on a competition robot’s board. If you have hardware that needs designing, debugging or bringing up, I’d like to hear about it. Internships, research, or something that simply has to work.
-        </p>
-      </div>
-
-      <div class="lg:col-span-6 lg:col-start-7" data-rv="up">
-        <div class="hr mb-6"></div>
-        <a href="mailto:shivin.r.anand@gmail.com"
-           class="ulink display text-ink text-[clamp(1.25rem,3.4vw,2.25rem)] tracking-[-.02em] break-all">
-          shivin.r.anand@gmail.com
-        </a>
-        <div class="flex flex-wrap items-center gap-2.5 mt-8">
-          <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener" class="btn wipe btn-solid">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download résumé
-          </a>
-          <a href="https://github.com/shividoge" target="_blank" rel="noopener" class="btn wipe btn-ghost">GitHub</a>
-          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener" class="btn wipe btn-ghost">LinkedIn</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ======================= FOOTER ======================= -->
-<footer class="bg-bg2 border-t border-line">
-  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 py-8 flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
-    <p class="lbl text-ink3">Shivin Anand &nbsp;·&nbsp; Gainesville, FL</p>
-    <p class="lbl text-ink3 num">Designed &amp; built by hand &nbsp;·&nbsp; <span id="year">2026</span></p>
+<footer class="foot" id="foot" aria-label="Contact and footer">
+  <div class="foot-frame">
+    <div class="foot-panel">
+      <!-- One layer per project. Each lane is that project's own skill list,
+           taken from the same data as the project rows. Moving text only. -->
+      <div class="foot-stage"><div class="foot-plane" id="footPlane"></div></div>
+      <div class="foot-veil" aria-hidden="true"></div>
+
+      <div class="foot-main">
+        <h2 class="foot-h">Got a rig that<span>keeps failing?</span></h2>
+        <p class="foot-kick">I&rsquo;m early in the degree and already deep in the work: writing RTL in a research lab, and the sole designer on a competition robot&rsquo;s board. If you have hardware that needs designing, debugging or bringing up, I&rsquo;d like to hear about it. Internship or research, Summer 2027.</p>
+
+        <nav class="foot-col foot-col-l" aria-label="Projects">
+          <p class="lbl">Projects</p>
+          <!--FOOTPROJ-->
+          <a href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 · FPGA CPU"><i style="--pc:#D5ACFF"></i>01 &nbsp;FPGA CPU</a>
+          <a href="robot-pcb.html" data-pa="#E3B45C" data-dest="02 · Robot PCB"><i style="--pc:#E3B45C"></i>02 &nbsp;Robot PCB</a>
+          <a href="environmental-pcb.html" data-pa="#5FD6D0" data-dest="03 · Monitoring PCB"><i style="--pc:#5FD6D0"></i>03 &nbsp;Monitoring PCB</a>
+          <a href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 · Middleton Robotics"><i style="--pc:#FF7A1A"></i>04 &nbsp;Middleton Robotics</a>
+          <a href="fsam.html" data-pa="#7C93FF" data-dest="05 · FSAM"><i style="--pc:#7C93FF"></i>05 &nbsp;FSAM</a>
+          <a href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 · Growth chamber"><i style="--pc:#8EE36B"></i>06 &nbsp;Growth chamber</a>
+          <!--/FOOTPROJ-->
+        </nav>
+
+        <div class="foot-mid">
+          <a class="foot-cta" href="mailto:shivin.r.anand@gmail.com">shivin.r.anand@gmail.com
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+        </div>
+
+        <nav class="foot-col foot-col-r" aria-label="Elsewhere">
+          <p class="lbl">Elsewhere</p>
+          <a href="https://github.com/shividoge" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener">R&eacute;sum&eacute;</a>
+          <a href="https://shividoge.github.io/hydroponics-growth-system/" target="_blank" rel="noopener">Hydroponics site</a>
+          <a href="https://github.com/shividoge/plant_growth_webapp_v2" target="_blank" rel="noopener">Biomass code</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="foot-legal">
+      <p>&copy; <span id="year">2026</span> Shivin Anand &nbsp;&middot;&nbsp; Gainesville, FL <b id="footClock">--:--</b></p>
+      <p class="foot-ctl">
+        <button type="button" class="foot-btn" id="footPause" aria-pressed="false">Pause</button>
+        <button type="button" class="foot-btn" id="footUp">Back to top <span aria-hidden="true">&uarr;</span></button>
+      </p>
+    </div>
   </div>
 </footer>
 
 </main>
 
-<script src="seam.js?v=3842f1f3" defer></script>
+<script src="curtain.js?v=bce1eba7" defer></script>
+<script src="menu.js?v=7aeb91b5" defer></script>
+<script src="bands.js?v=c8b5b495" defer></script>
+<script src="foot.js?v=3678059d" defer></script>
 <script src="wipe.js?v=4ac6d1df" defer></script>
-<script src="hero.js?v=f59aa9af" defer></script>
-<script src="fpga.js?v=1ab4802d" defer></script>
-<script src="projects.js?v=ae1a142e" defer></script>
-<script src="cards.js?v=1460bd74" defer></script>
-<script src="orbital.js?v=e9c6b3c9" defer></script>
+<script src="hero.js?v=72846020" defer></script>
+<script src="fpga.js?v=1f7114a2" defer></script>
+<script src="fpgamap.js?v=c5830d69" defer></script>
+<script src="projects.js?v=b79c2e55" defer></script>
+<script src="cards.js?v=9f978beb" defer></script>
+<script src="about.js?v=41b66159" defer></script>
+<script src="portal.js?v=d6a2b2fe" defer></script>
+<script src="orbital.js?v=b6130d5c" defer></script>
 <script src="spine.js?v=302ae2aa" defer></script>
 
 <!-- ======================= SCRIPTS ======================= -->
@@ -1471,49 +1248,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var nav = $('#nav');
 
-  /* ---------------- menu ----------------
-     One button at every width. The panel opens as a circle grown from the
-     button itself, so the thing you pressed is where the page comes from,
-     then the items rise out of their own masks in sequence. */
-  var menuBtn = $('#menuBtn'), panel = $('#menuPanel');
-  var menuOpen = false, lastFocus = null;
+  /* the menu itself lives in menu.js, shared with the project pages */
+  var menuApi = { isOpen: function () { return !!(window.__menu && window.__menu.isOpen()); } };
 
-  function originFromButton() {
-    var r = menuBtn.getBoundingClientRect();
-    panel.style.setProperty('--mx', (r.left + r.width / 2) + 'px');
-    panel.style.setProperty('--my', (r.top + r.height / 2) + 'px');
-  }
-
-  function setMenu(open) {
-    if (open === menuOpen) return;
-    menuOpen = open;
-    if (open) { originFromButton(); lastFocus = document.activeElement; }
-
-    panel.classList.toggle('is-open', open);
-    menuBtn.classList.toggle('is-open', open);
-    nav.classList.toggle('menu-open', open);
-    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-    document.documentElement.classList.toggle('no-scroll', open);
-
-    if (open) {
-      panel.removeAttribute('inert');
-      var first = $('.menu-item', panel);
-      if (first) setTimeout(function () { first.focus({ preventScroll: true }); }, reduce ? 0 : 260);
-    } else {
-      panel.setAttribute('inert', '');
-      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
-    }
-  }
-
-  menuBtn.addEventListener('click', function () { setMenu(!menuOpen); });
-  $$('#menuPanel a').forEach(function (a) {
-    a.addEventListener('click', function () { setMenu(false); });
-  });
+  /* ---------------- keyboard: 1-6 jumps straight to a project ----------------
+     The work list keys off window.PROJECTS, so the
+     shortcut can too — press a digit anywhere on the page (not while typing
+     in a field, though there isn't one here yet) and it scrolls straight to
+     that project's row with a one-shot highlight. */
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && menuOpen) setMenu(false);
+    if (e.metaKey || e.ctrlKey || e.altKey || menuApi.isOpen()) return;
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target && e.target.isContentEditable)) return;
+    var list = window.PROJECTS || [];
+    var n = parseInt(e.key, 10);
+    if (!n || n < 1 || n > list.length) return;
+    var row = document.getElementById('proj-' + list[n - 1].id);
+    if (!row) return;
+    e.preventDefault();
+    row.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    row.classList.remove('is-jumped');
+    void row.offsetWidth;
+    row.classList.add('is-jumped');
   });
-  window.addEventListener('resize', function () { if (menuOpen) originFromButton(); });
 
   /* ---------------- D. size the timeline to its dots ----------------
      The connector should span first dot to last, not run on to the end of the
@@ -1536,45 +1293,11 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('resize', sizeTimeline);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeTimeline);
 
-  /* ---------------- B. work-row cursor marker ----------------
-     A pointer-following edge marker, bound only where a real pointer exists so
-     touch devices get nothing to fight with. The easing lives in the CSS
-     transition, so moving the pointer just sets a target and the bar chases it. */
-  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    $$('.work-row').forEach(function (row) {
-      var mark = document.createElement('span');
-      mark.className = 'work-mark';
-      mark.setAttribute('aria-hidden', 'true');
-      row.appendChild(mark);
-      var h = 44, raf = 0, pendingY = 0;
-
-      function apply() { raf = 0; mark.style.transform = 'translate3d(0,' + pendingY + 'px,0)'; }
-
-      row.addEventListener('pointerenter', function (e) {
-        var r = row.getBoundingClientRect();
-        pendingY = Math.max(0, Math.min(r.height - h, e.clientY - r.top - h / 2));
-        mark.style.transition = 'none';
-        apply();
-        void mark.offsetWidth;                 /* land before easing resumes */
-        mark.style.transition = '';
-        mark.style.opacity = '1';
-      });
-      row.addEventListener('pointermove', function (e) {
-        var r = row.getBoundingClientRect();
-        pendingY = Math.max(0, Math.min(r.height - h, e.clientY - r.top - h / 2));
-        if (!raf) raf = requestAnimationFrame(apply);
-      });
-      row.addEventListener('pointerleave', function () {
-        mark.style.opacity = '0';
-        if (raf) { cancelAnimationFrame(raf); raf = 0; }
-      });
-    });
-  }
-
   /* ---------------- nav state ---------------- */
   var darkZones = $$('[data-dark-zone]');
   var navLinks = $$('.navlink');
   var sections = navLinks.map(function (l) { return $(l.getAttribute('href')); });
+  var railDots = $$('.rail-dot');
 
   function navState() {
     var y = window.scrollY || 0;
@@ -1584,6 +1307,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var onDark = false;
     for (var d = 0; d < darkZones.length; d++) {
       var z = darkZones[d];
+      if (z.hasAttribute('data-paper')) continue;        /* covered by the About page */
       var r = z.getBoundingClientRect();
       /* the hero's last stretch is already fading to paper, so it stops
          counting as dark before its box ends */
@@ -1591,6 +1315,8 @@ document.addEventListener('DOMContentLoaded', function () {
       if (r.top < 34 && (r.bottom - fade) > 34) { onDark = true; break; }
     }
     nav.classList.toggle('over-dark', onDark);
+    var ft = document.getElementById('foot');
+    if (ft) { var fr = ft.getBoundingClientRect(); nav.classList.toggle('over-frame', fr.top < 40 && fr.bottom > 40); }
 
     var cur = -1;
     for (var i = 0; i < sections.length; i++) {
@@ -1600,7 +1326,20 @@ document.addEventListener('DOMContentLoaded', function () {
       if (i === cur) l.setAttribute('aria-current', 'true');
       else l.removeAttribute('aria-current');
     });
+    /* the floating rail reads the same index — one source of "where am I",
+       two displays of it */
+    railDots.forEach(function (d, i) {
+      d.classList.toggle('is-on', i === cur);
+      if (i === cur) d.setAttribute('aria-current', 'true');
+      else d.removeAttribute('aria-current');
+    });
+
+    if (progressBar) {
+      var docH = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (docH > 0 ? Math.min(100, (y / docH) * 100) : 0) + '%';
+    }
   }
+  var progressBar = $('#scrollProgress');
   var ticking = false;
   window.addEventListener('scroll', function () {
     if (ticking) return;
@@ -1608,6 +1347,9 @@ document.addEventListener('DOMContentLoaded', function () {
     requestAnimationFrame(function () { navState(); ticking = false; });
   }, { passive: true });
   navState();
+  /* layout settles after this runs (fonts, the loader lifting, the scene pinning) */
+  window.addEventListener('load', navState);
+  window.addEventListener('resize', navState);
 
   /* ---------------- motion ---------------- */
   if (!window.gsap) return;
@@ -1626,7 +1368,6 @@ document.addEventListener('DOMContentLoaded', function () {
       $$('[data-rv="mask"]').forEach(function (h) { h.classList.add('is-revealed'); });
       gsap.set('.tl-line', { scaleY: 1 });
       gsap.set('.tl-dot', { scale: 1 });
-      gsap.set('#heroSwipe', { scaleX: 1 });
       return;
     }
 
@@ -1634,11 +1375,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     heroTl.fromTo('#top [data-rv="up"]',
             { opacity: 0, y: 22 },
-            { opacity: 1, y: 0, duration: 0.72, stagger: 0.055 })
-          .fromTo('#heroSwipe', { scaleX: 0 }, { scaleX: 1, duration: 0.65, ease: 'power2.inOut' }, 0.5)
-          .fromTo('#top [data-rv="line"]',
-            { scaleX: 0 },
-            { scaleX: 1, duration: 0.7, ease: 'power2.inOut' }, 0.35);
+            { opacity: 1, y: 0, duration: 0.72, stagger: 0.055 });
 
     /* --- generic scroll reveals --- */
     ScrollTrigger.batch('section:not(#top) [data-rv="up"]', {
@@ -1683,16 +1420,6 @@ document.addEventListener('DOMContentLoaded', function () {
         scrollTrigger: { trigger: el, start: 'top 92%' }
       });
     });
-
-
-
-
-    /* --- scroll tick --- */
-    gsap.to('#scrollTick span', {
-      xPercent: 240, duration: 1.5, ease: 'power1.inOut', repeat: -1, yoyo: true
-    });
-
-
   });
 
   /* ---------------- safety net ----------------

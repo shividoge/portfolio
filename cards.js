@@ -25,26 +25,24 @@
     }).join('') + '</div>';
   }
 
+  /* a row is a doorway: what it is, one line on it, and the way in. The
+     write-up, the tools and the links live on the project's own page. */
   host.innerHTML = window.PROJECTS.map(function (p) {
+    var dest = p.n+' \u00b7 '+esc(p.short);
     return ''
     + '<article class="work-row wipe wipe-soft group border-b border-line" data-work id="proj-'+p.id+'">'
-    +   '<div class="grid lg:grid-cols-12 gap-x-10 gap-y-5 py-9 sm:py-12 px-2 sm:px-4 -mx-2 sm:-mx-4">'
+    +   '<div class="grid lg:grid-cols-12 gap-x-10 gap-y-6 py-12 sm:py-16 px-2 sm:px-4 -mx-2 sm:-mx-4">'
     +     '<div class="lg:col-span-1"><span class="work-idx lbl text-ink3 num">'+p.n+'</span></div>'
-    +     '<div class="lg:col-span-4">'
-    +       '<h3 class="display text-ink text-[1.6rem] sm:text-[2rem] leading-[1.06] mb-3">'
-    +         '<span class="work-title">'+esc(p.title)+'</span></h3>'
-    +       '<p class="lbl text-accentd mb-1">'+esc(p.tag)+'</p>'
-    +       '<p class="lbl text-ink3">'+esc(p.meta)+'</p>'
+    +     '<div class="lg:col-span-5">'
+    +       '<h3 class="display text-ink text-[1.75rem] sm:text-[2.25rem] leading-[1.06] mb-4">'
+    +         '<a class="work-title row-title" href="'+p.page+'" data-pa="'+p.accent+'" data-dest="'+dest+'">'+esc(p.title)+'</a></h3>'
+    +       '<p class="lbl text-accentd mb-2">'+esc(p.tag)+'</p>'
+    +       '<p class="lbl text-ink3">'+esc(p.status)+' &nbsp;&middot;&nbsp; '+esc(p.meta)+'</p>'
     +     '</div>'
-    +     '<div class="lg:col-span-6 lg:col-start-6">'
-    +       '<p class="text-[1.0625rem] leading-[1.62] text-ink mb-4 prose-measure">'+esc(p.lede)+'</p>'
-    +       '<p class="text-[.9375rem] leading-[1.72] text-ink2 prose-measure mb-6">'+esc(p.body)+'</p>'
-    +       '<div class="flex flex-wrap gap-1.5">'
-    +         p.tags.map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join('')
-    +       '</div>'
-    +       linkRow(p.links)
+    +     '<div class="lg:col-span-5 lg:col-start-8">'
+    +       '<p class="text-[1.125rem] leading-[1.6] text-ink mb-8 prose-measure">'+esc(p.lede)+'</p>'
+    +       '<a class="row-open lbl" href="'+p.page+'" data-pa="'+p.accent+'" data-dest="'+dest+'" style="--pc:'+p.accent+'">Open the full project <span aria-hidden="true">\u2192</span></a>'
     +     '</div>'
-    +     '<div class="lg:col-span-1 lg:text-right"><span class="lbl text-ink3">'+esc(p.status)+'</span></div>'
     +   '</div>'
     + '</article>';
   }).join('');

@@ -9,7 +9,7 @@
    =========================================================================== */
 window.PROJECTS = [
   {
-    id:'fpga', n:'01', scene:'fpga',
+    id:'fpga', page:'fpga-cpu.html', accent:'#D5ACFF', short:'FPGA CPU', n:'01', scene:'fpga',
     title:'FPGA CPU &amp; Quantized NN Accelerator',
     tag:'Undergraduate Research Assistant · UF Smart Systems Lab',
     meta:'Dept. of ECE, under PhD student Peter Forcha · August 2026 – present',
@@ -20,7 +20,7 @@ window.PROJECTS = [
     status:'Current'
   },
   {
-    id:'pcb', n:'02', scene:'pcbTop',
+    id:'pcb', page:'robot-pcb.html', accent:'#E3B45C', short:'Robot PCB', n:'02', scene:'pcbTop',
     title:'SoutheastCon Competition Robot PCB',
     tag:'IEEE Hardware Team · sole electrical/PCB designer',
     meta:'IEEE Student Branch, UF · September 2026 – present',
@@ -31,7 +31,7 @@ window.PROJECTS = [
     status:'Current'
   },
   {
-    id:'envpcb', n:'03', scene:'i2c',
+    id:'envpcb', page:'environmental-pcb.html', accent:'#5FD6D0', short:'Monitoring PCB', n:'03', scene:'i2c',
     title:'Autonomous Environmental Monitoring PCB',
     tag:'Head Researcher · USF Bio-Organic Electronics Lab',
     meta:'Dept. of EE, under Dr. Arash Takshi · April 2024 – May 2026',
@@ -39,10 +39,11 @@ window.PROJECTS = [
     body:'Designed and fabricated in KiCad with an I²C sensor architecture, unifying communication across a shared 3.3V bus between a BME680 sensor and a Teensy microcontroller, with signal integrity verified by hand. This board is the hardware foundation the hydroponic growth chamber was built on top of.',
     tags:['KiCad','PCB design','I²C','Circuit design','Sensor integration','Signal debugging'],
     links:[{label:'Lab page', href:null}],
+    bench:'env',
     status:'Shipped'
   },
   {
-    id:'robotics', n:'04', scene:'robot',
+    id:'robotics', page:'middleton-robotics.html', accent:'#FF7A1A', short:'Middleton Robotics', n:'04', scene:'robot',
     title:'Middleton Robotics — FRC &amp; VEX',
     tag:'President · 100+ students',
     meta:'Tampa, FL · May 2024 – May 2026',
@@ -53,7 +54,7 @@ window.PROJECTS = [
     status:'Leadership'
   },
   {
-    id:'fsam', n:'05', scene:'net',
+    id:'fsam', page:'fsam.html', accent:'#7C93FF', short:'FSAM', n:'05', scene:'net',
     title:'FSAM — Site &amp; Regional Coordination',
     tag:'Region 4a Coordinator &amp; Webmaster',
     meta:'Tampa, FL · June 2023 – May 2026',
@@ -64,14 +65,17 @@ window.PROJECTS = [
     status:'Live'
   },
   {
-    id:'hydro', n:'06', scene:'hydro',
+    id:'hydro', page:'hydroponic-chamber.html', accent:'#8EE36B', short:'Growth chamber', n:'06', scene:'hydro',
     title:'Autonomous Hydroponic Growth Chamber',
     tag:'NASA Kennedy Space Center Award',
     meta:'Southeastern Science &amp; Engineering Fair · Independent research',
     lede:'A closed-loop plant growth system built to test whether a crop cycle could survive conditions relevant to spaceflight.',
     body:'Nutrient circulation, relay-switched LED control and structural housing, with the embedded platform chosen by weighted decision matrix. On top of the chamber’s custom I²C sensor PCB, an OpenCV pipeline in Python — HSV conversion, Excess Green Index segmentation, morphological refinement — extracted canopy area across six independent growth trials. A linear regression calibrated against destructive-harvest ground truth turned canopy area into fresh biomass estimates at 6.9% MAPE and R² 0.91, with systematic error analysis isolating leaf overlap and edge-segmentation accuracy as the main sources of variance.',
     tags:['Embedded C','Custom PCB','I²C','Teensy','BME680','Python','OpenCV','Regression'],
-    links:[{label:'Writeup', href:null},{label:'Research paper', href:null}],
-    status:'Writeup pending'
+    links:[{label:'Interactive project site', href:'https://shividoge.github.io/hydroponics-growth-system/'},
+            {label:'Biomass web app (code)', href:'https://github.com/shividoge/plant_growth_webapp_v2'},
+            {label:'Research paper', href:null}],
+    bench:'hydro',
+    status:'Shipped'
   }
 ];

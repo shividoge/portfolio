@@ -234,18 +234,98 @@
 
   /* ------------------------------------------------------------------ pause */
   var btn = document.getElementById('fpgaToggle');
+  var hint = host.parentElement && host.parentElement.querySelector('.fp-hint');
   if (reduce) {
     host.classList.add('is-static');
     if (btn) btn.hidden = true;
+    if (hint) hint.hidden = true;
     return;
   }
   if (!btn) return;
 
-  var paused = false;
+  /* ------------------------------------------------------------------ drag
+     Same idea as the hero part (hero.js): idle drift with a little momentum,
+     but the "camera" here starts already tipped down, so instead of a free
+     trackball it settles back toward a fixed three-quarter view — closer to
+     turning a part on a bench than spinning a globe. */
+  var TILT_BASE = 59, TILT_AMP = 7, TILT_PERIOD = 34; /* was the 52-66deg, 17s alternate */
+  var SPIN_PERIOD = 26; /* matches the old chipSpin duration */
+
+  var rotZ = -24, velZ = 0, tiltPhase = 0;
+  var dragging = false, paused = false, visible = true;
+  var lastAngle = 0, grabRot = 0, lastT = 0, last = 0, raf = 0;
+
+  function angleAt(e) {
+    var r = spin.getBoundingClientRect();
+    return Math.atan2(e.clientY - (r.top + r.height / 2),
+                      e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+  }
+
+  spin.addEventListener('pointerdown', function (e) {
+    dragging = true;
+    spin.classList.add('is-drag');
+    spin.setPointerCapture(e.pointerId);
+    lastAngle = angleAt(e); grabRot = rotZ; lastT = performance.now(); velZ = 0;
+  });
+  spin.addEventListener('pointermove', function (e) {
+    if (!dragging) return;
+    var ang = angleAt(e), d = ang - lastAngle;
+    while (d > 180) d -= 360;
+    while (d < -180) d += 360;
+    var now = performance.now(), dt = Math.max(8, now - lastT);
+    velZ = d / dt * 1000;
+    lastAngle = ang; lastT = now;
+    rotZ = grabRot + d; grabRot = rotZ;
+    apply();
+  });
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    spin.classList.remove('is-drag');
+    velZ = Math.max(-720, Math.min(720, velZ));
+  }
+  spin.addEventListener('pointerup', endDrag);
+  spin.addEventListener('pointercancel', endDrag);
+
+  function apply() {
+    var tilt = TILT_BASE + Math.sin(tiltPhase) * TILT_AMP;
+    scene.style.transform = 'rotateX(' + tilt.toFixed(2) + 'deg)';
+    spin.style.transform = 'rotateZ(' + rotZ.toFixed(2) + 'deg)';
+    sheen.style.transform = 'translateZ(' + (THICK / 2 + 0.1) + 'px) rotate(' + (-rotZ).toFixed(2) + 'deg)';
+  }
+
+  var IDLE_SPEED = 360 / SPIN_PERIOD; /* deg/sec */
+  function tick(now) {
+    raf = 0;
+    var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
+    last = now;
+    if (!paused) {
+      tiltPhase += dt * (2 * Math.PI / TILT_PERIOD);
+      if (!dragging) {
+        if (Math.abs(velZ) > 1) { rotZ += velZ * dt; velZ *= Math.pow(0.12, dt); }
+        else { velZ = 0; rotZ += IDLE_SPEED * dt; }
+      }
+    }
+    apply();
+    if (visible) raf = requestAnimationFrame(tick);
+    else last = 0;
+  }
+  function start() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
+
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (es) {
+      visible = es[0].isIntersecting;
+      if (visible) start();
+      else if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    }, { threshold: 0 }).observe(host);
+  }
+
   btn.addEventListener('click', function () {
     paused = !paused;
-    host.classList.toggle('is-paused', paused);
     btn.setAttribute('aria-pressed', String(paused));
     btn.textContent = paused ? 'Play' : 'Pause';
   });
+
+  apply();
+  start();
 })();

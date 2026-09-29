@@ -11,3 +11,7 @@ concepts/
 .claude/
 .impeccable/
 .DS_Store
+
+# Dependencies, and the playwright-cli session's scratch output.
+node_modules/
+.playwright-cli/

@@ -45,14 +45,18 @@
   F.keys.w = F.keys.n * F.keys.size + (F.keys.n - 1) * F.keys.gap;
   F.keys.x = (BODY - F.keys.w) / 2;
 
+  var TOOL_NAME = { js: 'JavaScript', py: 'Python', cpp: 'C++', cad: 'Autodesk', ki: 'KiCad', sv: 'SystemVerilog', lx: 'Linux' };
+
+  /* One key per tool. Each is a real button that opens where that tool was
+     used (see TOOLS below), so the row is a map, not a decoration. */
   var KEYS = [
-    { t: 'JS',  bg: '#F7DF1E', fg: '#12120C' },
-    { t: 'Py',  bg: '#356C9B', fg: '#FFE873' },
-    { t: 'C++', bg: '#00589C', fg: '#DCEBFA' },
-    { t: 'A',   bg: '#C0202B', fg: '#FFE9EA' },
-    { t: 'Ki',  bg: '#2F4BB0', fg: '#E7ECFF' },
-    { t: 'Az',  bg: '#0F7FC1', fg: '#E4F3FC' },
-    { t: 'Lx',  bg: '#E9E4D8', fg: '#1A1A1A' }
+    { id: 'js',  t: 'JS',  bg: '#F7DF1E', fg: '#12120C' },
+    { id: 'py',  t: 'Py',  bg: '#356C9B', fg: '#FFE873' },
+    { id: 'cpp', t: 'C++', bg: '#00589C', fg: '#DCEBFA' },
+    { id: 'cad', t: 'A',   bg: '#C0202B', fg: '#FFE9EA' },
+    { id: 'ki',  t: 'Ki',  bg: '#2F4BB0', fg: '#E7ECFF' },
+    { id: 'sv',  t: 'SV',  bg: '#D5ACFF', fg: '#14130F' },
+    { id: 'lx',  t: 'Lx',  bg: '#E9E4D8', fg: '#1A1A1A' }
   ];
 
   /* ------------------------------------------------------------- helpers */
@@ -62,9 +66,9 @@
     if (css) d.style.cssText = css;
     return d;
   }
-  function box(cls, x, y, w, h, z, h3) {
+  function box(cls, x, y, w, h, z, h3, tag) {
     /* a face parked at (x,y) in body space, lifted z above the lid */
-    var d = el('div', cls,
+    var d = el(tag || 'div', cls,
       'position:absolute;left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px;' +
       'transform:translateZ(' + z + 'px);');
     if (h3 != null) d.style.setProperty('--h', h3);
@@ -180,21 +184,27 @@
     return s;
   }
 
-  /* ------------------------------------------------------------- the LCD */
+  /* ------------------------------------------------------------- the LCD
+     The display shows a tiny thumbnail of the About page, because that is what
+     it is: scroll, and the page grows out of this screen (portal.js). The bars
+     stand in for the paragraph, with the two accented phrases in purple. */
   function screen() {
-    var s = svg(F.lcd.w - 14, F.lcd.h - 14);
-    var w = F.lcd.w - 14, h = F.lcd.h - 14;
-    s.appendChild(n('rect', { x: 0, y: 0, width: w, height: h, rx: 2, fill: '#CFCFC8' }));
-    s.appendChild(n('rect', { x: 0, y: 0, width: w, height: 11, fill: '#B9B9B2' }));
-    [6, 13, 20].forEach(function (x) {
-      s.appendChild(n('circle', { cx: x, cy: 5.5, r: 1.8, fill: '#6A6A66' }));
-    });
-    s.appendChild(n('rect', { x: 7, y: 18, width: 24, height: 20, rx: 2,
-                              fill: 'none', stroke: '#55554F', 'stroke-width': 1.4 }));
-    s.appendChild(n('circle', { cx: 14, cy: 25, r: 2.6, fill: '#55554F' }));
-    s.appendChild(n('path', { d: 'M 9 36 L 18 26 L 29 36 Z', fill: '#55554F' }));
-    [[38, 20, 56], [38, 27, 48], [38, 34, 52]].forEach(function (l) {
-      s.appendChild(n('rect', { x: l[0], y: l[1], width: l[2], height: 3, rx: 1.5, fill: '#6E6E68' }));
+    var w = F.lcd.w - 14, hh = F.lcd.h - 14;
+    var s = svg(w, hh);
+    s.appendChild(n('rect', { x: 0, y: 0, width: w, height: hh, rx: 1.5, fill: '#F7F5F1' }));
+    s.appendChild(n('circle', { cx: 8, cy: 9, r: 1.7, fill: '#6B3FA0' }));
+    s.appendChild(n('rect', { x: 13, y: 7.6, width: 15, height: 2.8, rx: 1.4, fill: '#66635B', opacity: 0.8 }));
+    var ROWS = [
+      [[8, 98, '#14130F']],
+      [[8, 100, '#14130F']],
+      [[8, 46, '#14130F'], [50, 54, '#6B3FA0']],
+      [[8, 100, '#14130F']],
+      [[8, 34, '#14130F'], [38, 34, '#6B3FA0']]
+    ];
+    ROWS.forEach(function (row, i) {
+      row.forEach(function (b) {
+        s.appendChild(n('rect', { x: b[0], y: 18 + i * 8, width: b[1], height: 5, rx: 2.2, fill: b[2] }));
+      });
     });
     return s;
   }
@@ -270,10 +280,15 @@
   /* the key row */
   KEYS.forEach(function (kk, i) {
     var x = F.keys.x + i * (F.keys.size + F.keys.gap);
-    var key = box('hc-part hc-key', x, F.keys.y, F.keys.size, F.keys.size, LIFT + 6, 6);
+    var key = box('hc-part hc-key', x, F.keys.y, F.keys.size, F.keys.size, LIFT + 6, 6, 'button');
+    key.type = 'button';
     key.style.background = kk.bg;
     key.style.color = kk.fg;
     key.textContent = kk.t;
+    key.setAttribute('tabindex', '-1');       /* the Stack pick offers the same tools; see the note on the dots below */
+    key.setAttribute('data-group', 'stack');
+    key.setAttribute('data-tool', kk.id);
+    key.setAttribute('aria-label', 'Where I have used ' + TOOL_NAME[kk.id]);
     bodyEl.appendChild(key);
   });
 
@@ -284,75 +299,280 @@
   rig.appendChild(bodyEl);
   hold.insertBefore(rig, hold.firstChild);
 
-  /* ---------------------------------------------------------- the hotspots */
-  var AT = {
-    'The display': [F.lcd.x + F.lcd.w / 2, F.lcd.y + F.lcd.h / 2, LIFT + 12],
-    'The D-pad':   [F.dpad.cx, F.dpad.cy, LIFT + 14],
-    'The lens':    [L.cx, L.cy, LIFT + 46],
-    'The keys':    [F.keys.x + F.keys.w / 2, F.keys.y + F.keys.size / 2, LIFT + 11]
+  /* ------------------------------------------- what each part stands for
+     The chip is an index into the work. Pick a part and it opens the real
+     numbers behind it and a jump to the write-up. Every figure below is on
+     the resume; nothing is here for atmosphere. */
+  var GROUPS = {
+    web: {
+      pick: 'Web', kicker: 'Web · the display',
+      head: 'FSAM website and regional infrastructure',
+      metrics: [['60%', 'less manual communication overhead'], ['80', 'Tampa Bay students given a route into elite math contests']],
+      points: [
+        'Built and maintain the organization’s site in HTML, CSS and JavaScript, on Linux-based hosting, with Git.',
+        'Region 4a Coordinator and Webmaster, June 2023 to May 2026.'
+      ],
+      row: 'fsam', ext: ['flsam.org', 'https://flsam.org/']
+    },
+    robotics: {
+      pick: 'Robotics', kicker: 'Robotics · the D-pad',
+      head: 'Middleton Robotics: FRC and VEX',
+      metrics: [['2', 'national awards'], ['1', 'World Championship award'], ['30%', 'more competitive participation, 9 teams']],
+      points: [
+        'Returned the school’s FRC program to competition after years of inactivity.',
+        'Java on the RoboRIO, C++ on VEX controllers, Git for version control.'
+      ],
+      row: 'robotics', ext: ['middletonrobotics.com', 'https://www.middletonrobotics.com/']
+    },
+    vision: {
+      pick: 'Vision', kicker: 'Vision · the lens',
+      head: 'Plant biomass by computer vision',
+      metrics: [['6.9%', 'MAPE across 6 growth trials'], ['0.91', 'R² against harvest ground truth']],
+      points: [
+        'OpenCV in Python: HSV conversion, Excess Green Index segmentation, morphological refinement.',
+        'A NASA Kennedy Space Center Award at the Southeastern Science and Engineering Fair.'
+      ],
+      row: 'hydro'
+    },
+    stack: {
+      pick: 'Stack', kicker: 'Stack · the keys',
+      head: 'Where I’ve used each tool'
+    }
   };
-  var COPY = {
-    'The display': 'Web work — FSAM’s site, and a storefront and inventory app I built for a small business.',
-    'The D-pad':   'Robotics — two seasons as president, FRC and VEX, and the deployment pipeline behind them.',
-    'The lens':    'Computer vision — the OpenCV pipeline that estimated plant biomass to 6.9% MAPE.',
-    'The keys':    'The stack — JavaScript, Python, C++, Autodesk, KiCad, Azure and Linux.'
+  var ORDER = ['vision', 'web', 'robotics', 'stack'];
+
+  var TOOLS = [
+    { id: 'js',  name: 'JavaScript',    where: [['FSAM site and regional infrastructure', 'fsam']] },
+    { id: 'py',  name: 'Python',        where: [['OpenCV biomass pipeline', 'hydro']] },
+    { id: 'cpp', name: 'C++',           where: [['VEX controllers at Middleton Robotics', 'robotics']] },
+    { id: 'cad', name: 'Autodesk',      where: [['Inventor, AutoCAD and Fusion 360: certified user', null]] },
+    { id: 'ki',  name: 'KiCad',         where: [['Environmental monitoring board', 'envpcb'], ['SoutheastCon robot board', 'pcb']] },
+    { id: 'sv',  name: 'SystemVerilog', where: [['CPU RTL at the Smart Systems Lab', 'fpga']] },
+    { id: 'lx',  name: 'Linux',         where: [['FSAM web hosting. Linux Essentials certified', 'fsam']] }
+  ];
+
+  function t(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function link(cls, text, href, ext) {
+    var a = t('a', cls, text);
+    a.href = href;
+    if (ext) { a.target = '_blank'; a.rel = 'noopener'; }
+    return a;
+  }
+
+  var idx  = document.getElementById('chipIndex');
+  var read = document.getElementById('chipRead');
+  var picks = [], panels = {}, toolBtns = {}, toolDetail = null, selTool = 'ki';
+
+  ORDER.forEach(function (g) {
+    var G = GROUPS[g];
+
+    var b = t('button', 'chip-pick wipe', G.pick);
+    b.type = 'button';
+    b.setAttribute('data-group', g);
+    b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-controls', 'chipPanel-' + g);
+    idx.appendChild(b);
+    picks.push(b);
+
+    var p = t('div', 'chip-panel');
+    p.id = 'chipPanel-' + g;
+    p.setAttribute('data-group', g);
+    var top = t('div', 'chip-top');
+    var ttl = t('div', 'chip-title');
+    ttl.appendChild(t('p', 'lbl chip-k', G.kicker));
+    ttl.appendChild(t('h3', 'chip-h', G.head));
+    top.appendChild(ttl);
+    if (G.row) top.appendChild(link('chip-cta wipe', 'Write-up ↓', '#proj-' + G.row));
+    p.appendChild(top);
+
+    if (G.metrics) {
+      var m = t('div', 'chip-metrics');
+      G.metrics.forEach(function (x) {
+        var c = t('div');
+        c.appendChild(t('b', null, x[0]));
+        c.appendChild(t('span', null, x[1]));
+        m.appendChild(c);
+      });
+      p.appendChild(m);
+      var ul = t('ul', 'chip-points');
+      G.points.forEach(function (x) { ul.appendChild(t('li', null, x)); });
+      if (G.ext) {
+        var li2 = t('li');
+        li2.appendChild(link('chip-ext', G.ext[0] + ' ↗', G.ext[1], true));
+        ul.appendChild(li2);
+      }
+      p.appendChild(ul);
+    } else {
+      var grid = t('div', 'chip-toolgrid');
+      grid.setAttribute('role', 'group');
+      grid.setAttribute('aria-label', 'Tools');
+      TOOLS.forEach(function (T) {
+        var K = KEYS.filter(function (k) { return k.id === T.id; })[0];
+        var tb = t('button', 'chip-toolbtn');
+        tb.type = 'button';
+        tb.setAttribute('data-tool', T.id);
+        tb.setAttribute('aria-pressed', 'false');
+        var badge = t('span', 'chip-kb', K.t);
+        badge.style.background = K.bg; badge.style.color = K.fg;
+        badge.setAttribute('aria-hidden', 'true');
+        tb.appendChild(badge);
+        tb.appendChild(t('span', null, T.name));
+        grid.appendChild(tb);
+        toolBtns[T.id] = tb;
+      });
+      p.appendChild(grid);
+      toolDetail = t('p', 'chip-td');
+      p.appendChild(toolDetail);
+    }
+
+    read.appendChild(p);
+    panels[g] = p;
+  });
+
+  /* the parts on the package that stand for each group */
+  var partsOf = {
+    web:      [].slice.call(bodyEl.querySelectorAll('.hc-lcd, .hc-glass')),
+    robotics: [].slice.call(bodyEl.querySelectorAll('.hc-dkey')),
+    vision:   [].slice.call(bodyEl.querySelectorAll('.hc-lbase, .hc-ring, .hc-eye')),
+    stack:    [].slice.call(bodyEl.querySelectorAll('.hc-key'))
+  };
+  Object.keys(partsOf).forEach(function (g) {
+    partsOf[g].forEach(function (n) { if (!n.hasAttribute('data-group')) n.setAttribute('data-group', g); });
+  });
+
+  /* the dots sit on the three big features; the keys need none, they are buttons */
+  var AT = {
+    web:      [F.lcd.x + F.lcd.w / 2, F.lcd.y + F.lcd.h / 2, LIFT + 12],
+    robotics: [F.dpad.cx, F.dpad.cy, LIFT + 14],
+    vision:   [L.cx, L.cy, LIFT + 46]
   };
   var pad = (BOX - BODY) / 2;
+  /* The dots and keys are a pointer and touch shortcut to what the four picks
+     below already do. Out of the tab order so a keyboard user reaches the
+     picks directly; still buttons, so a screen reader can find them. */
+  spots.forEach(function (sp) { sp.setAttribute('tabindex', '-1'); });
   spots.forEach(function (sp) {
-    var a2 = AT[sp.dataset.title];
+    var a2 = AT[sp.getAttribute('data-group')];
     if (!a2) return;
     sp.style.left = ((pad + a2[0]) / BOX * 100) + '%';
     sp.style.top  = ((pad + a2[1]) / BOX * 100) + '%';
     sp.style.transform = 'translateZ(' + a2[2] + 'px)';
   });
 
-  var tip  = document.getElementById('chipTip');
-  var tipT = document.getElementById('chipTipT');
-  var tipB = document.getElementById('chipTipB');
-  var active = null;
+  var sel = null, userPicked = false;
 
-  function show(sp) {
-    if (active === sp) return;
-    if (active) active.classList.remove('is-on');
-    active = sp;
-    if (!sp) { tip.classList.remove('is-on'); return; }
-    sp.classList.add('is-on');
-    tipT.textContent = sp.dataset.title;
-    tipB.textContent = COPY[sp.dataset.title] || '';
-    tip.classList.add('is-on');
+  function showTool(id) {
+    var T = TOOLS.filter(function (x) { return x.id === id; })[0];
+    if (!T || !toolDetail) return;
+    toolDetail.textContent = '';
+    toolDetail.appendChild(t('b', null, T.name));
+    toolDetail.appendChild(document.createTextNode(' — '));
+    T.where.forEach(function (w, i) {
+      if (i) toolDetail.appendChild(document.createTextNode(' · '));
+      if (w[1]) toolDetail.appendChild(link('chip-tl', w[0] + ' ↓', '#proj-' + w[1]));
+      else toolDetail.appendChild(document.createTextNode(w[0]));
+    });
   }
 
-  spots.forEach(function (sp) {
-    sp.addEventListener('mouseenter', function () { if (!coarse) show(sp); });
-    sp.addEventListener('mouseleave', function () { if (!coarse) show(null); });
-    sp.addEventListener('focus', function () { show(sp); });
-    sp.addEventListener('blur',  function () { show(null); });
-    sp.addEventListener('click', function (e) { e.preventDefault(); show(active === sp ? null : sp); });
+  function pick(group, tool, fromUser) {
+    if (!GROUPS[group]) return;
+    sel = group;
+    if (fromUser) userPicked = true;
+    if (group === 'stack') { tool = tool || selTool; selTool = tool; showTool(tool); }
+    Object.keys(toolBtns).forEach(function (id) { toolBtns[id].setAttribute('aria-pressed', group === 'stack' && id === tool ? 'true' : 'false'); });
+
+    picks.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-group') === group ? 'true' : 'false'); });
+    ORDER.forEach(function (g) {
+      var on = g === group;
+      panels[g].classList.toggle('is-on', on);
+      if (on) panels[g].removeAttribute('inert'); else panels[g].setAttribute('inert', '');
+    });
+    Object.keys(partsOf).forEach(function (g) {
+      partsOf[g].forEach(function (n) {
+        var hit = g === group && (g !== 'stack' || !tool || n.getAttribute('data-tool') === tool);
+        n.classList.toggle('is-sel', hit);
+      });
+    });
+    spots.forEach(function (sp) { sp.classList.toggle('is-on', sp.getAttribute('data-group') === group); });
+    hold.classList.add('has-sel');
+  }
+
+  read.addEventListener('click', function (e) {
+    var tb = e.target.closest('.chip-toolbtn');
+    if (tb) pick('stack', tb.getAttribute('data-tool'), true);
   });
+
+  idx.addEventListener('click', function (e) {
+    var b = e.target.closest('.chip-pick');
+    if (b) pick(b.getAttribute('data-group'), null, true);
+  });
+
+  /* a tap on any part of the package. Drag only starts after a few pixels of
+     movement (see below), so a tap reaches here as an ordinary click, and so
+     does Enter on a focused key. */
+  var suppressClick = false;
+  hold.addEventListener('click', function (e) {
+    if (suppressClick) return;
+    var n = e.target.closest('[data-group]');
+    if (n) pick(n.getAttribute('data-group'), n.getAttribute('data-tool'), true);
+  });
+
+  pick('vision', null, false);     /* open on the strongest single piece of evidence */
 
   /* -------------------------------------------------------------- motion */
   var DRIFT = 2.6, MAX_TILT = 9;
   var rot = -18, vel = 0;
   var tx = 15, ty = 0, tgx = 15, tgy = 0;
   var dragging = false, paused = false, visible = true;
-  var last = 0, raf = 0;
+  var last = 0, raf = 0, lastSY = null;
 
   function rad(d) { return d * Math.PI / 180; }
 
+  /* Pose. portal.js turns the part to face the reader and hold still while the
+     About page grows out of its display. mix 0 is the free-running part; mix 1
+     is upright and flat-on. The free values are frozen while it is above 0 and
+     handed back untouched when it returns to 0, so nothing snaps. */
+  var poseMix = 0, poseRotFrom = 0, poseRotTo = 0, poseTxFrom = 0;
+  function effRot() { return poseMix > 0 ? poseRotFrom + (poseRotTo - poseRotFrom) * poseMix : rot; }
+  function effTx()  { return poseMix > 0 ? poseTxFrom * (1 - poseMix) : tx; }
+  function setPose(m) {
+    m = Math.max(0, Math.min(1, m));
+    if (m > 0 && poseMix === 0) { poseRotFrom = rot; poseRotTo = Math.round(rot / 360) * 360; poseTxFrom = tx; vel = 0; }
+    if (m === 0 && poseMix > 0) { rot = poseRotFrom; tx = poseTxFrom; }
+    poseMix = m;
+    apply();
+  }
+  /* where the display sits on screen when the part is upright and flat-on */
+  function measureLCD() {
+    var prev = poseMix;
+    if (prev === 0) { poseRotFrom = rot; poseRotTo = Math.round(rot / 360) * 360; poseTxFrom = tx; }
+    poseMix = 1; apply();
+    var r = glass.getBoundingClientRect();
+    poseMix = prev; apply();
+    return { x: r.left, y: r.top, w: r.width, h: r.height };
+  }
+  window.__chip = { setPose: setPose, measureLCD: measureLCD };
+
   function apply() {
-    hold.style.transform = 'rotateX(' + tx.toFixed(2) + 'deg) rotateY(' + ty.toFixed(2) +
-                           'deg) rotateZ(' + rot.toFixed(2) + 'deg)';
+    var er = effRot(), et = effTx();
+    hold.style.transform = 'rotateX(' + et.toFixed(2) + 'deg) rotateY(' + ty.toFixed(2) +
+                           'deg) rotateZ(' + er.toFixed(2) + 'deg)';
 
     /* shadows: rotate the light back out of the part's own frame */
-    var away = rad(LIGHT + 180 - rot);
+    var away = rad(LIGHT + 180 - er);
     hold.style.setProperty('--sx', Math.cos(away).toFixed(3));
     hold.style.setProperty('--sy', Math.sin(away).toFixed(3));
-    sheen.style.transform = 'translateZ(' + (LIFT + 44) + 'px) rotate(' + (-rot).toFixed(2) + 'deg)';
-    glint.style.transform = 'rotate(' + (-rot).toFixed(2) + 'deg)';
+    sheen.style.transform = 'translateZ(' + (LIFT + 44) + 'px) rotate(' + (-er).toFixed(2) + 'deg)';
+    glint.style.transform = 'rotate(' + (-er).toFixed(2) + 'deg)';
 
     /* walls: brightness from how squarely each one faces the light */
     for (var i = 0; i < walls.length; i++) {
-      var nrm = rad(parseFloat(walls[i].dataset.nrm) + rot);
+      var nrm = rad(parseFloat(walls[i].dataset.nrm) + er);
       var d = Math.cos(nrm - rad(LIGHT));
       walls[i].style.filter = 'brightness(' + (0.52 + 0.92 * Math.max(0, d)).toFixed(3) + ')';
     }
@@ -364,16 +584,20 @@
                       e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
   }
   var grabRot = 0, lastAngle = 0, lastT = 0;
+  var pending = false, downX = 0, downY = 0, downId = 0;
 
   hold.addEventListener('pointerdown', function (e) {
-    if (e.target.closest('.spot')) return;
-    dragging = true;
-    hold.classList.add('is-drag');
-    hold.setPointerCapture(e.pointerId);
-    lastAngle = angleAt(e); grabRot = rot; lastT = performance.now(); vel = 0;
-    show(null);
+    if (poseMix > 0) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    pending = true; downX = e.clientX; downY = e.clientY; downId = e.pointerId;
   });
   hold.addEventListener('pointermove', function (e) {
+    if (pending && !dragging && Math.hypot(e.clientX - downX, e.clientY - downY) > 5) {
+      dragging = true; pending = false;
+      try { hold.setPointerCapture(downId); } catch (err) { /* already released */ }
+      lastAngle = angleAt(e); grabRot = rot; lastT = performance.now(); vel = 0;
+      return;
+    }
     if (!dragging) return;
     var ang = angleAt(e), d = ang - lastAngle;
     while (d > 180) d -= 360;
@@ -385,25 +609,15 @@
     apply();
   });
   function endDrag() {
+    pending = false;
     if (!dragging) return;
     dragging = false;
-    hold.classList.remove('is-drag');
+    suppressClick = true;                    /* the release must not also count as a tap */
+    setTimeout(function () { suppressClick = false; }, 0);
     vel = Math.max(-900, Math.min(900, vel));
   }
   hold.addEventListener('pointerup', endDrag);
   hold.addEventListener('pointercancel', endDrag);
-
-  if (!coarse) {
-    stage.addEventListener('pointermove', function (e) {
-      if (reduce) return;
-      var r = hold.getBoundingClientRect();
-      var nx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
-      var ny = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
-      tgy =  Math.max(-1, Math.min(1, nx)) * MAX_TILT;
-      tgx = 15 - Math.max(-1, Math.min(1, ny)) * MAX_TILT;
-    });
-    stage.addEventListener('pointerleave', function () { tgx = 15; tgy = 0; });
-  }
 
   var btn = document.getElementById('chipPause');
   if (btn) {
@@ -419,10 +633,16 @@
     raf = 0;
     var dt = last ? Math.min(0.05, (now - last) / 1000) : 0.016;
     last = now;
-    if (!dragging) {
+    if (poseMix > 0) { lastSY = window.pageYOffset || 0; }
+    else if (!dragging) {
       if (Math.abs(vel) > 1) { rot += vel * dt; vel *= Math.pow(0.12, dt); }
-      else { vel = 0; if (!paused && !reduce) rot += DRIFT * dt; }
+      else { vel = 0; if (!paused && !reduce && !userPicked) rot += DRIFT * dt; }
     }
+    /* scrolling the page turns the part, so the chip answers the thing the
+       reader is actually doing, not where their pointer happens to be */
+    var sy = window.pageYOffset || 0;
+    if (!reduce && lastSY !== null && poseMix === 0) rot += (sy - lastSY) * 0.11;
+    lastSY = sy;
     tx += (tgx - tx) * Math.min(1, dt * 6);
     ty += (tgy - ty) * Math.min(1, dt * 6);
     apply();
@@ -434,7 +654,7 @@
   if (window.IntersectionObserver) {
     new IntersectionObserver(function (es) {
       visible = es[0].isIntersecting;
-      if (visible) start();
+      if (visible) { lastSY = null; start(); }
       else if (raf) { cancelAnimationFrame(raf); raf = 0; }
     }, { threshold: 0 }).observe(stage);
   }
@@ -442,11 +662,15 @@
   /* the rig is laid out in fixed pixels, so scale it to whatever it is given */
   function fit() {
     var wrap = hold.parentNode;
-    var w = wrap.clientWidth;
-    wrap.style.setProperty('--chip-k', Math.max(0.3, Math.min(1.08, w / BOX)).toFixed(3));
+    var w = wrap.clientWidth, h = wrap.clientHeight;
+    /* the part and its leads must sit inside the box the page gave it */
+    wrap.style.setProperty('--chip-k', Math.max(0.3, Math.min(1.08, w / BOX, h / BOX * 0.9)).toFixed(3));
   }
   fit();
   addEventListener('resize', fit);
+  /* the column can change size with no window resize (fonts arriving, the
+     loader lifting, the scene pinning), so watch it directly */
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(hold.parentNode.parentNode);
 
   apply();
   start();

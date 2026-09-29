@@ -1,0 +1,104 @@
+/* ===========================================================================
+   The chip as an index of the work (built by hero.js).
+   Four picks under the part, and the real numbers behind whichever is open.
+   All four panels share one grid cell, so the readout is always as tall as
+   the tallest one and choosing a different part never shoves the page around.
+   =========================================================================== */
+
+/* a "Read the write-up" jump should land clear of the fixed nav */
+[id^="proj-"]{ scroll-margin-top:104px; }
+
+.chip-index{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:.4rem;
+  width:100%; margin:1rem 0 0;
+}
+.chip-pick{
+  position:relative; isolation:isolate; overflow:hidden;
+  min-height:40px; padding:0 1.05rem; border:1px solid var(--dkline); border-radius:999px;
+  background:transparent; color:var(--dkink); cursor:pointer;
+  font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem; letter-spacing:.11em; text-transform:uppercase;
+  --wipe-fill:var(--accent); --wipe-ink:var(--dk);
+  transition:border-color .25s var(--ease);
+}
+.chip-pick:hover{ border-color:var(--accent); }
+.chip-pick[aria-pressed="true"]{ background:var(--dkink); border-color:var(--dkink); color:var(--dk); }
+.chip-pick:focus-visible{ outline:2px solid transparent; box-shadow:0 0 0 2px var(--dk), 0 0 0 4px var(--accent); }
+@media (forced-colors: active){ .chip-pick:focus-visible{ outline-color:Highlight; } }
+
+.chip-read{
+  display:grid; width:100%; max-width:34rem; margin-top:1.15rem; padding-top:1.1rem;
+  border-top:1px solid var(--dkline); text-align:left;
+}
+.chip-panel{
+  grid-area:1 / 1; min-width:0;
+  visibility:hidden; opacity:0; transform:translateY(8px);
+  transition:opacity .32s var(--ease), transform .32s var(--ease), visibility 0s linear .32s;
+}
+.chip-panel.is-on{ visibility:visible; opacity:1; transform:none; transition-delay:0s; }
+
+.chip-k{ margin:0 0 .4rem; color:var(--accent); }
+.chip-h{
+  margin:0; font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; font-weight:600;
+  font-size:1.3rem; letter-spacing:-.025em; line-height:1.15; color:var(--dkink);
+}
+.chip-metrics{ display:flex; flex-wrap:wrap; gap:.8rem 1.8rem; margin:.85rem 0 .75rem; }
+.chip-metrics b{
+  display:block; font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; font-weight:600;
+  font-size:1.95rem; letter-spacing:-.035em; line-height:1; color:var(--dkink);
+}
+.chip-metrics span{ display:block; max-width:16ch; margin-top:.35rem; font-size:.75rem; line-height:1.4; color:var(--dkink2); }
+.chip-points{ margin:0; padding:0 0 0 1.05rem; list-style:disc; font-size:.8125rem; line-height:1.58; color:var(--dkink); }
+.chip-points li{ margin:0 0 .3rem; }
+.chip-points li::marker{ color:var(--accent); }
+
+.chip-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:.6rem 1rem; }
+.chip-title{ min-width:0; }
+.chip-cta{
+  position:relative; isolation:isolate; overflow:hidden; display:inline-flex; align-items:center; flex:none;
+  min-height:40px; padding:0 1.05rem; border-radius:999px; background:var(--accent); color:var(--dk);
+  font-size:.8125rem; font-weight:500; text-decoration:none;
+  --wipe-fill:var(--dkink); --wipe-ink:var(--dk);
+}
+.chip-ext{ color:var(--accent); text-decoration:none; }
+.chip-ext:hover{ text-decoration:underline; text-underline-offset:3px; }
+.chip-cta:focus-visible,.chip-ext:focus-visible,.chip-tl:focus-visible{
+  outline:2px solid transparent; box-shadow:0 0 0 2px var(--dk), 0 0 0 4px var(--accent);
+}
+@media (forced-colors: active){ .chip-cta:focus-visible,.chip-ext:focus-visible,.chip-tl:focus-visible{ outline-color:Highlight; } }
+
+/* the stack: pick a tool, see where it was used */
+.chip-toolgrid{ display:flex; flex-wrap:wrap; gap:.4rem; margin:.85rem 0 .8rem; }
+.chip-toolbtn{
+  display:inline-flex; align-items:center; gap:.5rem; min-height:38px; padding:0 .75rem 0 .45rem;
+  border:1px solid var(--dkline); border-radius:999px; background:transparent; color:var(--dkink2); cursor:pointer;
+  font-size:.75rem; transition:border-color .25s var(--ease), color .25s var(--ease), background-color .25s var(--ease);
+}
+.chip-toolbtn:hover{ border-color:var(--accent); color:var(--dkink); }
+.chip-toolbtn[aria-pressed="true"]{ border-color:var(--accent); color:var(--dkink); background:rgba(213,172,255,.1); }
+.chip-toolbtn:focus-visible{ outline:2px solid transparent; box-shadow:0 0 0 2px var(--dk), 0 0 0 4px var(--accent); }
+@media (forced-colors: active){ .chip-toolbtn:focus-visible{ outline-color:Highlight; } }
+.chip-kb{
+  display:inline-grid; place-items:center; min-width:1.9rem; height:1.35rem; padding:0 .25rem; border-radius:4px;
+  font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; font-weight:700; font-size:.6875rem; line-height:1;
+}
+.chip-td{ margin:0; min-height:3.1em; font-size:.8125rem; line-height:1.6; color:var(--dkink2); }
+.chip-td b{ color:var(--dkink); font-weight:500; }
+.chip-tl{ color:var(--dkink); text-decoration:underline; text-decoration-color:#4A4A55; text-underline-offset:3px; }
+.chip-tl:hover{ color:var(--accent); text-decoration-color:var(--accent); }
+
+/* the part you picked lights up; the rest step back a little */
+.chip-hold.has-sel .hc-part,
+.chip-hold.has-sel .hc-ring,
+.chip-hold.has-sel .hc-eye,
+.chip-hold.has-sel .hc-glass{ transition:opacity .3s var(--ease), outline-color .3s var(--ease); }
+.chip-hold.has-sel .hc-part:not(.is-sel),
+.chip-hold.has-sel .hc-ring:not(.is-sel),
+.chip-hold.has-sel .hc-eye:not(.is-sel),
+.chip-hold.has-sel .hc-glass:not(.is-sel){ opacity:.62; }
+.hc-part.is-sel,.hc-ring.is-sel,.hc-eye.is-sel,.hc-glass.is-sel{ outline:2px solid var(--accent); outline-offset:2px; }
+.hc-key{ padding:0; border:0; cursor:pointer; }
+.hc-key:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+@media (max-width:640px){
+  .chip-h{ font-size:1.15rem; }
+}

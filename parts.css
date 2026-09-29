@@ -1,0 +1,246 @@
+/* Shared component styles: tags, notched corners, dark-panel focus, the hover wipe, the FPGA package panel. */
+  /* --- tag --- */
+  .tag{
+    font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem; letter-spacing:.06em;
+    padding:.3rem .6rem; border:1px solid var(--line); border-radius:4px; color:var(--ink2); white-space:nowrap;
+  }
+  .tag-dk{ border-color:var(--dkline); color:var(--dkink2); }
+
+  /* ===================== NOTCHED CORNER =====================
+     A chamfered corner, the way a fab marks pin-1 orientation on a panel.
+     Used sparingly, only on real "object" surfaces (never on text-dense rows
+     or the tag pills — a cut corner at that size reads as broken, not made).
+     clip-path clips paint, not stroke, so a plain border cannot follow the
+     cut edge on its own — this pairs two boxes instead: the outer one is
+     filled with the border colour and clipped to the full shape, the inner
+     one sits a hair smaller (via margin) and is clipped to a matching but
+     tighter shape, leaving exactly --nb of the outer showing as a ring. */
+  .notch{
+    --nc:16px; --nb:1px; --notch-c:var(--line);
+    background:var(--notch-c);
+    clip-path:polygon(0 0, calc(100% - var(--nc)) 0, 100% var(--nc), 100% 100%, 0 100%);
+    transition:background-color .35s var(--ease);
+  }
+  .notch.notch-dk{ --notch-c:var(--dkline); }
+  .notch > .notch-in{
+    margin:var(--nb); height:calc(100% - var(--nb) * 2);
+    clip-path:polygon(0 0, calc(100% - (var(--nc) - var(--nb))) 0,
+               100% calc(var(--nc) - var(--nb)), 100% 100%, 0 100%);
+  }
+
+
+  /* ===================== HANDCRAFTED DETAIL ===================== */
+
+  /* --- A. masked line reveal ---
+     Headings rise out of a clip box line by line rather than fading as a block.
+     The padding/negative-margin pair gives descenders room to live inside the
+     overflow box without changing where the line actually sits. */
+  [data-rv="mask"] .ln{
+    display:block; overflow:hidden;
+    padding-bottom:.14em; margin-bottom:-.14em;
+  }
+  .js [data-rv="mask"] .ln > span{
+    display:block; transform:translate3d(0,130%,0);
+    transition:transform .95s cubic-bezier(.16,1,.3,1);
+  }
+  .js [data-rv="mask"] .ln:nth-child(2) > span{ transition-delay:.075s; }
+  /* 130%, not 100%: the clip box is taller than the line (descender padding
+     above), so a smaller offset leaves a sliver of letter-tops showing.
+     Revealed via this CSS transition, not a GSAP yPercent tween: GSAP caches
+     a CSS-authored percentage transform as a fixed px offset the first time
+     it reads the element, so a later yPercent tween animates its own
+     separately-tracked (defaulted-to-0) yPercent component and never
+     touches that cached offset — the line silently never moves. Toggling
+     .is-revealed and letting the browser interpolate the actual computed
+     value sidesteps that entirely. */
+  [data-rv="mask"].is-revealed .ln > span{ transform:translate3d(0,0,0); }
+
+  /* --- B. cursor-tracked work rows --- */
+  .work-row{ position:relative; transition:background .45s var(--ease); }
+  /* landed on by the 1-6 keyboard shortcut — a single pulse, not a loop */
+  .work-row.is-jumped{ animation:workJump 1.3s var(--ease); }
+  @keyframes workJump{
+    0%,100%{ background:transparent; }
+    18%{ background:#FBF7FF; }
+  }
+  @media (prefers-reduced-motion:reduce){ .work-row.is-jumped{ animation:none; } }
+  .work-idx{ display:inline-block; transition:color .4s var(--ease), transform .45s var(--ease); }
+  .work-row:hover .work-idx{ color:var(--accentd); transform:translateX(5px); }
+  .work-title{
+    position:relative; display:inline;
+    background-image:linear-gradient(var(--accent),var(--accent));
+    background-repeat:no-repeat; background-position:0 100%; background-size:0% 2px;
+    /* clone so a wrapped title draws a correctly-sized rule under each line
+       rather than one rule stretched across the whole box */
+    -webkit-box-decoration-break:clone; box-decoration-break:clone;
+    transition:background-size .55s var(--ease);
+  }
+  .work-row:hover .work-title{ background-size:100% 2px; }
+  @media (hover:none){
+    .work-row:hover{ background:transparent; }
+  }
+
+  /* --- D. timeline that draws itself --- */
+  .tl-line{
+    position:absolute; left:0; top:6px; bottom:0; width:1px;
+    background:var(--line); transform-origin:top center;
+  }
+  .js .tl-line{ transform:scaleY(0); }
+  .tl-dot{
+    position:absolute; left:-5px; top:6px; width:10px; height:10px; border-radius:999px;
+    box-shadow:0 0 0 4px var(--bg);
+  }
+  .js .tl-dot{ transform:scale(0); }
+
+  /* --- H. focus that matches the hover language ---
+     A drawn lavender ring with a background-coloured gap, so the indicator keeps
+     its own contrast against whatever sits behind it. #6B3FA0 on #F7F5F1 is
+     6.6:1, comfortably past the 3:1 non-text minimum. */
+  a:focus-visible,button:focus-visible,[tabindex]:focus-visible,g.blk:focus-visible{
+    /* transparent rather than none: Windows High Contrast / forced-colors strips
+       box-shadow, and outline:none would leave no indicator at all. Forced
+       colors repaints this outline in a system colour instead. */
+    outline:2px solid transparent; outline-offset:2px;
+    box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--accentd);
+    border-radius:4px;
+  }
+  @media (forced-colors: active){
+    a:focus-visible,button:focus-visible,[tabindex]:focus-visible,g.blk:focus-visible{
+      outline-color:Highlight;
+    }
+  }
+  .btn:focus-visible{ border-radius:999px; }
+  .on-dark a:focus-visible,.on-dark button:focus-visible,.on-dark [tabindex]:focus-visible{
+    box-shadow:0 0 0 2px var(--dk), 0 0 0 4px var(--accent);
+  }
+  g.blk:focus-visible .blk-body{ stroke:var(--accent); stroke-width:2; }
+  .ulink:focus-visible::after{ transform:scaleX(1); transform-origin:left; }
+  .work-row:focus-within::before{ clip-path:ellipse(150% 150% at 50% 100%); }
+
+
+
+  /* ===================== HOVER WIPE =====================
+     Lando's trick: the fill arrives on an ELLIPTICAL clip-path, not a
+     rectangular slide. The curved leading edge is the entire difference
+     between "liquid" and "a div changed colour". One class, used everywhere,
+     so the whole site reacts with the same material. */
+  .wipe{ position:relative; isolation:isolate; overflow:hidden; --wx:50%; --wy:100%; }
+  .wipe::before{
+    content:""; position:absolute; inset:0; z-index:-1;
+    background:var(--wipe-fill,var(--ink));
+    /* the origin is set by wipe.js from wherever the cursor crossed the edge,
+       so the fill arrives from the direction you actually came from */
+    clip-path:ellipse(0% 0% at var(--wx) var(--wy));
+    transition:clip-path .55s cubic-bezier(.22,.61,.36,1);
+  }
+  .wipe:hover::before,.wipe:focus-visible::before{ clip-path:ellipse(150% 150% at var(--wx) var(--wy)); }
+  .wipe:hover,.wipe:focus-visible{ color:var(--wipe-ink,var(--bg)); }
+  .wipe > *{ position:relative; }
+
+  /* light variant: for big surfaces where a full ink fill would shout */
+  .wipe-soft{ --wipe-fill:#fff; }
+  .wipe-soft:hover,.wipe-soft:focus-visible{ color:inherit; }
+
+  /* on the dark panel the fill goes the other way */
+  .on-dark .wipe{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
+  /* the nav is not inside .on-dark, but it flies over the dark panel —
+     without this the fill is #14130F on #0D0D0F, i.e. invisible */
+  #nav.over-dark .navlink{ --wipe-fill:var(--accent); --wipe-ink:var(--dk); }
+
+  @media (prefers-reduced-motion: reduce){
+    .wipe::before{ transition-duration:.01ms; }
+  }
+
+
+  /* ===================== FPGA PANEL ===================== */
+  .fpanel{
+    position:relative; background:var(--dk); color:var(--dkink);
+    border:1px solid rgba(var(--acc-rgb,213,172,255),.5); border-radius:18px; overflow:hidden;
+    display:grid; grid-template-columns:92px 1.15fr 340px;
+    box-shadow:0 0 44px rgba(var(--acc-rgb,213,172,255),.10), inset 0 0 90px rgba(var(--acc-rgb,213,172,255),.04);
+  }
+  .fp-rail{ border-right:1px solid var(--dkline); display:flex; align-items:center; justify-content:center; }
+  .fp-rail .vert{ writing-mode:vertical-rl; transform:rotate(180deg); font-family:"Space Grotesk",sans-serif;
+                  font-weight:600; font-size:1.55rem; letter-spacing:-.02em; color:var(--dkink); white-space:nowrap; }
+  /* the board is wider than the stage on purpose — clipping it is what makes
+     the panel read as a window onto a bench, not a floating object */
+  .fp-stage{ position:relative; padding:2.5rem; display:grid; place-items:center;
+             min-height:400px; perspective:1300px; overflow:hidden; }
+  /* --- the part itself. Fixed 400px layout box because translateZ has to be
+     absolute; fpga.js scales it to the stage through --chip-scale. --- */
+  .spinner{ width:400px; height:400px; position:relative; transform-style:preserve-3d;
+            transform:scale(var(--chip-scale,1)); }
+  .spinner svg{ display:block; overflow:visible; }
+  /* Driven from JS now, not a CSS keyframe loop — the same rig also takes a
+     drag, the way the hero part does, so the tilt/spin transforms it settles
+     into idle have to be a value fpga.js can add a gesture on top of. */
+  .chip-scene,.chip-spin{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+  .chip-spin{ touch-action:pan-y; }
+
+  .chip-face,.chip-wall,.chip-sheen,.chip-board{ backface-visibility:hidden; }
+  .chip-wall{ background:linear-gradient(#22222A,#0A0A0C); border-top:1px solid #3A3A45; }
+  .chip-wall-v{ background:linear-gradient(90deg,#1B1B22,#0A0A0C); border-top:0; }
+  .chip-board{ border-radius:2px; }
+  .chip-shadow{ background:radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.72), rgba(0,0,0,0) 68%);
+                filter:blur(9px); }
+  /* the highlight turns against the spin, so it reads as a fixed light source */
+  .chip-sheen{ pointer-events:none; border-radius:3px; mix-blend-mode:screen;
+               background:linear-gradient(118deg, rgba(255,255,255,0) 34%,
+                         rgba(214,206,232,.16) 48%, rgba(255,255,255,0) 60%);
+               will-change:transform; }
+
+  #fpgaSpinner.is-static .chip-scene{ transform:rotateX(58deg); }
+  #fpgaSpinner.is-static .chip-spin{ transform:rotateZ(-24deg); }
+  .fp-side{ border-left:1px solid var(--dkline); padding:2.25rem 1.75rem; }
+  .fp-side p{ font-size:.875rem; line-height:1.66; color:var(--dkink2); margin:0 0 1.5rem; }
+  .fp-lbl{ color:var(--dkink2) !important; margin-bottom:.5rem !important; }
+  .fp-stats{ display:grid; grid-template-columns:1fr 1fr; gap:1.3rem; margin-bottom:1.6rem; }
+  .fp-stats .lbl{ color:var(--dkink2); display:block; margin-bottom:.3rem; }
+  .fp-stats b{ font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:1.3rem;
+               letter-spacing:-.02em; color:var(--accent); }
+  .fp-stats b.p{ color:var(--dkink); }
+  .fp-stats .unit{ font-size:.75rem; color:var(--dkink2); }
+  .sched{ width:100%; border-collapse:collapse; margin-bottom:1.5rem; }
+  .sched td{ padding:.48rem 0; border-bottom:1px solid var(--dkline); font-size:.8125rem; color:var(--dkink2); }
+  .sched td:first-child{ font-family:"Space Grotesk",sans-serif; font-weight:600; color:var(--dkink); }
+  .sched td:last-child{ text-align:right; font-family:"JetBrains Mono",monospace; }
+  .sched tr.now td,.sched tr.now td:first-child{ color:var(--accent); }
+  .fp-link{ color:var(--accent); }
+  .fp-ctl{ position:absolute; left:1rem; right:1rem; bottom:1rem;
+           display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .fp-hint{ font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.12em;
+            text-transform:uppercase; color:var(--dkink2); }
+  .fp-ctl button{ min-height:36px; padding:0 .85rem; border-radius:999px; cursor:pointer;
+    background:transparent; border:1px solid var(--dkline); color:var(--dkink2);
+    font-family:"JetBrains Mono",monospace; font-size:.625rem; letter-spacing:.12em; text-transform:uppercase; }
+  .fp-ctl button:hover{ border-color:var(--accent); color:var(--accent); }
+  @media (max-width:520px){ .fp-hint{ display:none; } }
+  @media (max-width:1000px){
+    .fpanel{ grid-template-columns:1fr; }
+    .fp-rail{ border-right:0; border-bottom:1px solid var(--dkline); padding:1rem; }
+    .fp-rail .vert{ writing-mode:horizontal-tb; transform:none; }
+    .fp-side{ border-left:0; border-top:1px solid var(--dkline); }
+  }
+
+
+  /* project links; a pending one is a real gap, shown as unavailable */
+  .proj-link{ color:var(--accentd); position:relative; }
+  .proj-link:not(.is-pending):hover{ color:var(--ink); }
+  .proj-link.is-pending{ color:var(--ink3); cursor:default; text-decoration:underline dotted; text-underline-offset:3px; }
+
+
+/* --- a project row's way into its own page --- */
+.row-title{ color:inherit; text-decoration:none; background:linear-gradient(currentColor,currentColor) 0 100% / 0 2px no-repeat; transition:background-size .4s var(--ease); }
+.row-title:hover,.row-title:focus-visible{ background-size:100% 2px; }
+.row-title:focus-visible{ outline:2px solid transparent; box-shadow:0 0 0 3px var(--bg), 0 0 0 5px var(--accentd); border-radius:3px; }
+.row-open{
+  display:inline-flex; align-items:center; gap:.6rem; min-height:44px; padding:0 1.1rem; margin:0 0 .3rem; border-radius:999px;
+  border:1px solid var(--ink); color:var(--ink); text-decoration:none; background:transparent;
+  transition:background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+}
+.row-open::before{ content:""; width:.5rem; height:.5rem; border-radius:50%; background:var(--pc); box-shadow:0 0 0 1px var(--ink); }
+.row-open:hover,.row-open:focus-visible{ background:var(--ink); color:var(--bg); }
+.row-open:focus-visible{ outline:2px solid transparent; box-shadow:0 0 0 3px var(--bg), 0 0 0 5px var(--accentd); }
+
+/* the package has to fit a phone's panel */
+@media (max-width:700px){ .fp-stage{ padding:1.2rem; } .fp-stage .spinner{ zoom:.7; } }

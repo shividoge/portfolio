@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en" data-theme="pcb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SoutheastCon competition robot PCB: Shivin Anand</title>
+<meta name="description" content="The single custom board controlling every electrical system on an autonomous competition robot for IEEE SoutheastCon.">
+<meta property="og:title" content="SoutheastCon competition robot PCB: Shivin Anand">
+<meta property="og:description" content="The single custom board controlling every electrical system on an autonomous competition robot for IEEE SoutheastCon.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+<link rel="stylesheet" href="tailwind.min.css">
+<link rel="stylesheet" href="base.css?v=72274e92">
+<link rel="stylesheet" href="parts.css?v=be8d890f">
+<link rel="stylesheet" href="curtain.css?v=4693be32">
+<link rel="stylesheet" href="chrome.css?v=4b7c8fe4">
+<link rel="stylesheet" href="page.css?v=6d647295">
+<script>document.documentElement.classList.add('js');</script>
+<script>try{var d=document.documentElement,ss=sessionStorage,rm=matchMedia('(prefers-reduced-motion: reduce)').matches;if(!rm){ss.removeItem('w2tx');d.classList.add('boot','boot-tx');}}catch(e){}</script>
+</head>
+<body class="antialiased pp" data-project="pcb">
+
+<div id="boot" class="boot" role="status" aria-live="polite" aria-label="Loading the page">
+  <div class="boot-fill" aria-hidden="true"></div>
+  <svg class="boot-board" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<defs>
+<path id="bt0" pathLength="1" d="M682.0 373.5 L652.0 373.5 L535.3 256.8 L120.0 256.8"/>
+<path id="bt1" pathLength="1" d="M682.0 390.5 L630.0 390.5 L537.7 298.2 L160.0 298.2"/>
+<path id="bt2" pathLength="1" d="M682.0 407.5 L608.0 407.5 L546.9 346.4 L110.0 346.4"/>
+<path id="bt3" pathLength="1" d="M682.0 424.5 L586.0 424.5 L549.2 387.7 L110.0 387.7"/>
+<path id="bt4" pathLength="1" d="M682.0 441.5 L564.0 441.5 L551.8 429.3 L110.0 429.3"/>
+<path id="bt5" pathLength="1" d="M682.0 458.5 L564.0 458.5 L551.4 471.1 L160.0 471.1"/>
+<path id="bt6" pathLength="1" d="M682.0 475.5 L586.0 475.5 L546.1 515.4 L160.0 515.4"/>
+<path id="bt7" pathLength="1" d="M682.0 492.5 L608.0 492.5 L544.4 556.1 L110.0 556.1"/>
+<path id="bt8" pathLength="1" d="M682.0 509.5 L630.0 509.5 L537.1 602.4 L110.0 602.4"/>
+<path id="bt9" pathLength="1" d="M682.0 526.5 L652.0 526.5 L540.7 637.8 L120.0 637.8"/>
+<path id="bt10" pathLength="1" d="M918.0 373.5 L948.0 373.5 L1071.4 250.1 L1490.0 250.1"/>
+<path id="bt11" pathLength="1" d="M918.0 390.5 L970.0 390.5 L1071.1 289.4 L1480.0 289.4"/>
+<path id="bt12" pathLength="1" d="M918.0 407.5 L992.0 407.5 L1053.5 346.0 L1490.0 346.0"/>
+<path id="bt13" pathLength="1" d="M918.0 424.5 L1014.0 424.5 L1055.8 382.7 L1490.0 382.7"/>
+<path id="bt14" pathLength="1" d="M918.0 441.5 L1036.0 441.5 L1048.3 429.2 L1440.0 429.2"/>
+<path id="bt15" pathLength="1" d="M918.0 458.5 L1036.0 458.5 L1049.7 472.2 L1490.0 472.2"/>
+<path id="bt16" pathLength="1" d="M918.0 475.5 L1014.0 475.5 L1051.9 513.4 L1490.0 513.4"/>
+<path id="bt17" pathLength="1" d="M918.0 492.5 L992.0 492.5 L1058.4 558.9 L1490.0 558.9"/>
+<path id="bt18" pathLength="1" d="M918.0 509.5 L970.0 509.5 L1063.8 603.3 L1490.0 603.3"/>
+<path id="bt19" pathLength="1" d="M918.0 526.5 L948.0 526.5 L1065.8 644.3 L1480.0 644.3"/>
+<path id="bt20" pathLength="1" d="M723.5 332.0 L723.5 302.0 L604.2 182.7 L604.2 90.0"/>
+<path id="bt21" pathLength="1" d="M740.5 332.0 L740.5 280.0 L653.3 192.8 L653.3 90.0"/>
+<path id="bt22" pathLength="1" d="M757.5 332.0 L757.5 258.0 L691.2 191.7 L691.2 90.0"/>
+<path id="bt23" pathLength="1" d="M774.5 332.0 L774.5 236.0 L731.6 193.1 L731.6 90.0"/>
+<path id="bt24" pathLength="1" d="M791.5 332.0 L791.5 214.0 L777.1 199.6 L777.1 90.0"/>
+<path id="bt25" pathLength="1" d="M808.5 332.0 L808.5 214.0 L821.5 201.0 L821.5 90.0"/>
+<path id="bt26" pathLength="1" d="M825.5 332.0 L825.5 236.0 L866.8 194.7 L866.8 90.0"/>
+<path id="bt27" pathLength="1" d="M842.5 332.0 L842.5 258.0 L914.5 186.0 L914.5 90.0"/>
+<path id="bt28" pathLength="1" d="M859.5 332.0 L859.5 280.0 L961.1 178.4 L961.1 90.0"/>
+<path id="bt29" pathLength="1" d="M876.5 332.0 L876.5 302.0 L997.3 181.2 L997.3 90.0"/>
+<path id="bt30" pathLength="1" d="M723.5 568.0 L723.5 598.0 L611.0 710.5 L611.0 810.0"/>
+<path id="bt31" pathLength="1" d="M740.5 568.0 L740.5 620.0 L646.1 714.4 L646.1 810.0"/>
+<path id="bt32" pathLength="1" d="M757.5 568.0 L757.5 642.0 L686.0 713.5 L686.0 810.0"/>
+<path id="bt33" pathLength="1" d="M774.5 568.0 L774.5 664.0 L731.9 706.6 L731.9 810.0"/>
+<path id="bt34" pathLength="1" d="M791.5 568.0 L791.5 686.0 L778.3 699.2 L778.3 810.0"/>
+<path id="bt35" pathLength="1" d="M808.5 568.0 L808.5 686.0 L820.7 698.2 L820.7 810.0"/>
+<path id="bt36" pathLength="1" d="M825.5 568.0 L825.5 664.0 L865.1 703.6 L865.1 810.0"/>
+<path id="bt37" pathLength="1" d="M842.5 568.0 L842.5 642.0 L915.8 715.3 L915.8 810.0"/>
+<path id="bt38" pathLength="1" d="M859.5 568.0 L859.5 620.0 L961.6 722.1 L961.6 810.0"/>
+<path id="bt39" pathLength="1" d="M876.5 568.0 L876.5 598.0 L1003.6 725.1 L1003.6 810.0"/>
+</defs>
+<rect class="bb-edge" x="24" y="24" width="1552" height="852" rx="26"/>
+<circle class="bb-hole" cx="70" cy="70" r="16"/><circle class="bb-hole-in" cx="70" cy="70" r="6"/>
+<circle class="bb-hole" cx="1530" cy="70" r="16"/><circle class="bb-hole-in" cx="1530" cy="70" r="6"/>
+<circle class="bb-hole" cx="70" cy="830" r="16"/><circle class="bb-hole-in" cx="70" cy="830" r="6"/>
+<circle class="bb-hole" cx="1530" cy="830" r="16"/><circle class="bb-hole-in" cx="1530" cy="830" r="6"/>
+<g class="bb-base">
+<use href="#bt0"/>
+<use href="#bt1"/>
+<use href="#bt2"/>
+<use href="#bt3"/>
+<use href="#bt4"/>
+<use href="#bt5"/>
+<use href="#bt6"/>
+<use href="#bt7"/>
+<use href="#bt8"/>
+<use href="#bt9"/>
+<use href="#bt10"/>
+<use href="#bt11"/>
+<use href="#bt12"/>
+<use href="#bt13"/>
+<use href="#bt14"/>
+<use href="#bt15"/>
+<use href="#bt16"/>
+<use href="#bt17"/>
+<use href="#bt18"/>
+<use href="#bt19"/>
+<use href="#bt20"/>
+<use href="#bt21"/>
+<use href="#bt22"/>
+<use href="#bt23"/>
+<use href="#bt24"/>
+<use href="#bt25"/>
+<use href="#bt26"/>
+<use href="#bt27"/>
+<use href="#bt28"/>
+<use href="#bt29"/>
+<use href="#bt30"/>
+<use href="#bt31"/>
+<use href="#bt32"/>
+<use href="#bt33"/>
+<use href="#bt34"/>
+<use href="#bt35"/>
+<use href="#bt36"/>
+<use href="#bt37"/>
+<use href="#bt38"/>
+<use href="#bt39"/>
+</g>
+<g class="bb-lit">
+<use href="#bt0" style="--d:0.315"/>
+<use href="#bt1" style="--d:0.291"/>
+<use href="#bt2" style="--d:0.031"/>
+<use href="#bt3" style="--d:0.293"/>
+<use href="#bt4" style="--d:0.025"/>
+<use href="#bt5" style="--d:0.111"/>
+<use href="#bt6" style="--d:0.278"/>
+<use href="#bt7" style="--d:0.067"/>
+<use href="#bt8" style="--d:0.21"/>
+<use href="#bt9" style="--d:0.27"/>
+<use href="#bt10" style="--d:0.397"/>
+<use href="#bt11" style="--d:0.349"/>
+<use href="#bt12" style="--d:0.122"/>
+<use href="#bt13" style="--d:0.287"/>
+<use href="#bt14" style="--d:0.263"/>
+<use href="#bt15" style="--d:0.438"/>
+<use href="#bt16" style="--d:0.365"/>
+<use href="#bt17" style="--d:0.144"/>
+<use href="#bt18" style="--d:0.49"/>
+<use href="#bt19" style="--d:0.059"/>
+<use href="#bt20" style="--d:0.03"/>
+<use href="#bt21" style="--d:0.351"/>
+<use href="#bt22" style="--d:0.324"/>
+<use href="#bt23" style="--d:0.497"/>
+<use href="#bt24" style="--d:0.411"/>
+<use href="#bt25" style="--d:0.142"/>
+<use href="#bt26" style="--d:0.193"/>
+<use href="#bt27" style="--d:0.334"/>
+<use href="#bt28" style="--d:0.011"/>
+<use href="#bt29" style="--d:0.231"/>
+<use href="#bt30" style="--d:0.341"/>
+<use href="#bt31" style="--d:0.19"/>
+<use href="#bt32" style="--d:0.115"/>
+<use href="#bt33" style="--d:0.041"/>
+<use href="#bt34" style="--d:0.076"/>
+<use href="#bt35" style="--d:0.329"/>
+<use href="#bt36" style="--d:0.006"/>
+<use href="#bt37" style="--d:0.416"/>
+<use href="#bt38" style="--d:0.091"/>
+<use href="#bt39" style="--d:0.141"/>
+</g>
+<g class="bb-spark">
+<use href="#bt0" style="--s:1.77s;--o:1.07s"/>
+<use href="#bt2" style="--s:2.33s;--o:0.64s"/>
+<use href="#bt4" style="--s:1.75s;--o:1.72s"/>
+<use href="#bt6" style="--s:2.74s;--o:1.31s"/>
+<use href="#bt8" style="--s:2.49s;--o:0.91s"/>
+<use href="#bt10" style="--s:2.65s;--o:1.90s"/>
+<use href="#bt12" style="--s:2.42s;--o:1.12s"/>
+<use href="#bt14" style="--s:2.08s;--o:0.79s"/>
+<use href="#bt16" style="--s:2.18s;--o:0.80s"/>
+<use href="#bt18" style="--s:1.83s;--o:1.97s"/>
+<use href="#bt20" style="--s:2.13s;--o:0.22s"/>
+<use href="#bt22" style="--s:2.32s;--o:0.20s"/>
+<use href="#bt24" style="--s:2.28s;--o:1.07s"/>
+<use href="#bt26" style="--s:2.74s;--o:1.23s"/>
+<use href="#bt28" style="--s:1.68s;--o:0.42s"/>
+<use href="#bt30" style="--s:2.05s;--o:1.27s"/>
+<use href="#bt32" style="--s:2.75s;--o:1.20s"/>
+<use href="#bt34" style="--s:2.17s;--o:0.23s"/>
+<use href="#bt36" style="--s:2.19s;--o:1.96s"/>
+<use href="#bt38" style="--s:2.18s;--o:0.62s"/>
+</g>
+<g class="bb-pads">
+<circle cx="120.0" cy="256.8" r="6.5" style="--d:0.7150000000000001"/><circle class="bb-pad-in" cx="120.0" cy="256.8" r="2.4"/>
+<circle cx="160.0" cy="298.2" r="6.5" style="--d:0.6910000000000001"/><circle class="bb-pad-in" cx="160.0" cy="298.2" r="2.4"/>
+<circle cx="110.0" cy="346.4" r="6.5" style="--d:0.43100000000000005"/><circle class="bb-pad-in" cx="110.0" cy="346.4" r="2.4"/>
+<circle cx="110.0" cy="387.7" r="6.5" style="--d:0.6930000000000001"/><circle class="bb-pad-in" cx="110.0" cy="387.7" r="2.4"/>
+<circle cx="110.0" cy="429.3" r="6.5" style="--d:0.42500000000000004"/><circle class="bb-pad-in" cx="110.0" cy="429.3" r="2.4"/>
+<circle cx="160.0" cy="471.1" r="6.5" style="--d:0.511"/><circle class="bb-pad-in" cx="160.0" cy="471.1" r="2.4"/>
+<circle cx="160.0" cy="515.4" r="6.5" style="--d:0.678"/><circle class="bb-pad-in" cx="160.0" cy="515.4" r="2.4"/>
+<circle cx="110.0" cy="556.1" r="6.5" style="--d:0.467"/><circle class="bb-pad-in" cx="110.0" cy="556.1" r="2.4"/>
+<circle cx="110.0" cy="602.4" r="6.5" style="--d:0.61"/><circle class="bb-pad-in" cx="110.0" cy="602.4" r="2.4"/>
+<circle cx="120.0" cy="637.8" r="6.5" style="--d:0.67"/><circle class="bb-pad-in" cx="120.0" cy="637.8" r="2.4"/>
+<circle cx="1490.0" cy="250.1" r="6.5" style="--d:0.797"/><circle class="bb-pad-in" cx="1490.0" cy="250.1" r="2.4"/>
+<circle cx="1480.0" cy="289.4" r="6.5" style="--d:0.749"/><circle class="bb-pad-in" cx="1480.0" cy="289.4" r="2.4"/>
+<circle cx="1490.0" cy="346.0" r="6.5" style="--d:0.522"/><circle class="bb-pad-in" cx="1490.0" cy="346.0" r="2.4"/>
+<circle cx="1490.0" cy="382.7" r="6.5" style="--d:0.687"/><circle class="bb-pad-in" cx="1490.0" cy="382.7" r="2.4"/>
+<circle cx="1440.0" cy="429.2" r="6.5" style="--d:0.663"/><circle class="bb-pad-in" cx="1440.0" cy="429.2" r="2.4"/>
+<circle cx="1490.0" cy="472.2" r="6.5" style="--d:0.8380000000000001"/><circle class="bb-pad-in" cx="1490.0" cy="472.2" r="2.4"/>
+<circle cx="1490.0" cy="513.4" r="6.5" style="--d:0.765"/><circle class="bb-pad-in" cx="1490.0" cy="513.4" r="2.4"/>
+<circle cx="1490.0" cy="558.9" r="6.5" style="--d:0.544"/><circle class="bb-pad-in" cx="1490.0" cy="558.9" r="2.4"/>
+<circle cx="1490.0" cy="603.3" r="6.5" style="--d:0.89"/><circle class="bb-pad-in" cx="1490.0" cy="603.3" r="2.4"/>
+<circle cx="1480.0" cy="644.3" r="6.5" style="--d:0.459"/><circle class="bb-pad-in" cx="1480.0" cy="644.3" r="2.4"/>
+<circle cx="604.2" cy="90.0" r="6.5" style="--d:0.43000000000000005"/><circle class="bb-pad-in" cx="604.2" cy="90.0" r="2.4"/>
+<circle cx="653.3" cy="90.0" r="6.5" style="--d:0.751"/><circle class="bb-pad-in" cx="653.3" cy="90.0" r="2.4"/>
+<circle cx="691.2" cy="90.0" r="6.5" style="--d:0.724"/><circle class="bb-pad-in" cx="691.2" cy="90.0" r="2.4"/>
+<circle cx="731.6" cy="90.0" r="6.5" style="--d:0.897"/><circle class="bb-pad-in" cx="731.6" cy="90.0" r="2.4"/>
+<circle cx="777.1" cy="90.0" r="6.5" style="--d:0.8109999999999999"/><circle class="bb-pad-in" cx="777.1" cy="90.0" r="2.4"/>
+<circle cx="821.5" cy="90.0" r="6.5" style="--d:0.542"/><circle class="bb-pad-in" cx="821.5" cy="90.0" r="2.4"/>
+<circle cx="866.8" cy="90.0" r="6.5" style="--d:0.593"/><circle class="bb-pad-in" cx="866.8" cy="90.0" r="2.4"/>
+<circle cx="914.5" cy="90.0" r="6.5" style="--d:0.734"/><circle class="bb-pad-in" cx="914.5" cy="90.0" r="2.4"/>
+<circle cx="961.1" cy="90.0" r="6.5" style="--d:0.41100000000000003"/><circle class="bb-pad-in" cx="961.1" cy="90.0" r="2.4"/>
+<circle cx="997.3" cy="90.0" r="6.5" style="--d:0.631"/><circle class="bb-pad-in" cx="997.3" cy="90.0" r="2.4"/>
+<circle cx="611.0" cy="810.0" r="6.5" style="--d:0.7410000000000001"/><circle class="bb-pad-in" cx="611.0" cy="810.0" r="2.4"/>
+<circle cx="646.1" cy="810.0" r="6.5" style="--d:0.5900000000000001"/><circle class="bb-pad-in" cx="646.1" cy="810.0" r="2.4"/>
+<circle cx="686.0" cy="810.0" r="6.5" style="--d:0.515"/><circle class="bb-pad-in" cx="686.0" cy="810.0" r="2.4"/>
+<circle cx="731.9" cy="810.0" r="6.5" style="--d:0.441"/><circle class="bb-pad-in" cx="731.9" cy="810.0" r="2.4"/>
+<circle cx="778.3" cy="810.0" r="6.5" style="--d:0.47600000000000003"/><circle class="bb-pad-in" cx="778.3" cy="810.0" r="2.4"/>
+<circle cx="820.7" cy="810.0" r="6.5" style="--d:0.7290000000000001"/><circle class="bb-pad-in" cx="820.7" cy="810.0" r="2.4"/>
+<circle cx="865.1" cy="810.0" r="6.5" style="--d:0.406"/><circle class="bb-pad-in" cx="865.1" cy="810.0" r="2.4"/>
+<circle cx="915.8" cy="810.0" r="6.5" style="--d:0.8160000000000001"/><circle class="bb-pad-in" cx="915.8" cy="810.0" r="2.4"/>
+<circle cx="961.6" cy="810.0" r="6.5" style="--d:0.491"/><circle class="bb-pad-in" cx="961.6" cy="810.0" r="2.4"/>
+<circle cx="1003.6" cy="810.0" r="6.5" style="--d:0.541"/><circle class="bb-pad-in" cx="1003.6" cy="810.0" r="2.4"/>
+</g>
+<g class="bb-chip">
+<g class="bb-pins">
+<rect x="682.0" y="370.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="387.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="404.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="421.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="438.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="455.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="472.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="489.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="506.5" width="18" height="6" rx="1.5"/>
+<rect x="682.0" y="523.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="370.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="387.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="404.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="421.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="438.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="455.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="472.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="489.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="506.5" width="18" height="6" rx="1.5"/>
+<rect x="900.0" y="523.5" width="18" height="6" rx="1.5"/>
+<rect x="720.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="737.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="754.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="771.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="788.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="805.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="822.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="839.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="856.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="873.5" y="332.0" width="6" height="18" rx="1.5"/>
+<rect x="720.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="737.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="754.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="771.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="788.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="805.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="822.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="839.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="856.5" y="550.0" width="6" height="18" rx="1.5"/>
+<rect x="873.5" y="550.0" width="6" height="18" rx="1.5"/>
+</g>
+<rect class="bb-body" x="700" y="350" width="200" height="200" rx="10"/>
+<circle class="bb-dot" cx="718" cy="368" r="5"/>
+<text class="bb-num" id="bootN" x="800" y="468" text-anchor="middle">00</text>
+<text class="bb-pct" x="800" y="504" text-anchor="middle">PERCENT</text>
+<text class="bb-tag" x="800" y="392" text-anchor="middle">SA-01</text>
+</g>
+</svg>
+  <div class="boot-ui" aria-hidden="true">
+    <div class="boot-head"><span class="lbl">Shivin Anand</span><span class="lbl" id="bootMode">Power-on self test</span></div>
+    <div class="boot-dest"><span class="lbl">Now loading</span><b id="bootDest"></b></div>
+    <ul class="boot-list">
+      <li class="boot-row"><span class="st"></span><b>FPGA CPU</b><span class="v">ALU · in progress</span></li>
+      <li class="boot-row"><span class="st"></span><b>Robot PCB</b><span class="v">sole designer · KiCad</span></li>
+      <li class="boot-row"><span class="st"></span><b>Env board</b><span class="v">BME680 · I²C · 3.3 V</span></li>
+      <li class="boot-row"><span class="st"></span><b>Robotics</b><span class="v">2 national + 1 world award</span></li>
+      <li class="boot-row"><span class="st"></span><b>FSAM site</b><span class="v">60% less overhead</span></li>
+      <li class="boot-row"><span class="st"></span><b>Hydro CV</b><span class="v">6.9% MAPE · 6 trials</span></li>
+    </ul>
+    <div class="boot-foot"><span class="lbl">Press any key to skip</span></div>
+  </div>
+</div>
+
+<a href="#main" class="skip">Skip to content</a>
+<div id="scrollProgress" aria-hidden="true"></div>
+
+<header id="nav" class="fixed top-0 inset-x-0 z-50 border-b border-transparent">
+  <div class="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+    <div class="flex items-center justify-between h-[68px]">
+
+      <a href="index.html" data-dest="Home" data-pa="#D5ACFF" class="nav-ink flex items-baseline gap-2.5 py-3 -my-3 group" aria-label="Shivin Anand, back to start">
+        <span class="display text-[17px] tracking-[-.02em]">Shivin&nbsp;Anand</span>
+      </a>
+
+      <div class="flex items-center gap-2.5">
+        <button id="menuBtn" class="menu-btn nav-ink" aria-label="Open menu" aria-expanded="false" aria-controls="menuPanel">
+          <span class="menu-bars" aria-hidden="true"><i></i><i></i></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="menuPanel" class="menu-panel on-dark" inert>
+  <div class="menu-inner">
+    <div class="menu-grid">
+    <nav class="menu-nav" aria-label="Sections">
+      <p class="lbl menu-mut menu-lab">Sections</p>
+      <a class="navlink menu-item" href="index.html#work" data-dest="Home" data-pa="#D5ACFF" style="--i:0"><span class="menu-n">01</span><span class="menu-t"><span>Work</span></span></a>
+      <a class="navlink menu-item" href="index.html#capabilities" data-dest="Home" data-pa="#D5ACFF" style="--i:1"><span class="menu-n">02</span><span class="menu-t"><span>Capabilities</span></span></a>
+      <a class="navlink menu-item" href="index.html#architecture" data-dest="Home" data-pa="#D5ACFF" style="--i:2"><span class="menu-n">03</span><span class="menu-t"><span>Architecture</span></span></a>
+      <a class="navlink menu-item" href="index.html#record" data-dest="Home" data-pa="#D5ACFF" style="--i:3"><span class="menu-n">04</span><span class="menu-t"><span>Record</span></span></a>
+      <a class="navlink menu-item" href="#foot" style="--i:4"><span class="menu-n">05</span><span class="menu-t"><span>Contact</span></span></a>
+    </nav>
+    <nav class="menu-projects" aria-label="Projects">
+      <p class="lbl menu-mut menu-lab">Projects, each with its own page</p>
+      <a class="menu-proj" href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 · FPGA CPU" style="--i:2;--pc:#D5ACFF"><span class="menu-n">01</span><span class="menu-pt"><span>FPGA CPU</span><small>Current</small></span></a>
+      <a class="menu-proj" href="robot-pcb.html" data-pa="#E3B45C" data-dest="02 · Robot PCB" style="--i:3;--pc:#E3B45C" aria-current="page"><span class="menu-n">02</span><span class="menu-pt"><span>Robot PCB</span><small>Current</small></span></a>
+      <a class="menu-proj" href="environmental-pcb.html" data-pa="#5FD6D0" data-dest="03 · Monitoring PCB" style="--i:4;--pc:#5FD6D0"><span class="menu-n">03</span><span class="menu-pt"><span>Monitoring PCB</span><small>Shipped</small></span></a>
+      <a class="menu-proj" href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 · Middleton Robotics" style="--i:5;--pc:#FF7A1A"><span class="menu-n">04</span><span class="menu-pt"><span>Middleton Robotics</span><small>Leadership</small></span></a>
+      <a class="menu-proj" href="fsam.html" data-pa="#7C93FF" data-dest="05 · FSAM" style="--i:6;--pc:#7C93FF"><span class="menu-n">05</span><span class="menu-pt"><span>FSAM</span><small>Live</small></span></a>
+      <a class="menu-proj" href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 · Growth chamber" style="--i:7;--pc:#8EE36B"><span class="menu-n">06</span><span class="menu-pt"><span>Growth chamber</span><small>Shipped</small></span></a>
+    </nav>
+    </div>
+
+    <div class="menu-foot">
+      <div class="menu-col" style="--i:7">
+        <p class="lbl menu-mut">Get in touch &middot; what is it about?</p>
+        <div class="menu-topics">
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Internship%20inquiry&amp;body=Hi%20Shivin%2C%0A%0A">Internship</a>
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Research%20opportunity&amp;body=Hi%20Shivin%2C%0A%0A">Research</a>
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Hardware%20project&amp;body=Hi%20Shivin%2C%0A%0A">Hardware bring-up</a>
+          <a class="topic" href="mailto:shivin.r.anand@gmail.com?subject=Hello%20from%20your%20site&amp;body=Hi%20Shivin%2C%0A%0A">Something else</a>
+        </div>
+        <a class="menu-link" href="mailto:shivin.r.anand@gmail.com">shivin.r.anand@gmail.com</a>
+      </div>
+      <div class="menu-col" style="--i:8">
+        <p class="lbl menu-mut">Elsewhere</p>
+        <a class="menu-link" href="https://github.com/shividoge" target="_blank" rel="noopener">GitHub &#8599;</a>
+        <a class="menu-link" href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+        <a class="menu-link" href="ShivinAnandResume.pdf" target="_blank" rel="noopener">R&eacute;sum&eacute; (pdf)</a>
+      </div>
+      <div class="menu-col" style="--i:9">
+        <p class="lbl menu-mut">Right now</p>
+        <a class="menu-link" href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 &middot; FPGA CPU">FPGA CPU &mdash; Smart Systems Lab</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main id="main" class="relative">
+<div id="page"></div>
+
+<footer class="foot" id="foot" aria-label="Contact and footer">
+  <div class="foot-frame">
+    <div class="foot-panel">
+      <!-- One layer per project. Each lane is that project's own skill list,
+           taken from the same data as the project rows. Moving text only. -->
+      <div class="foot-stage"><div class="foot-plane" id="footPlane"></div></div>
+      <div class="foot-veil" aria-hidden="true"></div>
+
+      <div class="foot-main">
+        <h2 class="foot-h">Got a rig that<span>keeps failing?</span></h2>
+        <p class="foot-kick">I&rsquo;m early in the degree and already deep in the work: writing RTL in a research lab, and the sole designer on a competition robot&rsquo;s board. If you have hardware that needs designing, debugging or bringing up, I&rsquo;d like to hear about it. Internship or research, Summer 2027.</p>
+
+        <nav class="foot-col foot-col-l" aria-label="Projects">
+          <p class="lbl">Projects</p>
+          <!--FOOTPROJ-->
+          <a href="fpga-cpu.html" data-pa="#D5ACFF" data-dest="01 · FPGA CPU"><i style="--pc:#D5ACFF"></i>01 &nbsp;FPGA CPU</a>
+          <a href="robot-pcb.html" data-pa="#E3B45C" data-dest="02 · Robot PCB"><i style="--pc:#E3B45C"></i>02 &nbsp;Robot PCB</a>
+          <a href="environmental-pcb.html" data-pa="#5FD6D0" data-dest="03 · Monitoring PCB"><i style="--pc:#5FD6D0"></i>03 &nbsp;Monitoring PCB</a>
+          <a href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 · Middleton Robotics"><i style="--pc:#FF7A1A"></i>04 &nbsp;Middleton Robotics</a>
+          <a href="fsam.html" data-pa="#7C93FF" data-dest="05 · FSAM"><i style="--pc:#7C93FF"></i>05 &nbsp;FSAM</a>
+          <a href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 · Growth chamber"><i style="--pc:#8EE36B"></i>06 &nbsp;Growth chamber</a>
+          <!--/FOOTPROJ-->
+        </nav>
+
+        <div class="foot-mid">
+          <a class="foot-cta" href="mailto:shivin.r.anand@gmail.com">shivin.r.anand@gmail.com
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></a>
+        </div>
+
+        <nav class="foot-col foot-col-r" aria-label="Elsewhere">
+          <p class="lbl">Elsewhere</p>
+          <a href="https://github.com/shividoge" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/shivinranand/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="ShivinAnandResume.pdf" target="_blank" rel="noopener">R&eacute;sum&eacute;</a>
+          <a href="https://shividoge.github.io/hydroponics-growth-system/" target="_blank" rel="noopener">Hydroponics site</a>
+          <a href="https://github.com/shividoge/plant_growth_webapp_v2" target="_blank" rel="noopener">Biomass code</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="foot-legal">
+      <p>&copy; <span id="year">2026</span> Shivin Anand &nbsp;&middot;&nbsp; Gainesville, FL <b id="footClock">--:--</b></p>
+      <p class="foot-ctl">
+        <button type="button" class="foot-btn" id="footPause" aria-pressed="false">Pause</button>
+        <button type="button" class="foot-btn" id="footUp">Back to top <span aria-hidden="true">&uarr;</span></button>
+      </p>
+    </div>
+  </div>
+</footer>
+</main>
+
+<script src="curtain.js?v=bce1eba7" defer></script>
+<script src="menu.js?v=7aeb91b5" defer></script>
+<script src="projects.js?v=b79c2e55" defer></script>
+<script src="pagedata.js?v=af220313" defer></script>
+<script src="art.js?v=bf12d053" defer></script>
+<script src="diagrams.js?v=39c3c842" defer></script>
+<script src="page.js?v=fcf19583" defer></script>
+<script src="foot.js?v=3678059d" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js" defer></script>
+<script src="pagebar.js?v=b8ba67e2" defer></script>
+</body>
+</html>

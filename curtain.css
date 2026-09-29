@@ -1,0 +1,81 @@
+/* ===========================================================================
+   The loading screen and the page transition: one circuit board.
+
+   The same screen does three jobs. On a first visit it is the power-on self
+   test (each project comes online). On arrival at any page it is the load
+   screen, and it names the page it is loading. On leaving a page it closes
+   over the old one, so moving between the home page and a project is one
+   continuous motion. The reveal is an iris opening from the chip.
+
+   Traces are drawn by one number, --p (0 to 1), set from real load events.
+   Everything is plain CSS on that number.
+   =========================================================================== */
+@property --r{ syntax:'<percentage>'; inherits:false; initial-value:0%; }
+
+#boot{
+  position:fixed; inset:0; z-index:9999; display:none; color:var(--dkink);
+  --r:0%; --p:0; --ba:var(--pc, var(--accent));
+  -webkit-mask-image:radial-gradient(ellipse at 50% 50%, transparent var(--r), #000 calc(var(--r) + .4%));
+          mask-image:radial-gradient(ellipse at 50% 50%, transparent var(--r), #000 calc(var(--r) + .4%));
+  transition:--r 1s cubic-bezier(.7,0,.2,1);
+}
+html.boot #boot{ display:block; }
+html.boot{ overflow:hidden; }
+#boot.is-done{ --r:101%; }
+#boot.is-instant{ transition:none; }
+#boot.is-fast{ transition-duration:.62s; }
+#boot.boot-fade{ -webkit-mask-image:none; mask-image:none; transition:opacity .5s ease; }
+#boot.boot-fade.is-done{ opacity:0; }
+
+.boot-fill{ position:absolute; inset:0; background:var(--dk); }
+.boot-board{ position:absolute; inset:0; width:100%; height:100%; transition:transform 1s cubic-bezier(.7,0,.2,1); }
+#boot.is-done .boot-board{ transform:scale(1.9); }
+#boot.is-instant .boot-board{ transition:none; }
+
+.bb-edge{ fill:none; stroke:#1c1c23; stroke-width:2; }
+.bb-hole{ fill:#101014; stroke:#2a2a31; stroke-width:2; }
+.bb-hole-in{ fill:var(--dk); }
+.bb-base use,.bb-lit use,.bb-spark use{ fill:none; stroke-linecap:round; stroke-linejoin:round; }
+.bb-base use{ stroke:#22222a; stroke-width:3; }
+.bb-lit use{
+  stroke:var(--ba); stroke-width:3; stroke-dasharray:1;
+  stroke-dashoffset:calc(1 - clamp(0, (var(--p) - var(--d)) * 2.2, 1));
+}
+#boot.is-lit .bb-lit{ filter:drop-shadow(0 0 5px var(--ba)); }
+.bb-spark use{ stroke:#fff; stroke-width:3; stroke-dasharray:.05 2; stroke-dashoffset:.05; opacity:0; animation:bbSpark var(--s,2.2s) linear infinite var(--o,0s); }
+#boot.is-lit .bb-spark use{ opacity:.85; }
+@keyframes bbSpark{ to{ stroke-dashoffset:-1.05; } }
+.bb-pads circle:not(.bb-pad-in){ fill:none; stroke:var(--ba); stroke-width:2; opacity:clamp(0, (var(--p) - var(--d)) * 4, 1); }
+.bb-pad-in{ fill:var(--ba); opacity:clamp(0, (var(--p) - .3) * 3, 1); }
+
+.bb-pins rect{ fill:#3b3b45; transition:fill .25s ease; }
+#boot.is-lit .bb-pins rect{ fill:var(--ba); }
+.bb-body{ fill:#0f0f13; stroke:#3b3b45; stroke-width:2; transition:stroke .25s ease; }
+#boot.is-lit .bb-body{ stroke:var(--ba); }
+.bb-dot{ fill:var(--ba); }
+.bb-num{ font:600 88px "Space Grotesk",ui-sans-serif,sans-serif; letter-spacing:-.04em; fill:var(--dkink); }
+.bb-pct,.bb-tag{ font:500 11px "JetBrains Mono",ui-monospace,monospace; letter-spacing:.2em; fill:var(--dkink2); }
+
+.boot-ui{
+  position:absolute; inset:0; display:grid; grid-template-rows:auto 1fr auto; pointer-events:none;
+  padding:clamp(1.1rem,3vw,2rem) clamp(1.25rem,4vw,3.25rem); transition:opacity .28s ease;
+}
+#boot.is-done .boot-ui{ opacity:0; }
+.boot-head,.boot-foot{ display:flex; justify-content:space-between; align-items:center; gap:1rem; color:var(--dkink2); }
+.boot-list{ align-self:end; justify-self:start; width:min(23rem,100%); margin:0; padding:.6rem .9rem; list-style:none; background:rgba(13,13,15,.86); border:1px solid var(--dkline); border-radius:10px; font-family:"JetBrains Mono",ui-monospace,monospace; font-size:.6875rem; letter-spacing:.05em; }
+.boot-row{ display:grid; grid-template-columns:2.2rem 6.4rem minmax(0,1fr); gap:.5rem; padding:.42rem 0; border-bottom:1px solid var(--dkline); color:#8D8980; transition:color .3s ease; }
+.boot-row:last-child{ border-bottom:0; }
+.boot-row b{ font-weight:500; text-transform:uppercase; }
+.boot-row .st::before{ content:"[  ]"; }
+.boot-row .v{ opacity:0; transition:opacity .4s ease; }
+.boot-row.is-ok{ color:var(--dkink); }
+.boot-row.is-ok .st::before{ content:"[OK]"; color:var(--ba); }
+.boot-row.is-ok .v{ opacity:1; color:var(--dkink2); }
+@media (max-width:520px){ .boot-row{ grid-template-columns:2.2rem minmax(0,1fr); } .boot-row .v{ display:none; } }
+
+.boot-dest{ display:none; align-self:end; gap:.35rem; padding:.7rem 1rem; background:rgba(13,13,15,.86); border:1px solid var(--dkline); border-radius:10px; width:max-content; max-width:100%; }
+.boot-dest .lbl{ color:var(--dkink2); }
+.boot-dest b{ font:600 clamp(1.4rem,3.4vw,2.4rem)/1.1 "Space Grotesk",ui-sans-serif,sans-serif; letter-spacing:-.03em; color:var(--dkink); }
+html.boot-tx .boot-list{ display:none; }
+html.boot-tx .boot-dest{ display:grid; }
+@media (prefers-reduced-motion:reduce){ #boot{ display:none !important; } html.boot{ overflow:auto; } }
