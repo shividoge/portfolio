@@ -102,6 +102,28 @@
     return s;
   };
 
+  /* ------------------------------------------------------------ robotics teams */
+  D.teams = function () {
+    var s = root(1000, 330, 'Nine teams: four FTC, four VEX and one FRC, the team taken to the World Championship');
+    var groups = [['FTC', 4, 20], ['VEX', 4, 360], ['FRC', 1, 700]];
+    groups.forEach(function (g) {
+      tag(s, g[2], 40, g[0] + '  \u00b7  ' + g[1] + (g[1] === 1 ? ' TEAM' : ' TEAMS'));
+      for (var i = 0; i < g[1]; i++) {
+        var hot = g[0] === 'FRC';
+        var r = box(s, g[2] + i * 80, 70, 64, 64, hot ? '\u2605' : String(i + 1), '', hot ? 'is-hot' : '');
+      }
+    });
+    S('rect', { x: 700, y: 170, width: 280, height: 110, rx: 14, fill: 'none', stroke: 'var(--pa)', 'stroke-width': 1.5, 'stroke-dasharray': '5 6', opacity: .8 }, s);
+    S('text', { x: 720, y: 205, 'class': 'dg-txt t-b' }, s, 'World Championship');
+    S('text', { x: 720, y: 230, 'class': 'dg-sub' }, s, 'Rising All-Star Award');
+    S('text', { x: 720, y: 252, 'class': 'dg-sub' }, s, 'put the team on the map');
+    var d = 'M732 134 V170';
+    S('path', { d: d, 'class': 'dg-link' }, s); S('path', { d: d, 'class': 'dg-flow' }, s);
+    tag(s, 20, 220, 'Three competitions, one program: FIRST Tech Challenge, VEX, and FIRST Robotics Competition.');
+    tag(s, 20, 244, 'The FRC team is the one we took to the World Championship.');
+    return s;
+  };
+
   /* ------------------------------------------------------------ robotics */
   D.deploy = function () {
     var s = root(1000, 300, 'Deployment pipeline: code, version control, a wireless push, the robot, and a rollback path back');

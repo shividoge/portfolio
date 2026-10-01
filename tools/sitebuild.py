@@ -18,7 +18,7 @@ TITLES = {
  'fpga': 'FPGA CPU and quantized NN accelerator',
  'pcb': 'SoutheastCon competition robot PCB',
  'envpcb': 'Autonomous environmental monitoring PCB',
- 'robotics': 'Middleton Robotics, FRC and VEX',
+ 'robotics': 'Middleton Robotics: leading a program to the World Championship',
  'flsam': 'FLSAM site and regional coordination',
  'hydro': 'Autonomous hydroponic growth chamber',
 }
@@ -26,7 +26,7 @@ DESCS = {
  'fpga': 'A CPU in SystemVerilog, ALU and datapath first, as the foundation for a quantized neural-network accelerator. Smart Systems Lab, UF.',
  'pcb': 'The single custom board controlling every electrical system on an autonomous competition robot for IEEE SoutheastCon.',
  'envpcb': 'A custom KiCad PCB with a Teensy 4 and BME680 on a shared 3.3 V I2C bus, logging CO2, VOCs, temperature and humidity.',
- 'robotics': 'Reviving an FRC program and putting a hundred-person team on Git and over-the-air deployment.',
+ 'robotics': 'Leading Middleton Robotics from 20 members to 100+ across nine FTC, VEX and FRC teams, and to the World Championship.',
  'flsam': 'The website and regional pipeline of the Florida Student Association of Mathematics, Region 4a.',
  'hydro': 'A closed-loop hydroponic chamber with a computer-vision biomass estimator. NASA Kennedy Space Center Award.',
 }

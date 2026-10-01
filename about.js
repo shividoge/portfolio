@@ -27,7 +27,7 @@
   var NOTE = {
     envpcb:   ['A board that logs four channels', 'Teensy 4 and a BME680 on one shared 3.3 V I²C bus.'],
     hydro:    ['A chamber that weighs its plant', 'Closed-loop, with a camera pipeline at 6.9% mean error.'],
-    robotics: ['A program brought back to competition', '2 national awards and 1 World Championship award.'],
+    robotics: ['A program I led to the World Championship', '20 to 100+ members across nine teams, and the Rising All-Star Award at Worlds.'],
     fpga:     ['A CPU, ALU and datapath first', 'SystemVerilog in the Smart Systems Lab, toward a quantized NN accelerator.'],
     pcb:      ['One board for every system', 'Sole electrical designer on a ten-person team.']
   };

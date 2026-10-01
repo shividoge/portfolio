@@ -316,11 +316,11 @@
     },
     robotics: {
       pick: 'Robotics', kicker: 'Robotics · the D-pad',
-      head: 'Middleton Robotics: FRC and VEX',
-      metrics: [['2', 'national awards'], ['1', 'World Championship award'], ['30%', 'more competitive participation, 9 teams']],
+      head: 'Middleton Robotics: leading it to Worlds',
+      metrics: [['100+', 'members, up from 20'], ['9', 'teams: 4 FTC, 4 VEX, 1 FRC'], ['Worlds', 'Rising All-Star Award']],
       points: [
-        'Returned the school’s FRC program to competition after years of inactivity.',
-        'Java on the RoboRIO, C++ on VEX controllers, Git for version control.'
+        'Led the program from 20 members to 100+ across nine teams: four FTC, four VEX, one FRC.',
+        'Took the FRC team to the World Championship, where we won the Rising All-Star Award.'
       ],
       row: 'robotics', ext: ['middletonrobotics.com', 'https://www.middletonrobotics.com/']
     },

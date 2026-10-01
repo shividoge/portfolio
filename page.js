@@ -107,7 +107,7 @@
       var r = h('div', 'rv', null, { style: '--d:.1s' });
       r.appendChild(h('p', 'lead', b.lead));
       b.p.forEach(function (t) { r.appendChild(h('p', null, t)); });
-      var chips = h('div', 'chips'); P.tags.forEach(function (t) { chips.appendChild(h('span', 'tag', t)); }); r.appendChild(chips);
+      var chips = h('div', 'chips'); (b.chips || P.tags).forEach(function (t) { chips.appendChild(h('span', 'tag', t)); }); r.appendChild(chips);
       g.appendChild(l); g.appendChild(r); c.appendChild(g);
     } else if (b.t === 'fpga') {
       c.appendChild(head(b, b.lede)); var w = h('div', 'pb-ex'); w.innerHTML = FPGA; c.appendChild(w);

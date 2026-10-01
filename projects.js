@@ -44,11 +44,11 @@ window.PROJECTS = [
   },
   {
     id:'robotics', page:'middleton-robotics.html', accent:'#FF7A1A', short:'Middleton Robotics', n:'04', scene:'robot',
-    title:'Middleton Robotics — FRC &amp; VEX',
-    tag:'President · 100+ students',
+    title:'Middleton Robotics — FRC, FTC &amp; VEX',
+    tag:'President · 20 to 100+ members',
     meta:'Tampa, FL · May 2024 – May 2026',
-    lede:'Revived a dormant competitive robotics program, then rebuilt its entire deployment pipeline.',
-    body:'Returned the FRC program to competition after years of inactivity, rebuilding the mechanical and electrical pipeline from scratch — Java on RoboRIO, C++ on VEX controllers, Git for version control. The harder problem was never the robot: it was getting a hundred-person team onto real version control and a wireless over-the-air workflow, so a change could be pushed and rolled back between matches without bricking a machine on the field. Two national awards, one World Championship award, and participation expanded 30% across nine teams and 15+ regional competitions.',
+    lede:'Led a quiet program from 20 members to 100+ across nine teams, and to the World Championship.',
+    body:'Led a dormant robotics program from 20 members to 100+ across nine teams: four FTC, four VEX and one FRC, the team that went to the World Championship. As president I took us to three regionals and to nationals, and at the World Championship we won the Rising All-Star Award, which put the team on the map. Every team shipped the same way: Java on the RoboRIO, C++ on VEX controllers, and Git with over-the-air deployment.',
     tags:['Java','RoboRIO','C++','VEX','Git','OTA deployment'],
     links:[{label:'middletonrobotics.com', href:'https://www.middletonrobotics.com/'}],
     status:'Leadership'
