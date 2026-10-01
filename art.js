@@ -6,7 +6,7 @@
      routing  a board being routed, trace by trace           (robot PCB)
      waves    four sensor channels and rising particles      (environment board)
      gears    meshing gears under a hazard stripe            (robotics)
-     math     symbols drifting past a curve being plotted    (FSAM)
+     math     symbols drifting past a curve being plotted    (FLSAM)
      growth   a stem putting out leaves, and bubbles         (hydroponic chamber)
 
    Nothing here listens to the pointer. A scene runs only while it is on

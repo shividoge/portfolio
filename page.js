@@ -14,8 +14,8 @@
   if (!P || !G || !host) return;
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var BG = { fpga: '#0A0B12', pcb: '#0A1810', env: '#07171B', robotics: '#121110', fsam: '#F3EFE4', hydro: '#07150E' };
-  var THEME_OF = { fpga: 'fpga', pcb: 'pcb', envpcb: 'env', robotics: 'robotics', fsam: 'fsam', hydro: 'hydro' };
+  var BG = { fpga: '#0A0B12', pcb: '#0A1810', env: '#07171B', robotics: '#121110', flsam: '#F3EFE4', hydro: '#07150E' };
+  var THEME_OF = { fpga: 'fpga', pcb: 'pcb', envpcb: 'env', robotics: 'robotics', flsam: 'flsam', hydro: 'hydro' };
 
   function h(tag, cls, html, attrs) {
     var e = document.createElement(tag);

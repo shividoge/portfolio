@@ -8,7 +8,7 @@ html[data-theme="fpga"]    { --pbg:#0A0B12; --pfg:#EDEBE6; --pmut:#A2A2B8; --pli
 html[data-theme="pcb"]     { --pbg:#0A1810; --pfg:#F0ECDD; --pmut:#A3B5A8; --pline:#1F3B2C; --psurf:#0F2418; --pa:#E3B45C; --pa2:#B8863A; --pc:#E3B45C; --accent:#E3B45C; --acc-rgb:227,180,92; }
 html[data-theme="env"]     { --pbg:#07171B; --pfg:#E6F2F1; --pmut:#93B6B5; --pline:#173A3F; --psurf:#0C2328; --pa:#5FD6D0; --pa2:#2AA7A0; --pc:#5FD6D0; --accent:#5FD6D0; --acc-rgb:95,214,208; }
 html[data-theme="robotics"]{ --pbg:#121110; --pfg:#F3EEE6; --pmut:#B0A89B; --pline:#332E28; --psurf:#1B1916; --pa:#FF7A1A; --pa2:#FFB067; --pc:#FF7A1A; --accent:#FF7A1A; --acc-rgb:255,122,26; }
-html[data-theme="fsam"]    { --pbg:#F3EFE4; --pfg:#14203D; --pmut:#4B5878; --pline:#CDC7B4; --psurf:#FBF9F2; --pa:#2A4BD7; --pa2:#7C93FF; --pc:#7C93FF; --accent:#2A4BD7; --acc-rgb:42,75,215; }
+html[data-theme="flsam"]    { --pbg:#F3EFE4; --pfg:#14203D; --pmut:#4B5878; --pline:#CDC7B4; --psurf:#FBF9F2; --pa:#2A4BD7; --pa2:#7C93FF; --pc:#7C93FF; --accent:#2A4BD7; --acc-rgb:42,75,215; }
 html[data-theme="hydro"]   { --pbg:#07150E; --pfg:#E9F4EA; --pmut:#98B8A0; --pline:#183828; --psurf:#0C2116; --pa:#8EE36B; --pa2:#4FB84A; --pc:#8EE36B; --accent:#8EE36B; --acc-rgb:142,227,107; }
 
 body.pp{ background:var(--pbg); color:var(--pfg); }

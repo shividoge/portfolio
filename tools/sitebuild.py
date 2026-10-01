@@ -11,7 +11,7 @@ PROJ = [
  dict(id='pcb',      n='02', page='robot-pcb.html',           accent='#E3B45C', short='Robot PCB',          theme='pcb',      status='Current',    dest='02 · Robot PCB'),
  dict(id='envpcb',   n='03', page='environmental-pcb.html',   accent='#5FD6D0', short='Monitoring PCB',     theme='env',      status='Shipped',    dest='03 · Monitoring PCB'),
  dict(id='robotics', n='04', page='middleton-robotics.html',  accent='#FF7A1A', short='Middleton Robotics', theme='robotics', status='Leadership', dest='04 · Middleton Robotics'),
- dict(id='fsam',     n='05', page='fsam.html',                accent='#7C93FF', short='FSAM',               theme='fsam',     status='Live',       dest='05 · FSAM'),
+ dict(id='flsam',     n='05', page='flsam.html',                accent='#7C93FF', short='FLSAM',               theme='flsam',     status='Live',       dest='05 · FLSAM'),
  dict(id='hydro',    n='06', page='hydroponic-chamber.html',  accent='#8EE36B', short='Growth chamber',     theme='hydro',    status='Shipped',    dest='06 · Growth chamber'),
 ]
 TITLES = {
@@ -19,7 +19,7 @@ TITLES = {
  'pcb': 'SoutheastCon competition robot PCB',
  'envpcb': 'Autonomous environmental monitoring PCB',
  'robotics': 'Middleton Robotics, FRC and VEX',
- 'fsam': 'FSAM site and regional coordination',
+ 'flsam': 'FLSAM site and regional coordination',
  'hydro': 'Autonomous hydroponic growth chamber',
 }
 DESCS = {
@@ -27,7 +27,7 @@ DESCS = {
  'pcb': 'The single custom board controlling every electrical system on an autonomous competition robot for IEEE SoutheastCon.',
  'envpcb': 'A custom KiCad PCB with a Teensy 4 and BME680 on a shared 3.3 V I2C bus, logging CO2, VOCs, temperature and humidity.',
  'robotics': 'Reviving an FRC program and putting a hundred-person team on Git and over-the-air deployment.',
- 'fsam': 'The website and regional pipeline of the Florida Student Association of Mathematics, Region 4a.',
+ 'flsam': 'The website and regional pipeline of the Florida Student Association of Mathematics, Region 4a.',
  'hydro': 'A closed-loop hydroponic chamber with a computer-vision biomass estimator. NASA Kennedy Space Center Award.',
 }
 EXTRA_HEAD = {'env': ['explorers.css'], 'hydro': ['explorers.css'], 'fpga': ['explorers.css']}

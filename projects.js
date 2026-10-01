@@ -4,7 +4,7 @@
    means genuinely nothing to link yet — it renders as a disabled "pending"
    state rather than a fabricated URL.
    Order follows the resume exactly: the two live hardware roles, then USF,
-   Middleton Robotics and FSAM, then the biomass research, which the resume
+   Middleton Robotics and FLSAM, then the biomass research, which the resume
    lists under Projects rather than Experience.
    =========================================================================== */
 window.PROJECTS = [
@@ -54,8 +54,8 @@ window.PROJECTS = [
     status:'Leadership'
   },
   {
-    id:'fsam', page:'fsam.html', accent:'#7C93FF', short:'FSAM', n:'05', scene:'net',
-    title:'FSAM — Site &amp; Regional Coordination',
+    id:'flsam', page:'flsam.html', accent:'#7C93FF', short:'FLSAM', n:'05', scene:'net',
+    title:'FLSAM — Site &amp; Regional Coordination',
     tag:'Region 4a Coordinator &amp; Webmaster',
     meta:'Tampa, FL · June 2023 – May 2026',
     lede:'Built and ran the organisation’s website and the regional pipeline behind it.',

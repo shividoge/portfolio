@@ -115,9 +115,9 @@
     return s;
   };
 
-  /* ---------------------------------------------------------------- FSAM */
+  /* ---------------------------------------------------------------- FLSAM */
   D.pathway = function () {
-    var s = root(1000, 420, 'Pathway diagram: the FSAM site and region 4a coordination lead 80 Tampa Bay students to four contests');
+    var s = root(1000, 420, 'Pathway diagram: the FLSAM site and region 4a coordination lead 80 Tampa Bay students to four contests');
     box(s, 20, 150, 190, 90, 'flsam.org', 'HTML · CSS · JS', '');
     box(s, 290, 150, 210, 90, 'Region 4a', 'coordination', 'is-hot');
     var C = [['HMMT', 30], ['PUMaC', 130], ['ARML', 230], ['CMIMC', 330]], paths = [];

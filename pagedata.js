@@ -99,8 +99,8 @@ robotics: {
   ]
 },
 
-fsam: {
-  theme:'fsam', art:'math',
+flsam: {
+  theme:'flsam', art:'math',
   title:['The site, and','the road to <a>the</a>','hardest contests'],
   lede:'I built and ran the Florida Student Association of Mathematics’ website and the regional pipeline behind it, as Region 4a Coordinator and Webmaster.',
   stats:[{v:'60%',l:'less manual communication overhead'},{v:80,l:'Tampa Bay students given pathways into elite contests'},{v:'50%',l:'higher regional engagement'}],

@@ -306,13 +306,13 @@
   var GROUPS = {
     web: {
       pick: 'Web', kicker: 'Web · the display',
-      head: 'FSAM website and regional infrastructure',
+      head: 'FLSAM website and regional infrastructure',
       metrics: [['60%', 'less manual communication overhead'], ['80', 'Tampa Bay students given a route into elite math contests']],
       points: [
         'Built and maintain the organization’s site in HTML, CSS and JavaScript, on Linux-based hosting, with Git.',
         'Region 4a Coordinator and Webmaster, June 2023 to May 2026.'
       ],
-      row: 'fsam', ext: ['flsam.org', 'https://flsam.org/']
+      row: 'flsam', ext: ['flsam.org', 'https://flsam.org/']
     },
     robotics: {
       pick: 'Robotics', kicker: 'Robotics · the D-pad',
@@ -342,13 +342,13 @@
   var ORDER = ['vision', 'web', 'robotics', 'stack'];
 
   var TOOLS = [
-    { id: 'js',  name: 'JavaScript',    where: [['FSAM site and regional infrastructure', 'fsam']] },
+    { id: 'js',  name: 'JavaScript',    where: [['FLSAM site and regional infrastructure', 'flsam']] },
     { id: 'py',  name: 'Python',        where: [['OpenCV biomass pipeline', 'hydro']] },
     { id: 'cpp', name: 'C++',           where: [['VEX controllers at Middleton Robotics', 'robotics']] },
     { id: 'cad', name: 'Autodesk',      where: [['Inventor, AutoCAD and Fusion 360: certified user', null]] },
     { id: 'ki',  name: 'KiCad',         where: [['Environmental monitoring board', 'envpcb'], ['SoutheastCon robot board', 'pcb']] },
     { id: 'sv',  name: 'SystemVerilog', where: [['CPU RTL at the Smart Systems Lab', 'fpga']] },
-    { id: 'lx',  name: 'Linux',         where: [['FSAM web hosting. Linux Essentials certified', 'fsam']] }
+    { id: 'lx',  name: 'Linux',         where: [['FLSAM web hosting. Linux Essentials certified', 'flsam']] }
   ];
 
   function t(tag, cls, text) {
