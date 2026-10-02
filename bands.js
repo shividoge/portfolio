@@ -102,6 +102,15 @@
       S('circle', { cx: 80, cy: 27, r: 22, 'class': 'gv-ringb' }, s);
       S('circle', { cx: 80, cy: 27, r: 22, 'class': 'gv-ringf', pathLength: 100 }, s);
     },
+    price: function (s) {
+      var rows = [['S\u00b3', 83, false], ['CAP', 150, true]];
+      rows.forEach(function (r, i) {
+        var y = 8 + i * 22;
+        S('text', { x: 0, y: y + 10, 'class': 'gv-t' }, s).textContent = r[0];
+        S('rect', { x: 32, y: y, width: r[1] / 150 * 120, height: 14, rx: 3, 'class': r[2] ? 'gv-track' : 'gv-bar2', style: '--i:' + i }, s);
+      });
+      S('text', { x: 32 + 83 / 150 * 120 + 5, y: 18, 'class': 'gv-t' }, s).textContent = '$83';
+    },
     bars: function (s) {
       var E = [5.1, 7.6, 7.8, 6.6, 6.6, 7.6];
       E.forEach(function (e, i) { var h = e / 8 * 44; S('rect', { x: 14 + i * 24, y: 50 - h, width: 16, height: h, rx: 3, 'class': 'gv-bar', style: '--i:' + i }, s); });
@@ -113,12 +122,12 @@
     var s = S('svg', { viewBox: '0 0 160 54', preserveAspectRatio: 'xMinYMid meet' }); h.appendChild(s); fn(s);
   });
   function countProof(el) {
-    var to = parseFloat(el.getAttribute('data-count')), dec = +(el.getAttribute('data-dec') || 0), suf = el.getAttribute('data-suffix') || '';
-    if (reduce) { el.textContent = (dec ? to.toFixed(dec) : fmt(to)) + suf; return; }
+    var to = parseFloat(el.getAttribute('data-count')), dec = +(el.getAttribute('data-dec') || 0), suf = el.getAttribute('data-suffix') || '', pre = el.getAttribute('data-prefix') || '';
+    if (reduce) { el.textContent = pre + (dec ? to.toFixed(dec) : fmt(to)) + suf; return; }
     var t0 = performance.now(), D = 1400;
     (function step(n) {
       var k = Math.min(1, (n - t0) / D), e = 1 - Math.pow(1 - k, 3), v = to * e;
-      el.textContent = (dec ? v.toFixed(dec) : fmt(v)) + suf;
+      el.textContent = pre + (dec ? v.toFixed(dec) : fmt(v)) + suf;
       if (k < 1) requestAnimationFrame(step);
     })(t0);
   }
@@ -126,7 +135,7 @@
   cells.forEach(function (c, i) { c.style.setProperty('--ci', i); });
   if (reduce || !window.IntersectionObserver) { cells.forEach(function (c) { c.classList.add('is-in'); countProof(c.querySelector('[data-count]')); }); }
   else {
-    cells.forEach(function (c) { var n = c.querySelector('[data-count]'); if (n) n.textContent = '0' + (n.getAttribute('data-suffix') || ''); });
+    cells.forEach(function (c) { var n = c.querySelector('[data-count]'); if (n) n.textContent = (n.getAttribute('data-prefix') || '') + '0' + (n.getAttribute('data-suffix') || ''); });
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (!e.isIntersecting) return; io.unobserve(e.target); e.target.classList.add('is-in'); var n = e.target.querySelector('[data-count]'); if (n) setTimeout(function () { countProof(n); }, (+e.target.style.getPropertyValue('--ci')) * 90); });
     }, { threshold: 0.35 });

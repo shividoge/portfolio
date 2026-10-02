@@ -77,5 +77,16 @@ window.PROJECTS = [
             {label:'Research paper', href:null}],
     bench:'hydro',
     status:'Shipped'
+  },
+  {
+    id:'glasses', page:'smart-glasses.html', accent:'#FF4FA3', short:'S\u00b3 glasses', n:'07', scene:'glasses',
+    title:'S\u00b3 Smart Glasses \u2014 AR under $150',
+    tag:'Business lead \u00b7 Team S\u00b3, three people',
+    meta:'Wearables \u00b7 Product design \u00b7 3D-printed prototype',
+    lede:'AR smart glasses built for under $150: 87 g, an AI answer on the lens in about 1.3 seconds, and about $83 in parts.',
+    body:'A 3D-printed, AI-capable smart-glasses prototype. It hears a question, sends it to Gemini through a companion phone app, and draws the answer on a small OLED in about 1.3 seconds. We got the price down by replacing the waveguide, the part that pushes most AR glasses past $500, with an OLED and a mirror. I was the business lead on a team of three, with Siddharth Mohan on engineering and Srijan Kumbam on software.',
+    tags:['ESP32','OLED','I\u00b2C','KiCad','3D printing','Gemini'],
+    links:[],
+    status:'Prototype'
   }
 ];

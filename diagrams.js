@@ -102,6 +102,21 @@
     return s;
   };
 
+  /* ----------------------------------------------------------- S3 glasses */
+  D.glassesFlow = function () {
+    var s = root(1000, 340, 'How a question travels: you speak, the glasses turn it into text, a phone app sends it to Gemini, and the answer comes back to the OLED on the lens');
+    var X = [20, 270, 520, 770], T = [['You', 'press a button, ask'], ['ESP32 in the glasses', 'speech to text'], ['Companion phone app', 'over a hotspot'], ['Gemini', 'answers the question']];
+    T.forEach(function (t, i) { box(s, X[i], 50, 210, 90, t[0], t[1], i === 1 ? 'is-hot' : ''); });
+    for (var i = 0; i < 3; i++) { var d = 'M' + (X[i] + 210) + ' 95 H' + X[i + 1]; link(s, d, ''); S('path', { d: d, 'class': 'dg-flow' }, s); }
+    box(s, 270, 220, 210, 90, 'OLED on the lens', 'draws the reply', 'is-hot');
+    var back = 'M875 140 V265 H480';
+    link(s, back, ''); S('path', { d: back, 'class': 'dg-flow s2' }, s);
+    var up = 'M375 220 V140';
+    link(s, up, ''); S('path', { d: up, 'class': 'dg-flow s2 rev' }, s);
+    tag(s, 20, 30, 'THE QUESTION GOES OUT'); tag(s, 520, 297, 'THE ANSWER COMES BACK', 'start');
+    return s;
+  };
+
   /* ------------------------------------------------------------ robotics teams */
   D.teams = function () {
     var s = root(1000, 330, 'Nine teams: four FTC, four VEX and one FRC, the team taken to the World Championship');

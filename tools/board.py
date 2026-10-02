@@ -113,6 +113,7 @@ markup = '''<div id="boot" class="boot" role="status" aria-live="polite" aria-la
       <li class="boot-row"><span class="st"></span><b>Robotics</b><span class="v">Rising All-Star at Worlds</span></li>
       <li class="boot-row"><span class="st"></span><b>FLSAM site</b><span class="v">60% less overhead</span></li>
       <li class="boot-row"><span class="st"></span><b>Hydro CV</b><span class="v">6.9% MAPE · 6 trials</span></li>
+      <li class="boot-row"><span class="st"></span><b>S³ glasses</b><span class="v">87 g · ≈$83 in parts</span></li>
     </ul>
     <div class="boot-foot"><span class="lbl">Press any key to skip</span></div>
   </div>

@@ -22,10 +22,10 @@
 <link rel="stylesheet" href="tailwind.min.css">
 <link rel="stylesheet" href="base.css?v=72274e92">
 <link rel="stylesheet" href="parts.css?v=be8d890f">
-<link rel="stylesheet" href="chipread.css?v=f5c8c128">
+<link rel="stylesheet" href="chipread.css?v=81669b7d">
 <link rel="stylesheet" href="scene.css?v=2257b8ce">
 <link rel="stylesheet" href="explorers.css?v=5d344d5b">
-<link rel="stylesheet" href="bands.css?v=6f11cb6a">
+<link rel="stylesheet" href="bands.css?v=57685488">
 <link rel="stylesheet" href="curtain.css?v=4693be32">
 <link rel="stylesheet" href="chrome.css?v=4b7c8fe4">
 <script>document.documentElement.classList.add('js');</script>
@@ -185,7 +185,7 @@
   .glance{ background:var(--ink); color:var(--bg); padding:5rem 0 5rem; }
   .glance-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 1.5rem; }
   @media (min-width:800px){ .glance-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:0 2rem; } }
-  @media (min-width:1200px){ .glance-grid{ grid-template-columns:repeat(6,minmax(0,1fr)); } }
+  @media (min-width:1200px){ .glance-grid{ grid-template-columns:repeat(7,minmax(0,1fr)); } }
   .glance-stat{
     display:block; padding:1.8rem 0 2rem; border-top:1px solid rgba(247,245,241,.16);
     color:inherit; text-decoration:none; transition:border-color .25s var(--ease);
@@ -688,6 +688,7 @@
       <li class="boot-row"><span class="st"></span><b>Robotics</b><span class="v">Rising All-Star at Worlds</span></li>
       <li class="boot-row"><span class="st"></span><b>FLSAM site</b><span class="v">60% less overhead</span></li>
       <li class="boot-row"><span class="st"></span><b>Hydro CV</b><span class="v">6.9% MAPE · 6 trials</span></li>
+      <li class="boot-row"><span class="st"></span><b>S³ glasses</b><span class="v">87 g · ≈$83 in parts</span></li>
     </ul>
     <div class="boot-foot"><span class="lbl">Press any key to skip</span></div>
   </div>
@@ -735,6 +736,7 @@
       <a class="menu-proj" href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 · Middleton Robotics" style="--i:5;--pc:#FF7A1A"><span class="menu-n">04</span><span class="menu-pt"><span>Middleton Robotics</span><small>Leadership</small></span></a>
       <a class="menu-proj" href="flsam.html" data-pa="#7C93FF" data-dest="05 · FLSAM" style="--i:6;--pc:#7C93FF"><span class="menu-n">05</span><span class="menu-pt"><span>FLSAM</span><small>Live</small></span></a>
       <a class="menu-proj" href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 · Growth chamber" style="--i:7;--pc:#8EE36B"><span class="menu-n">06</span><span class="menu-pt"><span>Growth chamber</span><small>Shipped</small></span></a>
+      <a class="menu-proj" href="smart-glasses.html" data-pa="#FF4FA3" data-dest="07 · S³ glasses" style="--i:8;--pc:#FF4FA3"><span class="menu-n">07</span><span class="menu-pt"><span>S³ glasses</span><small>Prototype</small></span></a>
     </nav>
     </div>
 
@@ -815,11 +817,13 @@
         <div class="chip-wrap">
           <div class="chip-cast" aria-hidden="true"></div>
           <div class="chip-hold" id="chipHold" role="img"
-               aria-label="A microchip of my own design: a quad-flat package with a display, a D-pad, a camera lens and a row of keys, one for each tool I work in. Each part opens the work it stands for.">
+               aria-label="A microchip of my own design: a quad-flat package with a display, a D-pad, a pair of glasses, a camera lens and a row of keys, one for each tool I work in. Each part opens the work it stands for.">
             <button type="button" class="spot" data-group="web"
                     aria-label="The display: web work"><span class="spot-dot" aria-hidden="true"></span></button>
             <button type="button" class="spot" data-group="robotics"
                     aria-label="The D-pad: robotics"><span class="spot-dot" aria-hidden="true"></span></button>
+            <button type="button" class="spot" data-group="glasses"
+                    aria-label="The glasses: S3 smart glasses"><span class="spot-dot" aria-hidden="true"></span></button>
             <button type="button" class="spot" data-group="vision"
                     aria-label="The lens: computer vision"><span class="spot-dot" aria-hidden="true"></span></button>
           </div>
@@ -969,6 +973,7 @@
     <a class="glance-stat" href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 &middot; Middleton Robotics" style="--pc:#FF7A1A"><span class="gl-viz" data-viz="dots" aria-hidden="true"></span><span class="glance-num" data-count="100" data-suffix="+">100+</span><span class="glance-lbl">students in the program I revived and ran</span><span class="glance-proj">Middleton Robotics &rarr;</span></a>
     <a class="glance-stat" href="flsam.html" data-pa="#7C93FF" data-dest="05 &middot; FLSAM" style="--pc:#7C93FF"><span class="gl-viz" data-viz="ring" aria-hidden="true"></span><span class="glance-num" data-count="60" data-suffix="%">60%</span><span class="glance-lbl">less manual communication after the site rebuild</span><span class="glance-proj">FLSAM &rarr;</span></a>
     <a class="glance-stat" href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 &middot; Growth chamber" style="--pc:#8EE36B"><span class="gl-viz" data-viz="bars" aria-hidden="true"></span><span class="glance-num" data-count="6.9" data-dec="1" data-suffix="%">6.9%</span><span class="glance-lbl">mean error estimating plant mass from video</span><span class="glance-proj">Growth chamber &rarr;</span></a>
+    <a class="glance-stat" href="smart-glasses.html" data-pa="#FF4FA3" data-dest="07 &middot; S&sup3; glasses" style="--pc:#FF4FA3"><span class="gl-viz" data-viz="price" aria-hidden="true"></span><span class="glance-num" data-count="83" data-prefix="$">$83</span><span class="glance-lbl">in parts for AR glasses built under a $150 cap</span><span class="glance-proj">S&sup3; glasses &rarr;</span></a>
   </div>
 </div>
 <!-- ======================= CAPABILITIES ======================= -->
@@ -1122,6 +1127,13 @@
 
           <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
             <span class="tl-dot bg-ink" aria-hidden="true"></span>
+            <p class="lbl text-ink3 num mb-2">2026 · Team S&sup3;</p>
+            <h3 class="display text-ink text-[1.35rem] mb-1.5"><a class="row-title" href="smart-glasses.html" data-pa="#FF4FA3" data-dest="07 &middot; S&sup3; glasses">S&sup3; Smart Glasses &mdash; Business Lead</a></h3>
+            <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Team of three building AR glasses for under $150: 87&nbsp;g, a 1.3&nbsp;s AI answer on the lens, about $83 in parts.</p>
+          </li>
+
+          <li class="relative pl-8 sm:pl-12 pb-9" data-rv="up">
+            <span class="tl-dot bg-ink" aria-hidden="true"></span>
             <p class="lbl text-ink3 num mb-2">2026 · Science &amp; Engineering Fair</p>
             <h3 class="display text-ink text-[1.35rem] mb-1.5">NASA Kennedy Space Center Award</h3>
             <p class="text-[.9375rem] leading-[1.7] text-ink2 prose-measure">Awarded for the hydroponic growth chamber's spaceflight viability work.</p>
@@ -1187,6 +1199,7 @@
           <a href="middleton-robotics.html" data-pa="#FF7A1A" data-dest="04 · Middleton Robotics"><i style="--pc:#FF7A1A"></i>04 &nbsp;Middleton Robotics</a>
           <a href="flsam.html" data-pa="#7C93FF" data-dest="05 · FLSAM"><i style="--pc:#7C93FF"></i>05 &nbsp;FLSAM</a>
           <a href="hydroponic-chamber.html" data-pa="#8EE36B" data-dest="06 · Growth chamber"><i style="--pc:#8EE36B"></i>06 &nbsp;Growth chamber</a>
+          <a href="smart-glasses.html" data-pa="#FF4FA3" data-dest="07 · S³ glasses"><i style="--pc:#FF4FA3"></i>07 &nbsp;S³ glasses</a>
           <!--/FOOTPROJ-->
         </nav>
 
@@ -1220,13 +1233,13 @@
 
 <script src="curtain.js?v=bce1eba7" defer></script>
 <script src="menu.js?v=7aeb91b5" defer></script>
-<script src="bands.js?v=c8b5b495" defer></script>
+<script src="bands.js?v=420b6a6b" defer></script>
 <script src="foot.js?v=3678059d" defer></script>
 <script src="wipe.js?v=4ac6d1df" defer></script>
-<script src="hero.js?v=9f0e844f" defer></script>
+<script src="hero.js?v=d457b2f2" defer></script>
 <script src="fpga.js?v=1f7114a2" defer></script>
 <script src="fpgamap.js?v=c5830d69" defer></script>
-<script src="projects.js?v=29c4a850" defer></script>
+<script src="projects.js?v=d0937845" defer></script>
 <script src="cards.js?v=9f978beb" defer></script>
 <script src="about.js?v=d61607e4" defer></script>
 <script src="portal.js?v=d6a2b2fe" defer></script>

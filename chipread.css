@@ -102,3 +102,13 @@
 @media (max-width:640px){
   .chip-h{ font-size:1.15rem; }
 }
+
+/* the S3 glasses on the chip: white wayfarer frames over dark glass, temples at
+   the sides, and one lit display in the right lens */
+.hc-gl{ box-sizing:border-box; background:#F2EEE3; border:0; }
+.hc-gll{ border:3px solid #F2EEE3; border-radius:6px 6px 14px 14px; background:
+    linear-gradient(135deg, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 26%),
+    linear-gradient(160deg,#1E3340,#05090D); }
+.hc-glb{ border-radius:3px; }
+.hc-glt{ border-radius:2px; }
+.hc-gl-oled{ border-radius:1px; background:#FF4FA3; box-shadow:0 0 6px 1px rgba(255,79,163,.85); pointer-events:none; }

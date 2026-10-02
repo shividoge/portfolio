@@ -13,6 +13,7 @@ PROJ = [
  dict(id='robotics', n='04', page='middleton-robotics.html',  accent='#FF7A1A', short='Middleton Robotics', theme='robotics', status='Leadership', dest='04 · Middleton Robotics'),
  dict(id='flsam',     n='05', page='flsam.html',                accent='#7C93FF', short='FLSAM',               theme='flsam',     status='Live',       dest='05 · FLSAM'),
  dict(id='hydro',    n='06', page='hydroponic-chamber.html',  accent='#8EE36B', short='Growth chamber',     theme='hydro',    status='Shipped',    dest='06 · Growth chamber'),
+ dict(id='glasses',  n='07', page='smart-glasses.html',       accent='#FF4FA3', short='S³ glasses',     theme='glasses',  status='Prototype',  dest='07 · S³ glasses'),
 ]
 TITLES = {
  'fpga': 'FPGA CPU and quantized NN accelerator',
@@ -21,6 +22,7 @@ TITLES = {
  'robotics': 'Middleton Robotics: leading a program to the World Championship',
  'flsam': 'FLSAM site and regional coordination',
  'hydro': 'Autonomous hydroponic growth chamber',
+ 'glasses': 'S\u00b3 smart glasses: AR under $150',
 }
 DESCS = {
  'fpga': 'A CPU in SystemVerilog, ALU and datapath first, as the foundation for a quantized neural-network accelerator. Smart Systems Lab, UF.',
@@ -29,6 +31,7 @@ DESCS = {
  'robotics': 'Leading Middleton Robotics from 20 members to 100+ across nine FTC, VEX and FRC teams, and to the World Championship.',
  'flsam': 'The website and regional pipeline of the Florida Student Association of Mathematics, Region 4a.',
  'hydro': 'A closed-loop hydroponic chamber with a computer-vision biomass estimator. NASA Kennedy Space Center Award.',
+ 'glasses': 'AR smart glasses for under $150: 87 g, 1.3 s AI answers on the lens, about $83 in parts. A team of three, with an interactive 3D model.',
 }
 EXTRA_HEAD = {'env': ['explorers.css'], 'hydro': ['explorers.css'], 'fpga': ['explorers.css']}
 EXTRA_JS = {'env': ['env.js'], 'hydro': ['hydro3d.js', 'hydro.js'], 'fpga': ['fpga.js', 'fpgamap.js']}
@@ -115,6 +118,48 @@ header = header.replace('href="#top"', 'href="index.html" data-dest="Home" data-
 footer = re.search(r'<footer class="foot".*?</footer>', idx, re.S).group(0)
 FONTS = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap'
 
+S3_CLASSES = ['brand', 'btn', 'chips', 'foot', 'rv', 'top', 'wrap']
+S3_COLOURS = {  # the section's cyan, swapped for this page's own pink
+    '52d9ff': 'ff4fa3', '1fb9e0': 'd93a86', '9be9ff': 'ffa6cf', '8aeaff': 'ff9cc8', '9fe4ff': 'ffa9d2',
+    'bff4ff': 'ffd0e6', 'dff6ff': 'ffe9f3', 'd8f2fa': 'fbe4ee',
+}
+
+def s3_prefix(frag):
+    """Make the section part of the site: prefix the class names it shares with the site
+    (.foot, .rv, .btn ...), take its own top bar and fonts out, give each heading the site's
+    heading style and number, and swap its cyan for this page's pink."""
+    import re
+    def attr(m):
+        v = m.group(1)
+        for c in S3_CLASSES: v = re.sub(r'(?<![\w-])' + c + r'(?![\w-])', 's3' + c, v)
+        return 'class="' + v + '"'
+    frag = re.sub(r'class="([^"]+)"', attr, frag)
+    for c in S3_CLASSES:
+        frag = re.sub(r'(?<![\w-])\.' + c + r'(?![\w-])', '.s3' + c, frag)
+    # no section bar of its own (the site's name and menu are the bar) and no font links of its own
+    frag = re.sub(r'<header class="s3top">.*?</header>\s*', '', frag, flags=re.S)
+    frag = re.sub(r'<link[^>]*fonts\.g[^>]*>\s*', '', frag)
+    # the model block opens like every other section of the site
+    frag = re.sub(r'<div class="hero-copy">.*?</div>\s*(?=<div class="stage")',
+        '<div class="hero-copy"><p class="lbl pb-n">03 &nbsp;&middot;&nbsp; The model</p><h2 class="pb-h">Turn it in your hands</h2>'
+        '<p class="pb-lede">Orbit the real design, pull it apart, look through it, and ask it a question.</p></div>\n  ', frag, count=1, flags=re.S)
+    # every other section head: number, label, heading, lede
+    n = [3]
+    def head(m):
+        n[0] += 1
+        return ('<div class="sec-head s3rv"><p class="lbl pb-n">%02d &nbsp;&middot;&nbsp; %s</p><h2 class="pb-h">%s</h2><p class="pb-lede">%s</p></div>'
+                % (n[0], m.group(1), m.group(2), m.group(3)))
+    frag = re.sub(r'<div class="sec-head s3rv">\s*<span class="eyebrow">(.*?)</span>\s*<h2>(.*?)</h2>\s*<p class="lead">(.*?)</p>\s*</div>', head, frag, flags=re.S)
+    for k, v in S3_COLOURS.items():
+        frag = re.sub(k, v, frag, flags=re.I)
+    frag = frag.replace('rgba(82,217,255', 'rgba(255,79,163').replace('rgba(82, 217, 255', 'rgba(255,79,163').replace('rgba(110,200,235', 'rgba(255,140,200')
+    return frag
+
+def embed_html(p):
+    if p['id'] != 'glasses': return ''
+    f = s3_prefix(open(os.path.join(ROOT, 'tools', 's3-fragment.html')).read())
+    return '<div id="embed-s3">\n' + f + '\n</div>\n'
+
 def page(p):
     th = p['theme']
     css = ['tailwind.min.css', 'base.css', 'parts.css'] + EXTRA_HEAD.get(th, []) + ['curtain.css', 'chrome.css', 'page.css']
@@ -155,6 +200,7 @@ def page(p):
 
 <main id="main" class="relative">
 <div id="page"></div>
+%(embed)s<div id="pageEnd"></div>
 
 %(footer)s
 </main>
@@ -167,7 +213,7 @@ def page(p):
 </html>
 ''' % dict(th=th, title=title, desc=DESCS[p['id']], fonts=FONTS, id=p['id'],
            css='\n'.join('<link rel="stylesheet" href="%s?v=0">' % c if c != 'tailwind.min.css' else '<link rel="stylesheet" href="tailwind.min.css">' for c in css),
-           curtain=curtain, header=header, menu=menu, footer=footer,
+           curtain=curtain, header=header, menu=menu, footer=footer, embed=embed_html(p),
            js='\n'.join('<script src="%s?v=0" defer></script>' % j for j in js))
     return h
 

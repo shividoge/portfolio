@@ -9,6 +9,7 @@ html[data-theme="pcb"]     { --pbg:#0A1810; --pfg:#F0ECDD; --pmut:#A3B5A8; --pli
 html[data-theme="env"]     { --pbg:#07171B; --pfg:#E6F2F1; --pmut:#93B6B5; --pline:#173A3F; --psurf:#0C2328; --pa:#5FD6D0; --pa2:#2AA7A0; --pc:#5FD6D0; --accent:#5FD6D0; --acc-rgb:95,214,208; }
 html[data-theme="robotics"]{ --pbg:#121110; --pfg:#F3EEE6; --pmut:#B0A89B; --pline:#332E28; --psurf:#1B1916; --pa:#FF7A1A; --pa2:#FFB067; --pc:#FF7A1A; --accent:#FF7A1A; --acc-rgb:255,122,26; }
 html[data-theme="flsam"]    { --pbg:#F3EFE4; --pfg:#14203D; --pmut:#4B5878; --pline:#CDC7B4; --psurf:#FBF9F2; --pa:#2A4BD7; --pa2:#7C93FF; --pc:#7C93FF; --accent:#2A4BD7; --acc-rgb:42,75,215; }
+html[data-theme="glasses"]{ --pbg:#0C0710; --pfg:#F7ECF2; --pmut:#B8A0B1; --pline:#2D1B29; --psurf:#150C14; --pa:#FF4FA3; --pa2:#FF9CCB; --pc:#FF4FA3; --accent:#FF4FA3; --acc-rgb:255,79,163; }
 html[data-theme="hydro"]   { --pbg:#07150E; --pfg:#E9F4EA; --pmut:#98B8A0; --pline:#183828; --psurf:#0C2116; --pa:#8EE36B; --pa2:#4FB84A; --pc:#8EE36B; --accent:#8EE36B; --acc-rgb:142,227,107; }
 
 body.pp{ background:var(--pbg); color:var(--pfg); }
@@ -134,11 +135,11 @@ body.pp{ background:var(--pbg); color:var(--pfg); }
 .pb-ex .proj-bench{ grid-column:auto; margin:0; }
 
 /* next project */
-.pp a.pp-next{ position:relative; display:block; overflow:hidden; isolation:isolate; padding:clamp(3rem,10vh,6rem) 0; text-decoration:none; color:var(--nfg,#0D0D0F); background:var(--na); }
-.pp a.pp-next::before{ content:""; position:absolute; inset:0; z-index:-1; background:var(--nbg,#0D0D0F); transform:translateY(101%); transition:transform .7s cubic-bezier(.76,0,.24,1); }
-.pp a.pp-next:hover::before,.pp a.pp-next:focus-visible::before{ transform:none; }
-.pp a.pp-next:hover,.pp a.pp-next:focus-visible{ color:var(--na); }
-.pp .pp-next .lbl{ color:inherit; opacity:.8; }
+.pp #page a.pp-next{ position:relative; display:block; overflow:hidden; isolation:isolate; padding:clamp(3rem,10vh,6rem) 0; text-decoration:none; color:var(--nfg,#0D0D0F); background:var(--na); }
+.pp #page a.pp-next::before{ content:""; position:absolute; inset:0; z-index:-1; background:var(--nbg,#0D0D0F); transform:translateY(101%); transition:transform .7s cubic-bezier(.76,0,.24,1); }
+.pp #page a.pp-next:hover::before,.pp #page a.pp-next:focus-visible::before{ transform:none; }
+.pp #page a.pp-next:hover,.pp #page a.pp-next:focus-visible{ color:var(--na); }
+.pp #page .pp-next .lbl{ color:inherit; opacity:.8; }
 .pp-next h2{ margin:.8rem 0 0; font-family:"Space Grotesk",sans-serif; font-weight:600; letter-spacing:-.05em; line-height:.92; font-size:clamp(2.4rem,9vw,8.6rem); text-wrap:balance; }
 .pp-next h2 span{ display:inline-block; transition:transform .5s var(--ease); }
 .pp-next:hover h2 span{ transform:translateX(.25em); }
@@ -146,3 +147,24 @@ body.pp{ background:var(--pbg); color:var(--pfg); }
 .pp-back{ display:inline-flex; align-items:center; gap:.5rem; }
 
 @media (max-width:700px){ .pb{ padding:3.5rem 0; } .pb-head{ margin-bottom:1.8rem; } .ph{ padding-top:7rem; } .ph-h{ line-height:.96; } .facts div{ grid-template-columns:6.5rem 1fr; } }
+
+/* the S3 page: the section it embeds is restyled to the site's own type, grid,
+   rhythm and colours, so it reads as another project page and not a different site */
+body[data-project="glasses"] #s3{
+  --bg:var(--pbg); --panel:var(--psurf); --panel2:#1B1019; --line:var(--pline); --line2:#46293D;
+  --fg:var(--pfg); --mut:var(--pmut); --cy:var(--pa); --cy2:var(--pa2);
+  --f-display:"Space Grotesk",ui-sans-serif,system-ui,sans-serif; --f-body:Archivo,ui-sans-serif,system-ui,sans-serif;
+  background:transparent; font-size:16px;
+}
+body[data-project="glasses"] #s3 .s3wrap{ width:100%; max-width:1400px; padding-inline:clamp(1.25rem,4vw,3rem); }
+/* sections run edge to edge, with their content on the same 1400px column as every other page */
+body[data-project="glasses"] #s3 .s3sec.s3wrap,body[data-project="glasses"] #s3 .s3hero.s3wrap{ max-width:none; padding-inline:max(clamp(1.25rem,4vw,3rem), calc((100% - 1400px) / 2 + clamp(1.25rem,4vw,3rem))); }
+body[data-project="glasses"] #s3 .lbl{ color:var(--pmut); }
+body[data-project="glasses"] #s3 .pb-n{ display:flex; align-items:center; gap:.7rem; margin:0 0 .9rem; }
+body[data-project="glasses"] #s3 .pb-h{ font-family:"Space Grotesk",ui-sans-serif,sans-serif; font-weight:600; letter-spacing:-.04em; line-height:.98; font-size:clamp(2rem,5vw,4rem); text-wrap:balance; margin:0; }
+body[data-project="glasses"] #s3 .pb-lede{ margin:1.2rem 0 0; font-size:1.0625rem; line-height:1.65; color:var(--pmut); max-width:58ch; }
+body[data-project="glasses"] #s3 .sec{ padding-block:clamp(4.5rem,13vh,9rem); border-top:1px solid var(--pline); }
+body[data-project="glasses"] #s3 .sec-head{ margin-bottom:clamp(2.4rem,6vh,3.8rem); }
+body[data-project="glasses"] #s3 .hero{ padding-block:clamp(4.5rem,13vh,9rem) 2rem; border-top:1px solid var(--pline); }
+body[data-project="glasses"] #s3 .hero-copy{ gap:0; }
+@media (max-width:700px){ body[data-project="glasses"] #s3 .sec,body[data-project="glasses"] #s3 .hero{ padding-block:3.5rem; } }

@@ -152,5 +152,31 @@ hydro: {
       links:[{label:'Interactive project site',href:'https://shividoge.github.io/hydroponics-growth-system/',ext:true},{label:'Biomass web app (code)',href:'https://github.com/shividoge/plant_growth_webapp_v2',ext:true},{label:'Research paper — pending',href:null}],
       link:{label:'The sensor board it runs on',href:'environmental-pcb.html',pa:'#5FD6D0',dest:'03 · Environmental monitoring PCB'}}
   ]
+},
+glasses: {
+  theme:'glasses', art:'optics',
+  title:['AR glasses','for under <a>$150</a>'],
+  lede:'A 3D-printed, AI-capable pair of smart glasses: 87 g, an answer on the lens in about 1.3 seconds, and about $83 in parts.',
+  stats:[{v:'87 g',l:'on your face, 42% under our own 150 g cap'},{v:'$83',l:'in parts per pair, against a $149 shelf price'},{v:'1.3 s',l:'from a spoken question to an answer on the lens'}],
+  status:'Prototype',
+  blocks:[
+    {t:'story', n:'01', h:'What we built',
+      lead:'We replaced the waveguide, the part that pushes most AR glasses past $500, with a small OLED and a mirror.',
+      p:['S\u00b3 is a 3D-printed, AI-capable smart-glasses prototype. It hears a spoken question, turns it into text on its own chip, and passes it to a companion phone app over a hotspot. The phone asks Gemini, and the answer comes back and is drawn on the OLED in front of your eye.',
+         'I was the business lead on a team of three. The design, the build and the testing are the whole team\u2019s, and the page below has all of it: the 3D model, the commercial, the price case, the build story, the bill of materials, the test results and the limits.'],
+      chips:['Team of three','ESP32','OLED + mirror','3D-printed PETG','Gemini via phone'],
+      aside:{h:'The team',items:['Shivin Anand: business','Siddharth Mohan: engineering','Srijan Kumbam: software']}},
+    {t:'diagram', n:'02', h:'From a question to the lens', id:'glassesFlow',
+      lede:'The glasses do the listening and the drawing. The phone does the thinking, over a hotspot.',
+      note:'The path as the team designed it. The round trip averaged 1,315 ms over five measured trials.'},
+    {t:'facts', n:'10', h:'Details', late:true, items:[
+      ['Role','Business lead, on a team of three'],
+      ['Team','Shivin Anand (business), Siddharth Mohan (engineering), Srijan Kumbam (software)'],
+      ['Built with','ESP32, a small OLED, a 3D-printed PETG frame, and Gemini through a companion phone app'],
+      ['The price trick','An OLED and a mirror in place of a waveguide'],
+      ['Result','Four clean passes, one partial and one miss against requirements we set before testing']],
+      note:'The numbers, the 3D model and the simulated demo come from the team\u2019s design presentation. The demo answers are canned examples and are labelled simulated.',
+      links:[{label:'Watch the commercial',href:'https://www.youtube.com/watch?v=080NjfXfDpc',ext:true}]}
+  ]
 }
 };

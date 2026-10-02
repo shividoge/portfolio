@@ -14,8 +14,8 @@
   if (!P || !G || !host) return;
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var BG = { fpga: '#0A0B12', pcb: '#0A1810', env: '#07171B', robotics: '#121110', flsam: '#F3EFE4', hydro: '#07150E' };
-  var THEME_OF = { fpga: 'fpga', pcb: 'pcb', envpcb: 'env', robotics: 'robotics', flsam: 'flsam', hydro: 'hydro' };
+  var BG = { fpga: '#0A0B12', pcb: '#0A1810', env: '#07171B', robotics: '#121110', flsam: '#F3EFE4', hydro: '#07150E', glasses: '#05080B' };
+  var THEME_OF = { fpga: 'fpga', pcb: 'pcb', envpcb: 'env', robotics: 'robotics', flsam: 'flsam', hydro: 'hydro', glasses: 'glasses' };
 
   function h(tag, cls, html, attrs) {
     var e = document.createElement(tag);
@@ -28,6 +28,7 @@
 
   /* ------------------------------------------------------------------ hero */
   var hero = h('section', 'ph');
+  var NOHERO = !!G.noHero;
   var cv = h('canvas', 'ph-art', null, { 'aria-hidden': 'true' });
   hero.appendChild(cv);
   hero.appendChild(h('p', 'lbl ph-status', G.status));
@@ -62,7 +63,7 @@
   });
   inner.appendChild(st);
   hero.appendChild(inner);
-  host.appendChild(hero);
+  if (!NOHERO) host.appendChild(hero);
 
   /* --------------------------------------------------------------- blocks */
   function section(b) {
@@ -148,7 +149,7 @@
       if (lk.length || b.link) r2.appendChild(linksRow(lk, b.link));
       g2.appendChild(l2); g2.appendChild(r2); c.appendChild(g2);
     }
-    host.appendChild(S.sec);
+    (b.late ? (document.getElementById('pageEnd') || host) : host).appendChild(S.sec);
   });
 
   /* ----------------------------------------------------------- next project */
@@ -159,7 +160,7 @@
   ai.appendChild(h('p', 'lbl', 'Next project · ' + N.n));
   ai.appendChild(h('h2', null, '<span>' + N.short + ' →</span>'));
   ai.appendChild(h('div', 'go lbl', plain(N.tag)));
-  a.appendChild(ai); host.appendChild(a);
+  a.appendChild(ai); (document.getElementById('pageEnd') || host).appendChild(a);
 
   /* ------------------------------------------------------------ motion glue */
   function countUp(el) {
@@ -192,5 +193,5 @@
     setTimeout(function () { clearInterval(w); openHero(); }, 5000);
   } else requestAnimationFrame(function () { requestAnimationFrame(openHero); });
 
-  if (window.PageArt) window.PageArt.start(cv, G.art);
+  if (window.PageArt && !NOHERO) window.PageArt.start(cv, G.art);
 })();

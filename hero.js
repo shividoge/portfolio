@@ -40,7 +40,8 @@
     lcd:  { x: 86,  y: 18,  w: 132, h: 80 },
     dpad: { cx: 56, cy: 140, arm: 36 },
     lens: { cx: 228, cy: 134, r: 44 },
-    keys: { y: 244, size: 26, gap: 6, n: 7 }
+    keys: { y: 244, size: 26, gap: 6, n: 7 },
+    glasses: { x: 80, y: 184, lw: 50, bw: 12, tw: 14, h: 30 }
   };
   F.keys.w = F.keys.n * F.keys.size + (F.keys.n - 1) * F.keys.gap;
   F.keys.x = (BODY - F.keys.w) / 2;
@@ -277,6 +278,24 @@
   eye.appendChild(glint);
   bodyEl.appendChild(eye);
 
+  /* Glasses: the S3 frames, built so they read as glasses at a glance. Two
+     wayfarer lenses, a bridge and a temple on each side, in white frames over
+     dark glass, with the tiny display lit on the right lens. They stand clear
+     of the camera, the D-pad and the marking. */
+  var GL = F.glasses, gx = GL.x;
+  bodyEl.appendChild(box('hc-part hc-gl hc-glt', gx, GL.y + 3, GL.tw + 4, 5, LIFT + 9, 3));
+  var lensL = box('hc-part hc-gl hc-gll', gx + GL.tw, GL.y, GL.lw, GL.h, LIFT + 11, 5);
+  bodyEl.appendChild(lensL);
+  bodyEl.appendChild(box('hc-part hc-gl hc-glb', gx + GL.tw + GL.lw - 1, GL.y + 4, GL.bw + 2, 5, LIFT + 11, 3));
+  var lensR = box('hc-part hc-gl hc-gll', gx + GL.tw + GL.lw + GL.bw, GL.y, GL.lw, GL.h, LIFT + 11, 5);
+  bodyEl.appendChild(lensR);
+  bodyEl.appendChild(box('hc-part hc-gl hc-glt', gx + GL.tw + GL.lw * 2 + GL.bw - 4, GL.y + 3, GL.tw + 4, 5, LIFT + 9, 3));
+  /* the lit display and a line of "text" on it */
+  var ox = gx + GL.tw + GL.lw + GL.bw + 8, oy = GL.y + 6;
+  bodyEl.appendChild(box('hc-gl-oled', ox, oy, 30, 4, LIFT + 14));
+  bodyEl.appendChild(box('hc-gl-oled', ox, oy + 8, 20, 4, LIFT + 14));
+  bodyEl.appendChild(box('hc-gl-oled', ox, oy + 16, 26, 3, LIFT + 14));
+
   /* the key row */
   KEYS.forEach(function (kk, i) {
     var x = F.keys.x + i * (F.keys.size + F.keys.gap);
@@ -324,6 +343,16 @@
       ],
       row: 'robotics', ext: ['middletonrobotics.com', 'https://www.middletonrobotics.com/']
     },
+    glasses: {
+      pick: 'Glasses', kicker: 'Glasses \u00b7 the frames',
+      head: 'S\u00b3 smart glasses: AR under $150',
+      metrics: [['87 g', 'on your face'], ['1.3 s', 'AI answer on the lens'], ['\u2248$83', 'in parts, per pair']],
+      points: [
+        'Business lead on a team of three, with engineering and software teammates.',
+        'An ESP32 and a small OLED in place of the waveguide that prices most AR glasses at $500 or more.'
+      ],
+      row: 'glasses'
+    },
     vision: {
       pick: 'Vision', kicker: 'Vision · the lens',
       head: 'Plant biomass by computer vision',
@@ -339,7 +368,7 @@
       head: 'Where I’ve used each tool'
     }
   };
-  var ORDER = ['vision', 'web', 'robotics', 'stack'];
+  var ORDER = ['vision', 'web', 'robotics', 'glasses', 'stack'];
 
   var TOOLS = [
     { id: 'js',  name: 'JavaScript',    where: [['FLSAM site and regional infrastructure', 'flsam']] },
@@ -438,6 +467,7 @@
   var partsOf = {
     web:      [].slice.call(bodyEl.querySelectorAll('.hc-lcd, .hc-glass')),
     robotics: [].slice.call(bodyEl.querySelectorAll('.hc-dkey')),
+    glasses:  [].slice.call(bodyEl.querySelectorAll('.hc-gl, .hc-gl-oled')),
     vision:   [].slice.call(bodyEl.querySelectorAll('.hc-lbase, .hc-ring, .hc-eye')),
     stack:    [].slice.call(bodyEl.querySelectorAll('.hc-key'))
   };
@@ -449,6 +479,7 @@
   var AT = {
     web:      [F.lcd.x + F.lcd.w / 2, F.lcd.y + F.lcd.h / 2, LIFT + 12],
     robotics: [F.dpad.cx, F.dpad.cy, LIFT + 14],
+    glasses:  [F.glasses.x + F.glasses.tw + F.glasses.lw + F.glasses.bw / 2, F.glasses.y + F.glasses.h / 2, LIFT + 16],
     vision:   [L.cx, L.cy, LIFT + 46]
   };
   var pad = (BOX - BODY) / 2;

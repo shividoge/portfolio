@@ -8,6 +8,7 @@
      gears    meshing gears under a hazard stripe            (robotics)
      math     symbols drifting past a curve being plotted    (FLSAM)
      growth   a stem putting out leaves, and bubbles         (hydroponic chamber)
+     optics   glasses with a display typing into the lens     (S3 smart glasses)
 
    Nothing here listens to the pointer. A scene runs only while it is on
    screen, and for reduced motion it draws one still frame.
@@ -178,6 +179,48 @@
         }
         x.stroke();
         if (prog < 1.15) { x.fillStyle = C.a; x.beginPath(); x.arc(lx, ly, 7, 0, 6.3); x.fill(); }
+      };
+    },
+
+    optics: function (w, h, C) {
+      return function (x, t) {
+        var s = Math.min(w, h * 1.4) / 2300 + 0.22, cx = w * (w < 700 ? 0.62 : 0.79), cy = h * (w < 700 ? 0.13 : 0.3);
+        var lw = 250 * s, lh = 170 * s, gap = 60 * s, tw = 150 * s;
+        x.lineJoin = 'round'; x.lineCap = 'round';
+        function lens(ox, glow) {
+          x.beginPath();
+          var l = ox, r = ox + lw, tp = cy - lh / 2, bt = cy + lh / 2, rad = 46 * s;
+          x.moveTo(l + 14 * s, tp); x.lineTo(r - 14 * s, tp); x.quadraticCurveTo(r, tp, r, tp + 14 * s);
+          x.lineTo(r, bt - rad); x.quadraticCurveTo(r, bt, r - rad, bt); x.lineTo(l + rad, bt);
+          x.quadraticCurveTo(l, bt, l, bt - rad); x.lineTo(l, tp + 14 * s); x.quadraticCurveTo(l, tp, l + 14 * s, tp); x.closePath();
+          x.fillStyle = hexA(C.aHex, glow ? 0.1 : 0.05); x.fill();
+          x.lineWidth = 7 * s; x.strokeStyle = hexA(C.fgHex, 0.8); x.stroke();
+        }
+        var lx = cx - gap / 2 - lw, rx = cx + gap / 2;
+        /* temples */
+        x.lineWidth = 9 * s; x.strokeStyle = hexA(C.fgHex, 0.55);
+        x.beginPath(); x.moveTo(lx, cy - lh * 0.3); x.lineTo(lx - tw, cy - lh * 0.34); x.moveTo(rx + lw, cy - lh * 0.3); x.lineTo(rx + lw + tw, cy - lh * 0.34); x.stroke();
+        /* bridge */
+        x.beginPath(); x.moveTo(lx + lw, cy - lh * 0.25); x.quadraticCurveTo(cx, cy - lh * 0.5, rx, cy - lh * 0.25); x.stroke();
+        lens(lx, false); lens(rx, true);
+        /* the display in the right lens: lines of text typing in */
+        var bx = rx + 34 * s, by = cy - lh * 0.22, ph = (t * 0.55) % 3;
+        for (var i = 0; i < 3; i++) {
+          var k = Math.max(0, Math.min(1, ph - i * 0.6)), bw = (lw - 90 * s) * (i === 1 ? 0.7 : i === 2 ? 0.5 : 0.9) * k;
+          x.fillStyle = C.a; x.globalAlpha = 0.9; x.fillRect(bx, by + i * 30 * s, bw, 12 * s);
+        }
+        x.globalAlpha = 1;
+        /* the light path: a pulse leaving the arm, bouncing off the mirror, into the lens */
+        var tt = (t * 0.5) % 1, ax = rx + lw + tw * 0.6, ay = cy - lh * 0.33;
+        var mx = rx + lw - 16 * s, my = cy - lh * 0.1;
+        x.setLineDash([10 * s, 12 * s]); x.lineDashOffset = -t * 40; x.lineWidth = 3 * s; x.strokeStyle = hexA(C.aHex, 0.8);
+        x.beginPath(); x.moveTo(ax, ay); x.lineTo(mx, my); x.lineTo(rx + lw * 0.45, my + 6 * s); x.stroke(); x.setLineDash([]);
+        /* ripples from the display */
+        for (var r = 0; r < 3; r++) {
+          var q = (t * 0.35 + r / 3) % 1;
+          x.strokeStyle = hexA(C.aHex, 0.35 * (1 - q)); x.lineWidth = 2 * s;
+          x.beginPath(); x.arc(rx + lw * 0.45, my + 6 * s, (30 + q * 260) * s, 0, 6.2832); x.stroke();
+        }
       };
     },
 
