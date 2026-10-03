@@ -166,10 +166,13 @@ def page(p):
     js = ['curtain.js', 'menu.js', 'projects.js', 'pagedata.js', 'art.js', 'diagrams.js', 'page.js'] + EXTRA_JS.get(th, []) + ['foot.js']
     title = '%s: Shivin Anand' % TITLES[p['id']]
     menu = cur(menu_html(False), p['id'])
-    h = '''<!doctype html>
+    h = r'''<!doctype html>
 <html lang="en" data-theme="%(th)s">
 <head>
 <meta charset="utf-8">
+<script>(function(){var h=location.hostname;if(/(^|\\.)netlify\\.app$/.test(h)||/\\.github\\.io$/.test(h)){location.replace('https://shivin.me'+location.pathname.replace(/^\/portfolio/,'')+location.search+location.hash);}})();</script>
+<link rel="canonical" href="https://shivin.me/%(pagefile)s">
+<meta property="og:url" content="https://shivin.me/%(pagefile)s">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%(title)s</title>
 <meta name="description" content="%(desc)s">
@@ -211,7 +214,7 @@ def page(p):
 <script src="pagebar.js?v=0" defer></script>
 </body>
 </html>
-''' % dict(th=th, title=title, desc=DESCS[p['id']], fonts=FONTS, id=p['id'],
+''' % dict(pagefile=p['page'], th=th, title=title, desc=DESCS[p['id']], fonts=FONTS, id=p['id'],
            css='\n'.join('<link rel="stylesheet" href="%s?v=0">' % c if c != 'tailwind.min.css' else '<link rel="stylesheet" href="tailwind.min.css">' for c in css),
            curtain=curtain, header=header, menu=menu, footer=footer, embed=embed_html(p),
            js='\n'.join('<script src="%s?v=0" defer></script>' % j for j in js))

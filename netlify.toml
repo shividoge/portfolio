@@ -1,0 +1,6 @@
+# Everything lives at https://shivin.me. The old Netlify address sends people there.
+[[redirects]]
+  from = "https://lucent-pithivier-591993.netlify.app/*"
+  to = "https://shivin.me/:splat"
+  status = 301
+  force = true
